@@ -297,6 +297,16 @@ void TestLifecycle::onStop()
 
 void TestLifecycle::onDestroy()
 {
+	Application* application(Application::getInstance());
+	GraphicsSystem* graphicsSystem(application->getGraphicsSystem());
+	
+#if defined(GLES1)
+		graphicsSystem->destroyRenderContext<GLES1RenderContext>();
+#elif defined(GLES2)
+		graphicsSystem->destroyRenderContext<GLES2RenderContext>();
+#elif defined(GLX)
+		graphicsSystem->destroyRenderContext<GLXRenderContext>();
+#endif
 }
 
 Mesh* makeSprite(Resource<Shader>& shader, Resource<Texture>& texture)

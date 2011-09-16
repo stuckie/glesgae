@@ -62,7 +62,7 @@ namespace GLESGAE
 			template <typename T_RenderContext> T_RenderContext* getRenderContext();
 			
 			/// Clear Render Context
-			template <typename T_RenderContext> void clearRenderContext();
+			template <typename T_RenderContext> void destroyRenderContext();
 			
 		private:
 			// No copying
@@ -84,7 +84,7 @@ namespace GLESGAE
 		return reinterpret_cast<T_RenderContext*>(mRenderContext);
 	}
 	
-	template <typename T_RenderContext> void GraphicsSystem::clearRenderContext()
+	template <typename T_RenderContext> void GraphicsSystem::destroyRenderContext()
 	{
 		if (0 != mRenderContext) {
 			delete reinterpret_cast<T_RenderContext*>(mRenderContext);
