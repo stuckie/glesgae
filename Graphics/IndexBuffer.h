@@ -31,8 +31,8 @@ namespace GLESGAE
 			/// No equals operator, use copy constructor instead
 			IndexBuffer& operator=(const IndexBuffer&);
 			
-			unsigned char* mData;
 			unsigned int mSize;
+			unsigned char* mData;
 			unsigned int mVboId;
 			FormatType mFormat;
 	};

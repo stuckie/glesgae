@@ -32,31 +32,10 @@ bool GraphicsSystem::initialise(const std::string& windowName, const unsigned in
 		mWindow = new X11RenderWindow;
 	#endif
 
-	#if defined(GLX)
-		mRenderContext = new GLXRenderContext;
-	#elif defined(GLES1)
-		mRenderContext = new GLES1RenderContext;
-	#elif defined(GLES2)
-		mRenderContext = new GLES2RenderContext;
-	#endif
-
 	if ((0 == mWindow)
 	|| (0 == mRenderContext)) {
 		shutdown();
 		return false;
-	}
-
-	switch (mRenderType) {
-		case SHADER_BASED_RENDERING:
-			#if defined(GLX)
-				reinterpret_cast<GLXRenderContext*>(mRenderContext)->useShaderBasedContext(true);
-			#endif
-			break;
-		case FIXED_FUNCTION_RENDERING:
-			#if defined(GLX)
-				reinterpret_cast<GLXRenderContext*>(mRenderContext)->useShaderBasedContext(false);
-			#endif
-			break;
 	}
 
 	mRenderContext->bindToWindow(mWindow);
@@ -94,6 +73,7 @@ void GraphicsSystem::endFrame()
 void GraphicsSystem::shutdown()
 {
 	if (0 != mRenderContext) {
+		//! TODO: Oh dear! we haven't cleared the context.. this is probably going to leak now...
 		delete mRenderContext;
 		mRenderContext = 0;
 	}
@@ -113,30 +93,3 @@ void GraphicsSystem::disableAlphaBlending()
 {
 	mRenderContext->disableAlphaBlending();
 }
-
-ShaderBasedContext* GraphicsSystem::getShaderContext() const
-{
-	if (SHADER_BASED_RENDERING == mRenderType) {
-		#if defined(GLX)
-			return reinterpret_cast<GLXRenderContext*>(mRenderContext);
-		#elif defined(GLES2)
-			return reinterpret_cast<GLES2RenderContext*>(mRenderContext);
-		#endif
-	}
-	else
-		return 0;
-}
-
-FixedFunctionContext* GraphicsSystem::getFixedContext() const
-{
-	if (FIXED_FUNCTION_RENDERING == mRenderType) {
-		#if defined(GLX)
-			return reinterpret_cast<GLXRenderContext*>(mRenderContext);
-		#elif defined(GLES1)
-			return reinterpret_cast<GLES1RenderContext*>(mRenderContext);
-		#endif
-	}
-	else
-		return 0;
-}
-

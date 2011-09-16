@@ -15,41 +15,38 @@
 
 using namespace GLESGAE;
 
-VertexBuffer::VertexBuffer(unsigned char* const data, const unsigned int size, const std::vector<Format>& format)
-: mData(new unsigned char[size])
-, mSize(size)
+VertexBuffer::VertexBuffer(unsigned char* const data, const unsigned int size, const Format format[], const BufferType bufferType)
+: mSize(size)
+, mData(new unsigned char[size])
 , mStride(0U)
-, mVboId(0U)
-, mFormat(format)
-{
-	std::memcpy(mData, data, size);
-
-	for (std::vector<Format>::const_iterator itr(mFormat.begin()); itr < mFormat.end(); ++itr)
-		mStride += itr->getSize();
-		
-	glGenBuffers(1U, &mVboId);
-	glBindBuffer(GL_ARRAY_BUFFER, mVboId);
-	glBufferData(GL_ARRAY_BUFFER, mSize, mData, GL_STATIC_DRAW);
-}
-
-VertexBuffer::VertexBuffer(unsigned char* const data, const unsigned int size)
-: mData(new unsigned char[size])
-, mSize(size)
-, mStride(0U)
-, mVboId(0U)
+, mType(bufferType)
+, mVboId(GL_INVALID_VALUE)
 , mFormat()
 {
 	std::memcpy(mData, data, size);
-	
-	glGenBuffers(1U, &mVboId);
-	glBindBuffer(GL_ARRAY_BUFFER, mVboId);
-	glBufferData(GL_ARRAY_BUFFER, mSize, mData, GL_STATIC_DRAW);
+
+	for (unsigned int index(0U); index < FORMAT_SIZE; ++index) {
+		mStride += format[index].getSize();
+		mFormat[index] = format[index];
+	}
+}
+
+VertexBuffer::VertexBuffer(unsigned char* const data, const unsigned int size, const BufferType bufferType)
+: mSize(size)
+, mData(new unsigned char[size])
+, mStride(0U)
+, mType(bufferType)
+, mVboId(GL_INVALID_VALUE)
+, mFormat()
+{
+	std::memcpy(mData, data, size);
 }
 
 VertexBuffer::VertexBuffer(const VertexBuffer& vertexBuffer)
-: mData(vertexBuffer.mData)
-, mSize(vertexBuffer.mSize)
+: mSize(vertexBuffer.mSize)
+, mData(vertexBuffer.mData)
 , mStride(vertexBuffer.mStride)
+, mType(vertexBuffer.mType)
 , mVboId(vertexBuffer.mVboId)
 , mFormat(vertexBuffer.mFormat)
 {
@@ -57,8 +54,15 @@ VertexBuffer::VertexBuffer(const VertexBuffer& vertexBuffer)
 
 void VertexBuffer::addFormatIdentifier(const FormatType formatType, const unsigned int amount)
 {
-	Format newFormat(formatType, mStride);
-	mStride += newFormat.getSize() * amount;
-	mFormat.push_back(newFormat);
+	for (unsigned int index(0U); index < FORMAT_SIZE; ++index) {
+		if (INVALID_FORMAT == mFormat[index].getType()) {
+			Format newFormat(formatType, mStride);
+			mStride += newFormat.getSize() * amount;
+			mFormat[index] = newFormat;
+			return;
+		}
+	}
+	
+	//! TODO: OOPS! No more space left! Assert! Break! ACHTUNG!
 }
 

@@ -54,12 +54,15 @@ namespace GLESGAE
 
 			/// Grab a Window Pointer
 			RenderWindow* getWindow() const { return mWindow; }
+			
+			/// Create a Render Context - must be called before initialise
+			template <typename T_RenderContext> void createRenderContext();
 
-			/// Grab a Shader Context Pointer
-			ShaderBasedContext* getShaderContext() const;
-
-			/// Grab a Fixed Function Context Pointer
-			FixedFunctionContext* getFixedContext() const;
+			/// Grab Render Context
+			template <typename T_RenderContext> T_RenderContext* getRenderContext();
+			
+			/// Clear Render Context
+			template <typename T_RenderContext> void clearRenderContext();
 			
 		private:
 			// No copying
@@ -70,6 +73,24 @@ namespace GLESGAE
 			RenderContext* mRenderContext;
 			RenderWindow* mWindow;
 	};
+	
+	template <typename T_RenderContext> void GraphicsSystem::createRenderContext()
+	{
+		mRenderContext = new T_RenderContext;
+	}
+	
+	template <typename T_RenderContext> T_RenderContext* GraphicsSystem::getRenderContext()
+	{
+		return reinterpret_cast<T_RenderContext*>(mRenderContext);
+	}
+	
+	template <typename T_RenderContext> void GraphicsSystem::clearRenderContext()
+	{
+		if (0 != mRenderContext) {
+			delete reinterpret_cast<T_RenderContext*>(mRenderContext);
+			mRenderContext = 0;
+		}
+	}
 }
 
 #endif

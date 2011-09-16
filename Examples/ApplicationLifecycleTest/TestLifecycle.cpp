@@ -3,6 +3,13 @@
 #include "../../Platform/Application.h"
 
 #include "../../Graphics/GraphicsSystem.h"
+#if defined(GLX)
+	#include "../../Graphics/Context/GLXRenderContext.h"
+#elif defined(GLES1)
+	#include "../../Graphics/Context/GLES1RenderContext.h"
+#elif defined(GLES2)
+	#include "../../Graphics/Context/GLES2RenderContext.h"
+#endif
 #include "../../Graphics/Context/FixedFunctionContext.h"
 #include "../../Graphics/Context/ShaderBasedContext.h"
 #include "../../Events/EventSystem.h"
@@ -119,12 +126,20 @@ void TestLifecycle::onCreate()
 	GraphicsSystem* graphicsSystem(application->getGraphicsSystem());
 	EventSystem* eventSystem(application->getEventSystem());
 	
+#if defined(GLES1)
+		graphicsSystem->createRenderContext<GLES1RenderContext>();
+#elif defined(GLES2)
+		graphicsSystem->createRenderContext<GLES2RenderContext>();
+#elif defined(GLX)
+		graphicsSystem->createRenderContext<GLXRenderContext>();
+#endif
+	
 	if (false == graphicsSystem->initialise("GLESGAE Application Lifecycle Test", 800, 480, 16, false)) {
 		//TODO: OH NOES! WE'VE DIEDED!
 	}
 
 	#if defined(GLES1)
-		FixedFunctionContext* const fixedContext(graphicsSystem->getFixedContext());
+		FixedFunctionContext* const fixedContext(graphicsSystem->getRenderContext<GLES1RenderContext>());
 		if (0 != fixedContext) {
 			fixedContext->enableFixedFunctionVertexPositions();
 		}
@@ -143,7 +158,11 @@ void TestLifecycle::onCreate()
 		Resource<ShaderUniformUpdater>& textureUpdater(shaderUpdaterBank.add(LifecycleTest::ShaderUniformUpdaters::TestGroup, LifecycleTest::ShaderUniformUpdater, new Texture0UniformUpdater));
 		LifecycleTest::ShaderUniformUpdaters::TextureUpdater = textureUpdater.getId();
 		
-		ShaderBasedContext* const shaderContext(graphicsSystem->getShaderContext());
+	#if defined(GLX)
+		ShaderBasedContext* const shaderContext(graphicsSystem->getRenderContext<GLXRenderContext>());
+	#elif defined(GLES2)
+		ShaderBasedContext* const shaderContext(graphicsSystem->getRenderContext<GLES2RenderContext>());
+	#endif
 		if (0 != shaderContext) {
 			shaderContext->addUniformUpdater("u_mvp", mvpUpdater);
 			shaderContext->addUniformUpdater("s_texture0", textureUpdater);

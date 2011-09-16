@@ -22,7 +22,7 @@ namespace GLESGAE
 			
 			/// Get an entire Resource group.
 			const std::vector<Resource<T_Resource>*>& getGroup(const Resources::Group groupId) const;
-						
+			
 			/// Remove Group
 			void removeGroup(const Resources::Group groupId);
 			
@@ -34,7 +34,7 @@ namespace GLESGAE
 			
 			/// Get a Resource immediately
 			Resource<T_Resource>& get(const Resources::Group groupId, const Resources::Id resourceId);	
-				
+			
 		private:
 			// Scary stuff... an array ( which we can access via ID - Group Id for example ) holding another array.
 			// Second array holds a pair, this time of the Resource Count and the actual Resource itself - so we can wipe out the resource when the count reaches 0.
@@ -59,7 +59,6 @@ namespace GLESGAE
 	{
 		// TODO: Scream if that groupId isn't valid, or doesn't exist...
 		if (Resources::INVALID == groupId) {
-			printf("invalid group in resource bank\n");
 			assert(0);
 			return;
 		}

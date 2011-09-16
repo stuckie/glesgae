@@ -8,10 +8,20 @@ namespace GLESGAE
 	class VertexBuffer
 	{
 		public:
+			const static unsigned int FORMAT_SIZE = 8U;
+			
+			enum BufferType
+			{
+				FORMAT_STATIC
+			,	FORMAT_DYNAMIC
+			,	FORMAT_STREAM
+			};
+			
 			enum FormatType
 			{
+				INVALID_FORMAT
 				// Float
-				FORMAT_CUSTOM_4F
+			,	FORMAT_CUSTOM_4F
 			,	FORMAT_CUSTOM_3F
 			,	FORMAT_CUSTOM_2F
 			,	FORMAT_POSITION_2F
@@ -54,9 +64,10 @@ namespace GLESGAE
 			class Format
 			{
 				public:
+					Format() : mType(INVALID_FORMAT), mSize(0U), mOffset(0U) {}
 					Format(const FormatType type, unsigned int offset)
 					: mType(type)
-					, mSize(0)
+					, mSize(0U)
 					, mOffset(offset)
 					{
 						switch (mType)
@@ -134,12 +145,12 @@ namespace GLESGAE
 					unsigned int mOffset;
 			};
 
-			VertexBuffer(unsigned char* const data, const unsigned int size, const std::vector<Format>& format);
-			VertexBuffer(unsigned char* const data, const unsigned int size);
+			VertexBuffer(unsigned char* const data, const unsigned int size, const Format format[], const BufferType bufferType = FORMAT_STATIC);
+			VertexBuffer(unsigned char* const data, const unsigned int size, const BufferType bufferType = FORMAT_STATIC);
 			VertexBuffer(const VertexBuffer& vertexBuffer);
 
 			/// Retrieve format details
-			const std::vector<Format>& getFormat() const { return mFormat; }
+			const Format* getFormat() const { return mFormat; }
 
 			/// Retrieve data
 			unsigned char* getData() const { return mData; }
@@ -150,8 +161,14 @@ namespace GLESGAE
 			/// Retrieve stride
 			unsigned int getStride() const { return mStride; }
 			
+			/// Retrieve the Buffer Type
+			BufferType getType() const { return mType; }
+			
 			/// Retrieve the Vbo Id
 			unsigned int getVboId() const { return mVboId; }
+			
+			/// Set the Vbo Id
+			void setVboId(const unsigned int vboId) { mVboId = vboId; }
 
 			/// Add a Format Identifier
 			void addFormatIdentifier(const FormatType formatType, const unsigned int amount);
@@ -160,11 +177,12 @@ namespace GLESGAE
 			// No Equals Operator
 			VertexBuffer& operator=(const VertexBuffer&);
 			
-			unsigned char* mData;
 			unsigned int mSize;
+			unsigned char* mData;
 			unsigned int mStride;
+			BufferType mType;
 			unsigned int mVboId;			// using unsigned int rather than GLuint to keep GL dependency away from the header.
-			std::vector<Format> mFormat;
+			Format mFormat[FORMAT_SIZE];
 	};
 }
 

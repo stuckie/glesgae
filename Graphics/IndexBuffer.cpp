@@ -16,8 +16,8 @@
 using namespace GLESGAE;
 
 IndexBuffer::IndexBuffer(unsigned char* const data, const unsigned int size, const FormatType format)
-: mData(new unsigned char[size])
-, mSize(size)
+: mSize(size)
+, mData(new unsigned char[size])
 , mVboId(0U)
 , mFormat(format)
 {
@@ -29,8 +29,8 @@ IndexBuffer::IndexBuffer(unsigned char* const data, const unsigned int size, con
 }
 
 IndexBuffer::IndexBuffer(const IndexBuffer& indexBuffer)
-: mData(indexBuffer.mData)
-, mSize(indexBuffer.mSize)
+: mSize(indexBuffer.mSize)
+, mData(indexBuffer.mData)
 , mVboId(indexBuffer.mVboId)
 , mFormat(indexBuffer.mFormat)
 {

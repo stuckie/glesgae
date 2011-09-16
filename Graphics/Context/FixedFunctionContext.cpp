@@ -43,8 +43,9 @@ void FixedFunctionContext::drawMeshFixedFunction(const Resource<Mesh>& mesh, con
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer->getVboId());
 	}
 	
-	const std::vector<VertexBuffer::Format>& meshFormat(vertexBuffer->getFormat());
-	for (std::vector<VertexBuffer::Format>::const_iterator itr(meshFormat.begin()); itr < meshFormat.end(); ++itr) {
+	const VertexBuffer::Format* meshFormat(vertexBuffer->getFormat());
+	for (unsigned int index(0U); index < VertexBuffer::FORMAT_SIZE; ++index) {
+		const VertexBuffer::Format* itr(&meshFormat[index]);
 		switch (itr->getType()) {
 			// Position
 			case VertexBuffer::FORMAT_POSITION_2F:
