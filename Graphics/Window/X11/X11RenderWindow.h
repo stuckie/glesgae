@@ -1,24 +1,20 @@
 #ifndef _X11_RENDER_WINDOW_H_
 #define _X11_RENDER_WINDOW_H_
 
-#include "RenderWindow.h"
+#include "../RenderWindow.h"
 #include <X11/Xlib.h>
 
 namespace GLESGAE
 {
-
 	class X11RenderWindow : public RenderWindow
 	{
 		public:
-			X11RenderWindow();
+			X11RenderWindow(const char* windowName, const unsigned int width, const unsigned int height, const unsigned int bpp, const bool fullscreen);
 			~X11RenderWindow();
 
-			/// Open this window with the given name, width and height
-			void open(const char* windowName, const unsigned int width, const unsigned int height);
-
-			/// Set this Window's Render Context
-			void setContext(RenderContext* const context);
-
+			/// Open the Window
+			void open();
+			
 			/// Refresh the Window
 			void refresh();
 

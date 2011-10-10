@@ -6,17 +6,31 @@ namespace GLESGAE
 	class IndexBuffer
 	{
 		public:
+			enum IndexType {
+				INDEX_FLOAT				// unsupported by ES 1
+			,	INDEX_UNSIGNED_BYTE
+			,	INDEX_UNSIGNED_SHORT
+			,	INDEX_UNSIGNED_INT		// unsupported by unextended ES variants.
+			};
+			
 			enum FormatType {
-				FORMAT_FLOAT			// unsupported by ES 1
-			,	FORMAT_UNSIGNED_BYTE
-			,	FORMAT_UNSIGNED_SHORT
+				FORMAT_POINTS
+			,	FORMAT_LINES
+			,	FORMAT_LINE_STRIP
+			,	FORMAT_LINE_LOOP
+			,	FORMAT_TRIANGLES
+			,	FORMAT_TRAINGLE_STRIP
+			,	FORMAT_TRIANGLE_FAN
 			};
 
-			IndexBuffer(unsigned char* const data, const unsigned int size, const FormatType format);
+			IndexBuffer(unsigned char* const data, const unsigned int size, const IndexType type, const FormatType format);
 			IndexBuffer(const IndexBuffer& indexBuffer);
 
 			/// Retrieve format details
 			FormatType getFormat() const { return mFormat; }
+			
+			/// Retrieve Index details
+			IndexType getType() const { return mType; }
 
 			/// Retrieve data
 			unsigned char* getData() const { return mData; }
@@ -26,6 +40,9 @@ namespace GLESGAE
 			
 			/// Retrieve the Vbo Id
 			unsigned int getVboId() const { return mVboId; }
+			
+			/// Set the Vbo Id
+			void setVboId(const unsigned int vboId) { mVboId = vboId; }
 
 		private:
 			/// No equals operator, use copy constructor instead
@@ -35,6 +52,7 @@ namespace GLESGAE
 			unsigned char* mData;
 			unsigned int mVboId;
 			FormatType mFormat;
+			IndexType mType;
 	};
 }
 

@@ -1,6 +1,6 @@
 #if defined(LINUX)
 
-#include "../../Graphics/Window/X11RenderWindow.h"
+#include "../../Graphics/Window/X11/X11RenderWindow.h"
 #include "../EventSystem.h"
 #include "../EventTypes.h"
 #include "../SystemEvents.h"
@@ -13,7 +13,7 @@ using namespace GLESGAE;
 EventSystem::EventSystem()
 : CommonEventSystem()
 , mActive(true)
-, mWindow(0)
+, mWindow()
 {
 	// Register System Events
 	registerEventType(SystemEvents::App::Started);
@@ -39,9 +39,9 @@ EventSystem::~EventSystem()
 
 }
 
-void EventSystem::bindToWindow(RenderWindow* const window)
+void EventSystem::bindToWindow(const Resource<RenderWindow>& window)
 {
-	mWindow = reinterpret_cast<X11RenderWindow*>(window);
+	mWindow = window.recast<X11RenderWindow>();
 }
 
 

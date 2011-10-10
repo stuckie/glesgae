@@ -2,7 +2,7 @@
 
 #include <cstring> // for memcpy
 #if defined(GLX)
-	#include "GLee.h"
+	#include "Context/Linux/GLee.h"
 #elif defined(GLES1)
 	#if defined(PANDORA)
 		#include <GLES/gl.h>
@@ -50,6 +50,16 @@ VertexBuffer::VertexBuffer(const VertexBuffer& vertexBuffer)
 , mVboId(vertexBuffer.mVboId)
 , mFormat(vertexBuffer.mFormat)
 {
+}
+
+VertexBuffer::~VertexBuffer()
+{
+	if (mVboId != GL_INVALID_VALUE) {
+		glDeleteBuffers(1, &mVboId);
+		mVboId = GL_INVALID_VALUE;
+	}
+	
+	delete [] mData;
 }
 
 void VertexBuffer::addFormatIdentifier(const FormatType formatType, const unsigned int amount)

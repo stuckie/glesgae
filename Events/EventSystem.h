@@ -7,6 +7,7 @@
 
 #include <map>
 #include <vector>
+#include "../Resources/Resource.h"
 
 namespace GLESGAE
 {
@@ -30,7 +31,7 @@ namespace GLESGAE
 			virtual void update() = 0;
 
 			/// Bind to specified Window.
-			virtual void bindToWindow(RenderWindow* const window) = 0;
+			virtual void bindToWindow(const Resource<RenderWindow>& window) = 0;
 
 			/// Register an Event Type.
 			void registerEventType(const EventType& eventType);

@@ -2,7 +2,7 @@
 
 #include <cstring> // for memcpy
 #if defined(GLX)
-	#include "GLee.h"
+	#include "Context/Linux/GLee.h"
 #elif defined(GLES1)
 	#if defined(PANDORA)
 		#include <GLES/gl.h>
@@ -15,11 +15,12 @@
 
 using namespace GLESGAE;
 
-IndexBuffer::IndexBuffer(unsigned char* const data, const unsigned int size, const FormatType format)
+IndexBuffer::IndexBuffer(unsigned char* const data, const unsigned int size, const IndexType type, const FormatType format)
 : mSize(size)
 , mData(new unsigned char[size])
 , mVboId(0U)
 , mFormat(format)
+, mType(type)
 {
 	std::memcpy(mData, data, size);
 	
@@ -33,5 +34,6 @@ IndexBuffer::IndexBuffer(const IndexBuffer& indexBuffer)
 , mData(indexBuffer.mData)
 , mVboId(indexBuffer.mVboId)
 , mFormat(indexBuffer.mFormat)
+, mType(indexBuffer.mType)
 {
 }

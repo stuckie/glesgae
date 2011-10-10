@@ -33,16 +33,18 @@ namespace GLESGAE
 
 // Include the platform specific lifecycle which will act as Lifecycle.
 
-#if defined(LINUX)
-	#include "LinuxLifecycle.h"
+#if defined(PANDORA)
+	#include "Pandora/PandoraLifecycle.h"
+#elif defined(LINUX)
+	#include "Linux/LinuxLifecycle.h"
 #elif defined(WIN32)
-	#include "Win32Lifecycle.h"
+	#include "Win32/Win32Lifecycle.h"
 #elif defined(DARWIN)
-	#include "DarwinLifecycle.h"
+	#include "Darwin/DarwinLifecycle.h"
 #elif defined(IOS)
-	#include "iOSLifecycle.h"
+	#include "iOS/iOSLifecycle.h"
 #elif defined(ANDROID)
-	#include "AndroidLifecycle.h"
+	#include "Android/AndroidLifecycle.h"
 #endif
 
 #endif

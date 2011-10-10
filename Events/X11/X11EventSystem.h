@@ -1,9 +1,10 @@
 #ifndef _X11_EVENT_SYSTEM_H_
 #define _X11_EVENT_SYSTEM_H_
 
+#include "../../Resources/Resource.h"
+
 namespace GLESGAE
 {
-	class RenderWindow;
 	class X11RenderWindow;
 	class EventSystem : public CommonEventSystem
 	{
@@ -15,7 +16,7 @@ namespace GLESGAE
 			void update();
 
 			/// Bind to the Window
-			void bindToWindow(RenderWindow* const window);
+			void bindToWindow(const Resource<RenderWindow>& window);
 
 		private:
 			// No Copying
@@ -23,7 +24,7 @@ namespace GLESGAE
 			EventSystem& operator=(const EventSystem&);
 			
 			bool mActive;
-			X11RenderWindow* mWindow;
+			Resource<X11RenderWindow> mWindow;
 	};
 }
 

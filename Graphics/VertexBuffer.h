@@ -1,8 +1,6 @@
 #ifndef _VERTEX_BUFFER_H_
 #define _VERTEX_BUFFER_H_
 
-#include <vector>
-
 namespace GLESGAE
 {
 	class VertexBuffer
@@ -148,6 +146,7 @@ namespace GLESGAE
 			VertexBuffer(unsigned char* const data, const unsigned int size, const Format format[], const BufferType bufferType = FORMAT_STATIC);
 			VertexBuffer(unsigned char* const data, const unsigned int size, const BufferType bufferType = FORMAT_STATIC);
 			VertexBuffer(const VertexBuffer& vertexBuffer);
+			~VertexBuffer();
 
 			/// Retrieve format details
 			const Format* getFormat() const { return mFormat; }

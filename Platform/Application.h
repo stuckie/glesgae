@@ -10,7 +10,7 @@ namespace GLESGAE
 	class ResourceManager;
 	class Lifecycle;
 	class StateStack;
-	class Clock;	
+	class Clock;
 	class Application
 	{
 		public:
@@ -24,7 +24,7 @@ namespace GLESGAE
 			
 			// Lifecycle Bits
 			/// onCreate - Called by the platform as soon as the application is started - IE: To setup Platform specifics.
-			void onCreate(const GraphicsSystem::RenderType renderType);
+			void onCreate();
 			
 			/// onStart - Called by the platform once it's initialized - IE: Platform specifics have been setup.
 			void onStart();

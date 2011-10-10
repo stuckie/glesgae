@@ -1,0 +1,12 @@
+This code project (GLESGAE) is dual-licensed under the GNU Lesser General Public License (LGPL) version 2.1 and a Commercial License available on request.
+
+To comply with this license, you must give prominent notice that you use GLESGAE, and that it is included under the terms of the LGPL license.
+You must provide a copy of the LGPL license. 
+
+You can either link via a shared object ( e.g. GLESGAE.dll ) or you can statically link.
+If you statically link, you must either provide the object or source code to your application along with any libraries and custom tools not available with a standard platform development kit that use this code, or simply provide a written offer, valid for three years, to provide these materials upon request to anyone with a legal copy of your application.
+If you link via shared object, just note which version (SVN Revision or Binary Release Version) you have used.
+
+If you have modified GLESGAE for your own means, you must also make available the source code to the version you provide, and generally some code directly back to me would be nice, so I don't need to hunt for it!
+
+A Commercial License may be available on request which completely waives all LGPL 2.1 requirements on this code project, such as allowing static linking without disclosure of source code.

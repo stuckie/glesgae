@@ -2,10 +2,14 @@
 #define _TEST_LIFECYCLE_H_
 
 #include "../../Platform/Lifecycle.h"
+#include "../../Resources/Resource.h"
+#include "../../Graphics/Target/RenderTarget.h"
 
 class TestLifecycle : public GLESGAE::Lifecycle
 {
 	public:
+		TestLifecycle() : GLESGAE::Lifecycle(), mScreenTarget() {}
+		
 		/// Called directly after the system has started
 		void onCreate();
 		
@@ -26,6 +30,9 @@ class TestLifecycle : public GLESGAE::Lifecycle
 		
 		/// Called when the platform wants us to close
 		void onDestroy();
+		
+	private:
+		GLESGAE::Resource<GLESGAE::RenderTarget> mScreenTarget;
 };
 
 #endif

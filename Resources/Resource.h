@@ -10,22 +10,53 @@ namespace GLESGAE
 	{
 		// Resource Bank is a friend to access purge.
 		friend class ResourceBank<T_Resource>;
+		// It's a friend to itself to deal with the recast functionality.
+		template <typename T_ResourceCast> friend class Resource;
 		public:
-			/// Dummy Constructor for creation of empty Resources
+			/// Dummy Constructor for creation of empty Resources.
 			Resource() : BaseResource(Resources::INVALID, Resources::INVALID, Resources::INVALID), mResource(0) {}
 			~Resource() { remove(); }
-		
-			/// Operator overload to return the actual resource.
+			
+			/// Constructor for taking ownership over raw pointers.
+			Resource(T_Resource* const resource) : BaseResource(Resources::INVALID, Resources::INVALID, Resources::INVALID), mResource(resource) { instance(); }
+			
+			/// Pointer Operator overload to return the actual resource.
 			T_Resource* operator-> () { return mResource; }
 			
-			/// Const Operator overload.
+			/// Const Pointer Operator overload.
 			T_Resource* operator-> () const { return mResource; }
 			
-			/// Operator overload to return the actual resource.
+			/// Dereference Operator overload to return the actual resource.
 			T_Resource& operator* () { return *mResource; }
 			
-			/// Const operator overload.
+			/// Const Dereference operator overload.
 			const T_Resource& operator* () const { return *mResource; }
+			
+			/// Recast Copy into a another Resource.
+			template <typename T_ResourceCast> Resource<T_ResourceCast> recast()
+			{
+				Resource<T_ResourceCast> newResource;
+				newResource.mGroup = mGroup;
+				newResource.mType = mType;
+				newResource.mId = mId;
+				newResource.mCount = mCount;
+				newResource.mResource = reinterpret_cast<T_ResourceCast*>(mResource);
+				instance();
+				return newResource;
+			}
+			
+			/// Recast Copy into a another Resource.
+			template <typename T_ResourceCast> const Resource<T_ResourceCast> recast() const
+			{
+				Resource<T_ResourceCast> newResource;
+				newResource.mGroup = mGroup;
+				newResource.mType = mType;
+				newResource.mId = mId;
+				newResource.mCount = mCount;
+				newResource.mResource = reinterpret_cast<T_ResourceCast*>(mResource);
+				instance();
+				return newResource;
+			}
 			
 			/// Overloaded Copy Constructor, so we keep track of how many instances we have.
 			Resource(const Resource& resource)
@@ -39,8 +70,6 @@ namespace GLESGAE
 			Resource& operator=(const Resource& resource)
 			{
 				if (this != &resource) { // if someone's being daft and assigning ourselves, do nothing else we're likely to commit suicide.
-					remove();
-					
 					BaseResource::operator=(resource);
 					mResource = resource.mResource;
 					
@@ -50,39 +79,39 @@ namespace GLESGAE
 				return *this;
 			}
 			
-			/// Overloaded Equals Operator for pointer checking
+			/// Overloaded Equals Operator for pointer checking.
 			bool operator==(const Resource& resource)
 			{
 				return (mResource == resource.mResource);
 			}
 			
-			/// Overloaded Equals Operator for 0 pointer checking
+			/// Overloaded Equals Operator for 0 pointer checking.
 			bool operator==(const void* rhs)
 			{
 				return (reinterpret_cast<void*>(mResource) == rhs);
 			}
 			
-			/// Overloaded Not Equals Operator for pointer checking
+			/// Overloaded Not Equals Operator for pointer checking.
 			bool operator!=(const Resource& resource)
 			{
 				return !(*this == resource);
 			}
 			
-			/// Overloaded Not Equals Operator for 0 pointer checking
+			/// Overloaded Not Equals Operator for 0 pointer checking.
 			bool operator!=(const void* rhs)
 			{
 				return !(*this == rhs);
 			}
 			
 		protected:
-			/// Protected Constructor so we can't create Resources all over the place.
+			/// Protected Constructor so we can't create Managed Resources all over the place.
 			Resource(const Resources::Group group, const Resources::Type type, const Resources::Id id, T_Resource* const resource)
 			: BaseResource(group, type, id)
 			, mResource(resource)
 			{
 			}
 			
-			/// Delete the resource - protected and should only be called from ResourceBank through BaseResource.
+			/// Delete the actual resource.
 			void purge() 
 			{
 				if (0 != mResource) {
@@ -91,17 +120,19 @@ namespace GLESGAE
 				}
 			}
 			
-			void instance()
+			/// Increase the instance count of this Resource.
+			void instance() const
 			{
-				++mCount;
+				++(*mCount);
 			}
 
+			/// Remove an instance count of this Resource, and if there are no more instances, purge it.
 			void remove()
 			{
-				if (mCount > 0U)
-					--mCount;
+				if ((*mCount) > 0U)
+					--(*mCount);
 	
-				if (mCount == 0U)
+				if ((*mCount) == 0U)
 					purge();
 			}
 			

@@ -1,15 +1,16 @@
-#ifndef _FIXED_FUNCTION_CONTEXT_H_
-#define _FIXED_FUNCTION_CONTEXT_H_
+#ifndef _FIXED_FUNCTION_GL_VBO_RENDERER_H_
+#define _FIXED_FUNCTION_GL_VBO_RENDERER_H_
 
 #if defined(GLX)
-	#include "../GLee.h"
+	#include "../../Context/Linux/GLee.h"
 #elif defined(GLES1)
 	#if defined(PANDORA)
 		#include <GLES/gl.h>
 	#endif
 #endif
 
-#include "../../Resources/Resource.h"
+#include "../Renderer.h"
+#include "../../../Resources/Resource.h"
 
 namespace GLESGAE
 {
@@ -20,7 +21,7 @@ namespace GLESGAE
 	class VertexBuffer;
 	class IndexBuffer;
 	class Texture;
-	class FixedFunctionContext
+	class FixedFunctionGlVboRenderer : public Renderer
 	{
 		/**
 			The quickest way for a Fixed Function pipeline to work, is to have all data match up to a
@@ -36,53 +37,22 @@ namespace GLESGAE
 		**/
 
 		public:
-			FixedFunctionContext();
-			virtual ~FixedFunctionContext();
-
-			/// Enable Vertex Positions
-			void enableFixedFunctionVertexPositions();
-
-			/// Disable Vertex Positions
-			void disableFixedFunctionVertexPositions();
-
-			/// Enable Vertex Colours
-			void enableFixedFunctionVertexColours();
-
-			/// Disable Vertex Colours
-			void disableFixedFunctionVertexColours();
-
-			/// Enable Vertex Normals
-			void enableFixedFunctionVertexNormals();
-
-			/// Disable Vertex Normals
-			void disableFixedFunctionVertexNormals();
+			FixedFunctionGlVboRenderer();
+			~FixedFunctionGlVboRenderer();
 			
-			/// Sets the current drawing camera
-			void setFixedFunctionCamera(const Resource<Camera>& camera);
+			/// Draw a Mesh
+			void drawMesh(const Resource<Mesh>& mesh, const Resource<Matrix4>& transform);
 			
-			/// Sets the current texture matrix
-			void setFixedFunctionTextureMatrix(const Resource<Matrix4>& matrix);
-
 		protected:
-			/// Draw a Mesh using the Fixed Function Pipeline
-			void drawMeshFixedFunction(const Resource<Mesh>& mesh, const Resource<Matrix4>& transform);
-
 			/// Setup texturing - check if the requested texture unit is on and bind a texture from the material.
-			void setupFixedFunctionTexturing(unsigned int* textureUnit, const Resource<Material>& material);
-
+			void setupTexturing(unsigned int* textureUnit, const Resource<Material>& material);
+			
 			/// Disable Texture Units
-			void disableFixedFunctionTexturing(const unsigned int currentTextureUnit);
+			void disableTexturing(const unsigned int currentTextureUnit);
 			
-			/// Enable Alpha Blending
-			void enableFixedFunctionBlending();
-			
-			/// Disable Alpha Blending
-			void disableFixedFunctionBlending();
-
 		private:
 			bool mFixedFunctionTexUnits[8]; 			// 8 Texture Units sounds like they'd be enough to me!
 			unsigned int mFixedFunctionLastTexUnit;		// Last Texture Unit we were working on, in case it's the same.
-			Resource<Camera> mCamera;
 			Resource<VertexBuffer> mLastVertexBuffer;
 			Resource<IndexBuffer> mLastIndexBuffer;
 			Resource<Texture> mLastTexture;

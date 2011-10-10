@@ -58,11 +58,11 @@ namespace GLESGAE
 			Resources::Id getId() const { return mId; }
 			
 			/// Get the Instance Count of this Resource
-			Resources::Count getCount() const { return mCount; }
+			Resources::Count getCount() const { return *mCount; }
 						
 		protected:		
 			/// Set the count
-			void setCount(const Resources::Count& count) { mCount = count; }
+			void setCount(const Resources::Count& count) { *mCount = count; }
 		
 			/// Private constructor as this is a derived class only
 			BaseResource(const Resources::Group group, const Resources::Type type, const Resources::Id id);
@@ -84,7 +84,7 @@ namespace GLESGAE
 			Resources::Group mGroup;
 			Resources::Type mType;
 			Resources::Id mId;
-			Resources::Count mCount;
+			mutable Resources::Count* mCount;
 	};
 
 }

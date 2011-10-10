@@ -5,7 +5,7 @@
 #include <vector>
 
 #if defined(GLX)
-	#include "GLee.h"
+	#include "Context/Linux/GLee.h"
 #elif defined(GLES1)
 	#if defined(PANDORA)
 		#include <GLES/gl.h>

@@ -1,16 +1,6 @@
 #ifndef _TEXTURE_H_
 #define _TEXTURE_H_
 
-#if defined(GLX)
-	#include "GLee.h"
-#elif defined(PANDORA)
-	#if defined(GLES1)
-		#include <GLES/gl.h>
-	#elif defined(GLES2)
-		#include <GLES2/gl2.h>
-	#endif
-#endif
-
 #include <string>
 
 namespace GLESGAE
@@ -30,7 +20,7 @@ namespace GLESGAE
 			void loadBMP(const std::string& fileName);
 
 			/// Retrieve this Texture's GL id
-			GLuint getId() const { return mId; }
+			unsigned int getId() const { return mId; }
 			
 			/// Get Width
 			unsigned int getWidth() const { return mWidth; }
@@ -47,7 +37,7 @@ namespace GLESGAE
 			Texture(const Texture&);
 			Texture& operator=(const Texture&);
 			
-			GLuint mId;
+			unsigned int mId;
 			unsigned char* mData;
 			unsigned int mWidth;
 			unsigned int mHeight;

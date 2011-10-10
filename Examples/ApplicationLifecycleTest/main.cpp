@@ -8,14 +8,7 @@ int main(void)
 	Application* application(Application::getInstance());
 	application->setLifecycle(new TestLifecycle);
 	
-	#if defined(GLES1)
-		application->onCreate(GraphicsSystem::FIXED_FUNCTION_RENDERING);
-	#elif defined(GLES2)
-		application->onCreate(GraphicsSystem::SHADER_BASED_RENDERING);
-	#elif defined(GLX)
-		application->onCreate(GraphicsSystem::SHADER_BASED_RENDERING);
-	#endif
-	
+	application->onCreate();	
 	application->onStart();
 	application->onResume();
 	

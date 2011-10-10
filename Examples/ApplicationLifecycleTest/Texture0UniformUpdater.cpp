@@ -1,7 +1,7 @@
 #include "Texture0UniformUpdater.h"
 
 #if defined(GLX)
-	#include "../../Graphics/GLee.h"
+	#include "../../Graphics/Context/Linux/GLee.h"
 #elif defined(GLES2)
 	#if defined(PANDORA)
 		#include <GLES2/gl2.h>

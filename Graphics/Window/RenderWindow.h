@@ -3,56 +3,53 @@
 
 namespace GLESGAE
 {
-
-	class RenderContext;
 	class RenderWindow
 	{
 		public:
-			RenderWindow()
-			: mContext(0)
-			, mWidth(0U)
-			, mHeight(0U)
+			RenderWindow(const char* name, const unsigned int width, const unsigned int height, const unsigned int bpp, const bool fullscreen)
+			: mName(name)
+			, mWidth(width)
+			, mHeight(height)
+			, mBPP(bpp)
+			, mFullscreen(fullscreen)
 			{
-
 			}
 
 			virtual ~RenderWindow() {}
-
-			/// Open this window with the given name, width and height
-			virtual void open(const char* windowName, const unsigned int width, const unsigned int height) = 0;
-
-			/// Set this Window's Render Context
-			virtual void setContext(RenderContext* const context) = 0;
-
-			/// Get this Window's Render Context - returning the specified type
-			template<typename T_Context> const T_Context* getContext() const { return reinterpret_cast<T_Context*>(mContext); }
-
-			/// Get this Window's Render Context
-			const RenderContext* getContext() const { return mContext; }
-
-			/// Get the Width of this Window
+			
+			/// Get the Name of this Window.
+			const char* getName() const { return mName; }
+			
+			/// Get the Width of this Window.
 			unsigned int getWidth() const { return mWidth; }
-
-			/// Get the Height of this Window
+			
+			/// Get the Height of this Window.
 			unsigned int getHeight() const { return mHeight; }
-
-			/// Refresh the Window
-			virtual void refresh() = 0;
-
-			/// Close this window
+			
+			/// Get the BPP of this Window.
+			unsigned int getBPP() const { return mBPP; }
+			
+			/// Is Fullscreen.
+			bool isFullscreen() const { return mFullscreen; }
+			
+			/// Open the Window
+			virtual void open() = 0;
+			
+			/// Close the Window
 			virtual void close() = 0;
 
 		protected:
-			RenderContext* mContext;
+			const char* mName;
 			unsigned int mWidth;
 			unsigned int mHeight;
+			unsigned int mBPP;
+			bool mFullscreen;
 			
 		private:
 			// No copying
 			RenderWindow(const RenderWindow&);
 			RenderWindow& operator=(const RenderWindow&);
 	};
-
 }
 
 #endif

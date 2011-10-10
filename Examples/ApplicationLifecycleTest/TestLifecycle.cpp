@@ -3,15 +3,17 @@
 #include "../../Platform/Application.h"
 
 #include "../../Graphics/GraphicsSystem.h"
-#if defined(GLX)
-	#include "../../Graphics/Context/GLXRenderContext.h"
-#elif defined(GLES1)
-	#include "../../Graphics/Context/GLES1RenderContext.h"
-#elif defined(GLES2)
-	#include "../../Graphics/Context/GLES2RenderContext.h"
+
+#if defined(LINUX)
+	#include "../../Graphics/Platform/Linux/LinuxRenderPlatform.h"
+#elif defined(PANDORA)
+	#include "../../Graphics/Platform/Pandora/PandoraRenderPlatform.h"
+#elif defined(ANDROID)
+	#include "../../Graphics/Platform/Android/AndroidRenderContext.h"
+#elif defined(IOS)
+	#include "../../Graphics/Platform/iOS/iOSRenderPlatform.h"
 #endif
-#include "../../Graphics/Context/FixedFunctionContext.h"
-#include "../../Graphics/Context/ShaderBasedContext.h"
+
 #include "../../Events/EventSystem.h"
 #include "../../Input/InputSystem.h"
 #include "../../Input/Keyboard.h"
@@ -31,6 +33,10 @@
 
 #include "MVPUniformUpdater.h"
 #include "Texture0UniformUpdater.h"
+
+#include <cstdio>
+#include "../../Graphics/Renderer/GLES11/FixedFunctionGlVboRenderer.h"
+#include "../../Graphics/State/GLES1/GLES1State.h"
 
 using namespace GLESGAE;
 
@@ -126,50 +132,15 @@ void TestLifecycle::onCreate()
 	GraphicsSystem* graphicsSystem(application->getGraphicsSystem());
 	EventSystem* eventSystem(application->getEventSystem());
 	
-#if defined(GLES1)
-		graphicsSystem->createRenderContext<GLES1RenderContext>();
-#elif defined(GLES2)
-		graphicsSystem->createRenderContext<GLES2RenderContext>();
-#elif defined(GLX)
-		graphicsSystem->createRenderContext<GLXRenderContext>();
-#endif
-	
 	if (false == graphicsSystem->initialise("GLESGAE Application Lifecycle Test", 800, 480, 16, false)) {
 		//TODO: OH NOES! WE'VE DIEDED!
 	}
-
-	#if defined(GLES1)
-		FixedFunctionContext* const fixedContext(graphicsSystem->getRenderContext<GLES1RenderContext>());
-		if (0 != fixedContext) {
-			fixedContext->enableFixedFunctionVertexPositions();
-		}
-	#endif
-
-	#if defined(GLES2) || defined(GLX)
-		ResourceManager* resourceManager(application->getResourceManager());
-		ResourceBank<ShaderUniformUpdater>& shaderUpdaterBank(resourceManager->createBank<ShaderUniformUpdater>(LifecycleTest::ShaderUniformUpdater));
-		LifecycleTest::ShaderUniformUpdaterBank = shaderUpdaterBank.getId();
-		
-		LifecycleTest::ShaderUniformUpdaters::TestGroup = shaderUpdaterBank.newGroup();
-		
-		Resource<ShaderUniformUpdater>& mvpUpdater(shaderUpdaterBank.add(LifecycleTest::ShaderUniformUpdaters::TestGroup, LifecycleTest::ShaderUniformUpdater, new MVPUniformUpdater));
-		LifecycleTest::ShaderUniformUpdaters::MVPUpdater = mvpUpdater.getId();
-		
-		Resource<ShaderUniformUpdater>& textureUpdater(shaderUpdaterBank.add(LifecycleTest::ShaderUniformUpdaters::TestGroup, LifecycleTest::ShaderUniformUpdater, new Texture0UniformUpdater));
-		LifecycleTest::ShaderUniformUpdaters::TextureUpdater = textureUpdater.getId();
-		
-	#if defined(GLX)
-		ShaderBasedContext* const shaderContext(graphicsSystem->getRenderContext<GLXRenderContext>());
-	#elif defined(GLES2)
-		ShaderBasedContext* const shaderContext(graphicsSystem->getRenderContext<GLES2RenderContext>());
-	#endif
-		if (0 != shaderContext) {
-			shaderContext->addUniformUpdater("u_mvp", mvpUpdater);
-			shaderContext->addUniformUpdater("s_texture0", textureUpdater);
-		}
-	#endif
 	
-	eventSystem->bindToWindow(graphicsSystem->getWindow());
+	eventSystem->bindToWindow(graphicsSystem->getCurrentWindow());
+	
+	Resource<RenderContext> currentContext(graphicsSystem->getCurrentContext());
+	mScreenTarget = currentContext->createRenderTarget(RenderTarget::TARGET_SCREEN, RenderTarget::OPTIONS_WITH_COLOUR);
+	currentContext->setRenderer(Resource<Renderer>(new FixedFunctionGlVboRenderer));
 }
 
 void TestLifecycle::onStart()
@@ -205,7 +176,7 @@ void TestLifecycle::onStart()
 	Resource<Matrix4>& newTransform(transformBank.add(LifecycleTest::Transforms::TestGroup, LifecycleTest::Transform, new Matrix4));
 	LifecycleTest::Transforms::SpriteTransform = newTransform.getId();
 	
-	// Create groups for Mesh resources
+	// Create Groups for Mesh resources
 	LifecycleTest::Materials::TestGroup = materialBank.newGroup();
 	LifecycleTest::VertexBuffers::TestGroup = vertexBank.newGroup();
 	LifecycleTest::IndexBuffers::TestGroup = indexBank.newGroup();
@@ -235,6 +206,13 @@ void TestLifecycle::onStart()
 
 	Controller::KeyboardController* myKeyboard(inputSystem->newKeyboard());
 	LifecycleTest::Controllers::Keyboard = myKeyboard->getControllerId();
+	
+	// Setup Fixed Function settings
+	GraphicsSystem* graphicsSystem(application->getGraphicsSystem());
+	Resource<RenderContext> currentContext(graphicsSystem->getCurrentContext());
+	Resource<GLES1State> currentState(currentContext->getRenderState().recast<GLES1State>());
+	currentState->setTexturingEnabled(true);
+	currentState->setVertexPositionsEnabled(true);
 }
 
 void TestLifecycle::onResume()
@@ -247,6 +225,9 @@ bool TestLifecycle::onLoop()
 	EventSystem* eventSystem(application->getEventSystem());
 	InputSystem* inputSystem(application->getInputSystem());
 	GraphicsSystem* graphicsSystem(application->getGraphicsSystem());
+	Resource<RenderContext> currentContext(graphicsSystem->getCurrentContext());
+	Resource<RenderState> currentState(currentContext->getRenderState());
+	
 	ResourceManager* resourceManager(application->getResourceManager());
 	
 	ResourceBank<Camera>& cameraBank(resourceManager->getBank<Camera>(LifecycleTest::CameraBank, LifecycleTest::Camera));
@@ -264,10 +245,12 @@ bool TestLifecycle::onLoop()
 
 	eventSystem->update();
 	inputSystem->update();
-	graphicsSystem->beginFrame();
-	graphicsSystem->setCamera(camera);
-	graphicsSystem->drawMesh(mesh, transform);
-	graphicsSystem->endFrame();
+	
+	mScreenTarget->bind();
+	currentState->setCamera(camera);
+	currentContext->drawMesh(mesh, transform);
+	currentContext->refresh();
+	mScreenTarget->unbind();
 	
 	return !(myKeyboard->getKey(Controller::KEY_ESCAPE));
 }
@@ -290,23 +273,10 @@ void TestLifecycle::onStop()
 	resourceManager->removeBank<IndexBuffer>(LifecycleTest::IndexBufferBank, LifecycleTest::IndexBuffer);
 	resourceManager->removeBank<Matrix4>(LifecycleTest::TransformBank, LifecycleTest::Transform);
 	resourceManager->removeBank<Material>(LifecycleTest::MaterialBank, LifecycleTest::Material);
-	#if defined(GLES2) || defined(GLX)
-		resourceManager->removeBank<ShaderUniformUpdater>(LifecycleTest::ShaderUniformUpdaterBank, LifecycleTest::ShaderUniformUpdater);
-	#endif
 }
 
 void TestLifecycle::onDestroy()
 {
-	Application* application(Application::getInstance());
-	GraphicsSystem* graphicsSystem(application->getGraphicsSystem());
-	
-#if defined(GLES1)
-		graphicsSystem->destroyRenderContext<GLES1RenderContext>();
-#elif defined(GLES2)
-		graphicsSystem->destroyRenderContext<GLES2RenderContext>();
-#elif defined(GLX)
-		graphicsSystem->destroyRenderContext<GLXRenderContext>();
-#endif
 }
 
 Mesh* makeSprite(Resource<Shader>& shader, Resource<Texture>& texture)
@@ -336,7 +306,7 @@ Mesh* makeSprite(Resource<Shader>& shader, Resource<Texture>& texture)
 	newVertexBuffer->addFormatIdentifier(VertexBuffer::FORMAT_POSITION_4F, 4U);
 	newVertexBuffer->addFormatIdentifier(VertexBuffer::FORMAT_TEXTURE_2F, 4U);
 	
-	Resource<IndexBuffer>& newIndexBuffer(indexBank.add(LifecycleTest::IndexBuffers::TestGroup, LifecycleTest::IndexBuffer, new IndexBuffer(reinterpret_cast<unsigned char*>(&indexData), indexSize, IndexBuffer::FORMAT_UNSIGNED_BYTE)));
+	Resource<IndexBuffer>& newIndexBuffer(indexBank.add(LifecycleTest::IndexBuffers::TestGroup, LifecycleTest::IndexBuffer, new IndexBuffer(reinterpret_cast<unsigned char*>(&indexData), indexSize, IndexBuffer::INDEX_UNSIGNED_BYTE, IndexBuffer::FORMAT_TRIANGLES)));
 	
 	Resource<Material>& newMaterial(materialBank.add(LifecycleTest::Materials::TestGroup, LifecycleTest::Material, new Material));
 	newMaterial->setShader(shader);
@@ -366,7 +336,7 @@ void controlCamera(Resource<Camera>& camera, Controller::KeyboardController* con
 }
 
 #if defined(GLX)
-	#include "../../Graphics/GLee.h"
+	#include "../../Graphics/Context/Linux/GLee.h"
 #endif
 
 Shader* makeSpriteShader()

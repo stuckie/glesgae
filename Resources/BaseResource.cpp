@@ -32,8 +32,9 @@ BaseResource::BaseResource(const Resources::Group group, const Resources::Type t
 : mGroup(group)
 , mType(type)
 , mId(id)
-, mCount(0)
+, mCount(new Resources::Count)
 {
+	*mCount = 0;
 }
 
 /// Overloaded Copy Constructor, so we keep track of how many instances we have.

@@ -80,7 +80,7 @@ Mesh* SpriteFactory::makeSprite(const Vector2& scale, const Resource<Shader>& sh
 	newVertexBuffer->addFormatIdentifier(VertexBuffer::FORMAT_POSITION_4F, 4U);
 	newVertexBuffer->addFormatIdentifier(VertexBuffer::FORMAT_TEXTURE_2F, 4U);
 	
-	Resource<IndexBuffer>& newIndexBuffer(indexBank.add(mSettings.index.group, Resources::IndexBuffer, new IndexBuffer(reinterpret_cast<unsigned char*>(&indexData), indexSize, IndexBuffer::FORMAT_UNSIGNED_BYTE)));
+	Resource<IndexBuffer>& newIndexBuffer(indexBank.add(mSettings.index.group, Resources::IndexBuffer, new IndexBuffer(reinterpret_cast<unsigned char*>(&indexData), indexSize, IndexBuffer::INDEX_UNSIGNED_BYTE, IndexBuffer::FORMAT_TRIANGLES)));
 	
 	Resource<Material>& newMaterial(materialBank.add(mSettings.material.group, Resources::Material, new Material));
 	newMaterial->setShader(shader);

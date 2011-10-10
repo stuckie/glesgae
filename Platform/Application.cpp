@@ -36,7 +36,7 @@ void Application::setLifecycle(Lifecycle* const lifecycle)
 	mLifecycle = lifecycle;
 }
 
-void Application::onCreate(const GraphicsSystem::RenderType renderType)
+void Application::onCreate()
 {
 	if (0 == mEventSystem)
 		mEventSystem = new EventSystem;
@@ -45,7 +45,7 @@ void Application::onCreate(const GraphicsSystem::RenderType renderType)
 	if (0 == mResourceManager)
 		mResourceManager = new ResourceManager;
 	if (0 == mGraphicsSystem)
-		mGraphicsSystem = new GraphicsSystem(renderType);
+		mGraphicsSystem = new GraphicsSystem();
 	if (0 == mStateStack)
 		mStateStack = new StateStack;
 	if (0 == mClock)

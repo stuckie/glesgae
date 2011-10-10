@@ -39,6 +39,21 @@ TARGET		:=	GLESGAE
 BUILD		:=	build-linux
 SOURCES		:=	../../Graphics/Window \
 				../../Graphics/Context \
+				../../Graphics/Context/Linux \
+				../../Graphics/Platform \
+				../../Graphics/Platform/Linux \
+				../../Graphics/State \
+				../../Graphics/State/GLES1 \
+				../../Graphics/State/GLES2 \
+				../../Graphics/State/OGL \
+				../../Graphics/Renderer \
+				../../Graphics/Renderer/GLES11 \
+				../../Graphics/Renderer/GLES20 \
+				../../Graphics/Renderer/OGL \
+				../../Graphics/Target/Screen/OGL \
+				../../Graphics/Target/Buffer/OGL \
+				../../Graphics/Window \
+				../../Graphics/Window/X11 \
 				../../Graphics \
 				../../Events \
 				../../Events/X11 \
@@ -47,9 +62,11 @@ SOURCES		:=	../../Graphics/Window \
 				../../Maths \
 				../../Resources \
 				../../Platform \
+				../../Platform/Linux \
 				../../States \
 				../../Time \
 				../../Time/Linux \
+				../../Factories \
 				.
 DATA		:=
 INCLUDES	:=
@@ -57,7 +74,8 @@ INCLUDES	:=
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
-CFLAGS	:=	-O3\
+CFLAGS := -DGLX -DLINUX -Wall -Werror -Wno-variadic-macros -Wuninitialized -Wcast-align -Wredundant-decls
+#CFLAGS	:=		-O3\
 			-DGLX\
 			-DLINUX\
 			-Wall\

@@ -42,12 +42,22 @@ SOURCES		:=	.\
 				Events/X11 \
 				Graphics \
 				Graphics/Context \
+				Graphics/Context/Linux \
+				Graphics/Platform \
+				Graphics/Platform/Linux \
+				Graphics/State \
+				Graphics/State/GLES1 \
+				Graphics/State/GLES2 \
+				Graphics/State/OGL3 \
+				Graphics/State/OGL4 
 				Graphics/Window \
+				Graphics/Window/X11 \
 				Input \
 				Input/Linux \
 				Maths \
 				Resources \
 				Platform \
+				Platform/Linux \
 				States \
 				Time \
 				Time/Linux \
