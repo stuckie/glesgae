@@ -1,5 +1,12 @@
 CHANGELOG:
 
+12th October 2011
+Created HashString class based on standard djb2 algo.
+Created INVALID constant.
+Lots of memory errors fixed via use of extensive Valgrinding.
+While the engine still has issues on my netbook with rendering anything, it's at least fully cleaning up after itself - minus some lazy Vbo management which needs dealt with anyway.
+Next changeset should hopefully be either another platform ( Win32, Android or iOS ) or OpenAL for audio.
+
 10th October 2011
 Split up RenderContexts into:
 RenderPlatform - Platform specific bits ( initialise, shutdown, refresh, create contexts, windows, etc.. )
