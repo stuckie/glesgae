@@ -13,7 +13,7 @@
 
 using namespace GLESGAE;
 
-InputSystem::InputSystem(EventSystem* const eventSystem)
+InputSystem::InputSystem(const Resource<EventSystem>& eventSystem)
 : CommonInputSystem()
 , mKeyboard(0)
 , mPointer(0)

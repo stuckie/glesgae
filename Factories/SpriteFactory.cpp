@@ -14,11 +14,11 @@ using namespace GLESGAE;
 
 Resources::Locator SpriteFactory::create(const Vector2& scale, const unsigned int u, const unsigned int v, const unsigned int s, const unsigned int t)
 {
-	ResourceManager* resourceManager(Application::getInstance()->getResourceManager());
+	const Resource<ResourceManager>& resourceManager(Application::getInstance()->getResourceManager());
 
 	Resource<Shader> shader;
 	
-	if (Resources::INVALID != mSettings.shader.bank) { // Shader bank isn't strictly necessary for Fixed Function, so we can safely ignore this.
+	if (mSettings.shader.bank != INVALID) { // Shader bank isn't strictly necessary for Fixed Function, so we can safely ignore this.
 		ResourceBank<Shader>& shaderBank(resourceManager->getBank<Shader>(mSettings.shader.bank, Resources::Shader));
 		shader = (shaderBank.add(mSettings.shader.group, Resources::Shader, makeSpriteShader()));
 	}
@@ -71,7 +71,7 @@ Mesh* SpriteFactory::makeSprite(const Vector2& scale, const Resource<Shader>& sh
 	unsigned char indexData[6] = { 0, 1, 2, 2, 3, 0 };
 	unsigned int indexSize = 6 * sizeof(unsigned char);
 
-	ResourceManager* resourceManager(Application::getInstance()->getResourceManager());
+	const Resource<ResourceManager>& resourceManager(Application::getInstance()->getResourceManager());
 	ResourceBank<Material>& materialBank(resourceManager->getBank<Material>(mSettings.material.bank, Resources::Material));
 	ResourceBank<VertexBuffer>& vertexBank(resourceManager->getBank<VertexBuffer>(mSettings.vertex.bank, Resources::VertexBuffer));
 	ResourceBank<IndexBuffer>& indexBank(resourceManager->getBank<IndexBuffer>(mSettings.index.bank, Resources::IndexBuffer));

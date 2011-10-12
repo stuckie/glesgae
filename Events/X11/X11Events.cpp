@@ -6,9 +6,9 @@ using namespace GLESGAE;
 
 // Platform Input Events start with 0x2...
 
-EventType X11Events::Input::Mouse::Moved = 			0x210000;
-EventType X11Events::Input::Mouse::ButtonDown = 	0x210001;
-EventType X11Events::Input::Mouse::ButtonUp = 		0x210002;
+EventType X11Events::Input::Mouse::Moved = 			HashString("Input::Mouse::Moved");
+EventType X11Events::Input::Mouse::ButtonDown = 	HashString("Input::Mouse::ButtonDown");
+EventType X11Events::Input::Mouse::ButtonUp = 		HashString("Input::Mouse::ButtonUp");
 
-EventType X11Events::Input::Keyboard::KeyDown = 	0x220000;
-EventType X11Events::Input::Keyboard::KeyUp = 		0x220001;
+EventType X11Events::Input::Keyboard::KeyDown = 	HashString("Input::Keyboard::KeyDown");
+EventType X11Events::Input::Keyboard::KeyUp = 		HashString("Input::Keyboard::KeyUp");

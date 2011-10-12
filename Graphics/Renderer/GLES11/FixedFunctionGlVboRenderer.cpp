@@ -47,15 +47,15 @@ void FixedFunctionGlVboRenderer::drawMesh(const Resource<Mesh>& mesh, const Reso
 	const bool newBuffer(!(mLastVertexBuffer == vertexBuffer));
 	if (true == newBuffer) {
 		mLastVertexBuffer = vertexBuffer;
-		if (GL_INVALID_VALUE == vertexBuffer->getVboId()) {
-			GLuint buffer;
-			glGenBuffers(1, &buffer);
+		if (0 == vertexBuffer->getVboId()) { // TODO: This needs redone to store all VboIds internally
+			GLuint* buffer(new GLuint);
+			glGenBuffers(1, buffer);
 			vertexBuffer->setVboId(buffer);
-			glBindBuffer(GL_ARRAY_BUFFER, buffer);
+			glBindBuffer(GL_ARRAY_BUFFER, *buffer);
 			glBufferData(GL_ARRAY_BUFFER, vertexBuffer->getSize(), vertexBuffer->getData(), GL_STATIC_DRAW);
 		}
 		else
-			glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer->getVboId());
+			glBindBuffer(GL_ARRAY_BUFFER, *vertexBuffer->getVboId());
 	}
 	
 	const VertexBuffer::Format* meshFormat(vertexBuffer->getFormat());
@@ -190,15 +190,15 @@ void FixedFunctionGlVboRenderer::drawMesh(const Resource<Mesh>& mesh, const Reso
 
 	if (mLastIndexBuffer != indexBuffer) {
 		mLastIndexBuffer = indexBuffer;
-		if (GL_INVALID_VALUE == indexBuffer->getVboId()) {
-			GLuint buffer;
-			glGenBuffers(1, &buffer);
+		if (0 == indexBuffer->getVboId()) { // TODO: This needs redone to store all VboIds internally
+			GLuint* buffer(new GLuint);
+			glGenBuffers(1, buffer);
 			indexBuffer->setVboId(buffer);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *buffer);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer->getSize(), indexBuffer->getData(), GL_STATIC_DRAW);
 		}
 		else
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer->getVboId());
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *indexBuffer->getVboId());
 	}
 	
 	glPushMatrix();

@@ -25,6 +25,8 @@ namespace GLESGAE
 
 			IndexBuffer(unsigned char* const data, const unsigned int size, const IndexType type, const FormatType format);
 			IndexBuffer(const IndexBuffer& indexBuffer);
+			IndexBuffer& operator=(const IndexBuffer& indexBuffer);
+			~IndexBuffer();
 
 			/// Retrieve format details
 			FormatType getFormat() const { return mFormat; }
@@ -39,18 +41,15 @@ namespace GLESGAE
 			unsigned int getSize() const { return mSize; }
 			
 			/// Retrieve the Vbo Id
-			unsigned int getVboId() const { return mVboId; }
+			unsigned int* getVboId() const { return mVboId; }
 			
 			/// Set the Vbo Id
-			void setVboId(const unsigned int vboId) { mVboId = vboId; }
+			void setVboId(unsigned int* vboId) { mVboId = vboId; }
 
-		private:
-			/// No equals operator, use copy constructor instead
-			IndexBuffer& operator=(const IndexBuffer&);
-			
+		private:			
 			unsigned int mSize;
 			unsigned char* mData;
-			unsigned int mVboId;
+			unsigned int* mVboId;
 			FormatType mFormat;
 			IndexType mType;
 	};

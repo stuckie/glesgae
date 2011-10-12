@@ -46,7 +46,7 @@ namespace GLESGAE
 	template <typename T_Resource> ResourceBank<T_Resource>& ResourceManager::getBank(const Resources::Id bankId, const Resources::Type)
 	{
 		// TODO: check bank actually exists.
-		assert(bankId != Resources::INVALID);
+		assert(bankId != INVALID);
 		return *(reinterpret_cast<ResourceBank<T_Resource>*>(mResourceBanks[bankId]));
 	}
 	

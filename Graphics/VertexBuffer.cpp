@@ -20,7 +20,7 @@ VertexBuffer::VertexBuffer(unsigned char* const data, const unsigned int size, c
 , mData(new unsigned char[size])
 , mStride(0U)
 , mType(bufferType)
-, mVboId(GL_INVALID_VALUE)
+, mVboId(0)
 , mFormat()
 {
 	std::memcpy(mData, data, size);
@@ -36,7 +36,7 @@ VertexBuffer::VertexBuffer(unsigned char* const data, const unsigned int size, c
 , mData(new unsigned char[size])
 , mStride(0U)
 , mType(bufferType)
-, mVboId(GL_INVALID_VALUE)
+, mVboId(0)
 , mFormat()
 {
 	std::memcpy(mData, data, size);
@@ -52,14 +52,33 @@ VertexBuffer::VertexBuffer(const VertexBuffer& vertexBuffer)
 {
 }
 
-VertexBuffer::~VertexBuffer()
+VertexBuffer& VertexBuffer::operator=(const VertexBuffer& vertexBuffer)
 {
-	if (mVboId != GL_INVALID_VALUE) {
-		glDeleteBuffers(1, &mVboId);
-		mVboId = GL_INVALID_VALUE;
+	if (this != &vertexBuffer) {
+		mSize = vertexBuffer.mSize;
+		mData = vertexBuffer.mData;
+		mStride = vertexBuffer.mStride;
+		mType = vertexBuffer.mType;
+		mVboId = vertexBuffer.mVboId;
+		
+		for (unsigned int index(0U); index < FORMAT_SIZE; ++index)
+			mFormat[index] = vertexBuffer.mFormat[index];
 	}
 	
-	delete [] mData;
+	return *this;
+}
+
+VertexBuffer::~VertexBuffer()
+{
+	if (0 != mVboId) {
+		glDeleteBuffers(1, mVboId);
+		mVboId = 0;
+	}
+	
+	if (0 != mData) {	
+		delete [] mData;
+		mData = 0;
+	}
 }
 
 void VertexBuffer::addFormatIdentifier(const FormatType formatType, const unsigned int amount)

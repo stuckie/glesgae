@@ -3,7 +3,8 @@
 using namespace GLESGAE;
 
 StateStack::StateStack()
-: mStack()
+: mLastState()
+, mStack()
 {
 }
 
@@ -11,11 +12,11 @@ void StateStack::pop()
 {
 	if (false == mStack.empty()) {
 		mStack.pop_back();
-		delete *(mStack.end());
+		mLastState = *(mStack.end());
 	}
 }
 
-State* StateStack::get()
+Resource<State> StateStack::get()
 {
 	if (false == mStack.empty())
 		return mStack[mStack.size() - 1U];
@@ -29,6 +30,9 @@ bool StateStack::update(const float delta)
 	
 	if (false == mStack.empty())
 		status = mStack[mStack.size() - 1U]->update(delta);
+	
+	if (mLastState != 0)
+		mLastState = 0;
 	
 	return status;
 }

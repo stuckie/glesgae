@@ -38,9 +38,7 @@ export STRIP	:=	$(PREFIX)strip
 TARGET		:=	lib/libGLESGAE
 BUILD		:=	build-linux
 SOURCES		:=	.\
-				Events \
-				Events/X11 \
-				Graphics \
+				Graphics/Window \
 				Graphics/Context \
 				Graphics/Context/Linux \
 				Graphics/Platform \
@@ -48,10 +46,18 @@ SOURCES		:=	.\
 				Graphics/State \
 				Graphics/State/GLES1 \
 				Graphics/State/GLES2 \
-				Graphics/State/OGL3 \
-				Graphics/State/OGL4 
+				Graphics/State/OGL \
+				Graphics/Renderer \
+				Graphics/Renderer/GLES11 \
+				Graphics/Renderer/GLES20 \
+				Graphics/Renderer/OGL \
+				Graphics/Target/Screen/OGL \
+				Graphics/Target/Buffer/OGL \
 				Graphics/Window \
 				Graphics/Window/X11 \
+				Graphics \
+				Events \
+				Events/X11 \
 				Input \
 				Input/Linux \
 				Maths \
@@ -61,7 +67,8 @@ SOURCES		:=	.\
 				States \
 				Time \
 				Time/Linux \
-				Factories
+				Factories \
+				Utils
 				
 DATA		:=
 INCLUDES	:=

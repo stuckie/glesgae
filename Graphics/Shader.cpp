@@ -114,9 +114,9 @@ GLuint Shader::loadShader(const std::string& shader, const GLenum type)
 	glShaderSource(newShader, 1, &shaderSource, NULL);
 	glCompileShader(newShader);
 
-	GLint isCompiled;
+	GLint isCompiled(0);
 	glGetShaderiv(newShader, GL_COMPILE_STATUS, &isCompiled);
-	if (!isCompiled) {
+	if (0 == isCompiled) {
 		GLint infoLen(0);
 		glGetShaderiv(newShader, GL_INFO_LOG_LENGTH, &infoLen);
 		if (infoLen > 1) {

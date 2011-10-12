@@ -146,6 +146,7 @@ namespace GLESGAE
 			VertexBuffer(unsigned char* const data, const unsigned int size, const Format format[], const BufferType bufferType = FORMAT_STATIC);
 			VertexBuffer(unsigned char* const data, const unsigned int size, const BufferType bufferType = FORMAT_STATIC);
 			VertexBuffer(const VertexBuffer& vertexBuffer);
+			VertexBuffer& operator=(const VertexBuffer& vertexBuffer);
 			~VertexBuffer();
 
 			/// Retrieve format details
@@ -164,23 +165,20 @@ namespace GLESGAE
 			BufferType getType() const { return mType; }
 			
 			/// Retrieve the Vbo Id
-			unsigned int getVboId() const { return mVboId; }
+			unsigned int* getVboId() const { return mVboId; }
 			
 			/// Set the Vbo Id
-			void setVboId(const unsigned int vboId) { mVboId = vboId; }
+			void setVboId(unsigned int* vboId) { mVboId = vboId; }
 
 			/// Add a Format Identifier
 			void addFormatIdentifier(const FormatType formatType, const unsigned int amount);
 
 		private:
-			// No Equals Operator
-			VertexBuffer& operator=(const VertexBuffer&);
-			
 			unsigned int mSize;
 			unsigned char* mData;
 			unsigned int mStride;
 			BufferType mType;
-			unsigned int mVboId;			// using unsigned int rather than GLuint to keep GL dependency away from the header.
+			unsigned int* mVboId;			// using unsigned int rather than GLuint to keep GL dependency away from the header.
 			Format mFormat[FORMAT_SIZE];
 	};
 }

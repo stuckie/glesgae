@@ -1,26 +1,27 @@
 #ifndef _APPLICATION_H_
 #define _APPLICATION_H_
 
+#include "Lifecycle.h"
+#include "../Resources/Resource.h"
+#include "../Events/EventSystem.h"
 #include "../Graphics/GraphicsSystem.h"
+#include "../Input/InputSystem.h"
+#include "../Resources/ResourceManager.h"
+#include "../States/StateStack.h"
+#include "../Time/Clock.h"
 
 namespace GLESGAE
 {
-	class EventSystem;
-	class InputSystem;
-	class ResourceManager;
-	class Lifecycle;
-	class StateStack;
-	class Clock;
 	class Application
 	{
 		public:
-			~Application() {}
+			~Application();
 			
 			/// Application is a Singleton and can only be accessed via this method.
 			static Application* getInstance();
 			
 			/// Set the user lifecycle
-			void setLifecycle(Lifecycle* const lifecycle);
+			void setLifecycle(const Resource<Lifecycle>& lifecycle);
 			
 			// Lifecycle Bits
 			/// onCreate - Called by the platform as soon as the application is started - IE: To setup Platform specifics.
@@ -46,22 +47,22 @@ namespace GLESGAE
 			
 			// Retrieve Systems
 			/// Retrieve the Input System
-			InputSystem* getInputSystem() const { return mInputSystem; }
+			const Resource<InputSystem>& getInputSystem() { return mInputSystem; }
 			
 			/// Retrieve the Event System
-			EventSystem* getEventSystem() const { return mEventSystem; }
+			const Resource<EventSystem>& getEventSystem() { return mEventSystem; }
 			
 			/// Retrieve the Graphics System
-			GraphicsSystem* getGraphicsSystem() const { return mGraphicsSystem; }
+			const Resource<GraphicsSystem>& getGraphicsSystem() { return mGraphicsSystem; }
 			
 			/// Retrieve the Resource Manager
-			ResourceManager* getResourceManager() const { return mResourceManager; }
+			const Resource<ResourceManager>& getResourceManager() { return mResourceManager; }
 			
 			/// Retrieve the State Stack
-			StateStack* getStateStack() const { return mStateStack; }
+			const Resource<StateStack>& getStateStack() { return mStateStack; }
 			
 			/// Retrieve the System Clock
-			Clock* getClock() const { return mClock; }
+			const Resource<Clock>& getClock() { return mClock; }
 			
 		private:
 			/// Private constructor as this can only be created and managed through it's singleton.
@@ -73,13 +74,13 @@ namespace GLESGAE
 			
 			static Application* mInstance;
 			
-			EventSystem* mEventSystem;
-			GraphicsSystem* mGraphicsSystem;
-			InputSystem* mInputSystem;
-			ResourceManager* mResourceManager;
-			Lifecycle* mLifecycle;
-			StateStack* mStateStack;
-			Clock* mClock;
+			Resource<EventSystem> mEventSystem;
+			Resource<GraphicsSystem> mGraphicsSystem;
+			Resource<InputSystem> mInputSystem;
+			Resource<ResourceManager> mResourceManager;
+			Resource<Lifecycle> mLifecycle;
+			Resource<StateStack> mStateStack;
+			Resource<Clock> mClock;
 	};
 }
 

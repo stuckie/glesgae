@@ -1,9 +1,11 @@
 #ifndef _EVENT_TYPES_H_
 #define _EVENT_TYPES_H_
 
+#include "../Utils/HashString.h"
+
 namespace GLESGAE
 {
-	typedef unsigned int EventType;
+	typedef const HashString EventType;
 	
 	namespace SystemEvents
 	{

@@ -1,17 +1,17 @@
 #ifndef _BASE_RESOURCE_H_
 #define _BASE_RESOURCE_H_
 
+#include "../GLESGAETypes.h"
+#include "../Utils/HashString.h"
+
 namespace GLESGAE
 {
-
 	namespace Resources
 	{
-		typedef unsigned int Type;
+		typedef HashString Type;
 		typedef unsigned int Id;
 		typedef unsigned int Count;
 		typedef unsigned int Group;
-		
-		extern Group INVALID;
 		
 		struct Locator
 		{
@@ -20,7 +20,7 @@ namespace GLESGAE
 			Group group;
 			Id resource;
 			
-			Locator() : bank(INVALID), type(INVALID), group(INVALID), resource(INVALID) {}
+			Locator() : bank(INVALID), type(INVALID_HASHSTRING), group(INVALID), resource(INVALID) {}
 		};
 		
 		// System Resources
@@ -60,7 +60,7 @@ namespace GLESGAE
 			/// Get the Instance Count of this Resource
 			Resources::Count getCount() const { return *mCount; }
 						
-		protected:		
+		protected:
 			/// Set the count
 			void setCount(const Resources::Count& count) { *mCount = count; }
 		

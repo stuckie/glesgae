@@ -13,6 +13,19 @@
 
 using namespace GLESGAE;
 
+Texture::~Texture()
+{
+	if (0 != mData) {
+		delete[] mData;
+		mData = 0;
+		
+		if (static_cast<unsigned int>(-1) != mId) {
+			glDeleteTextures(1, &mId);
+			mId = static_cast<unsigned int>(-1);
+		}
+	}
+}
+
 void Texture::loadBMP(const std::string& fileName)
 {
 	FILE *file;
@@ -83,6 +96,7 @@ void Texture::loadBMP(const std::string& fileName)
 	createGLid();
 
 	delete [] mData;
+	mData = 0;
 }
 
 void Texture::createGLid()

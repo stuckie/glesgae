@@ -3,8 +3,9 @@
 
 #include <list>
 
-#include "../ControllerTypes.h"
+#include "../../Resources/Resource.h"
 #include "../../Events/EventObserver.h"
+#include "../ControllerTypes.h"
 
 #include <X11/Xlib.h>
 
@@ -15,7 +16,7 @@ namespace GLESGAE
 	class InputSystem : public CommonInputSystem, public EventObserver
 	{
 		public:
-			InputSystem(EventSystem* const eventSystem);
+			InputSystem(const Resource<EventSystem>& eventSystem);
 			~InputSystem();
 
 			/// Update the Input System
@@ -85,7 +86,7 @@ namespace GLESGAE
 			std::list<Controller::JoystickController*> mJoysticks;
 			std::list<Controller::PadController*> mPads;
 
-			EventSystem* mEventSystem;
+			Resource<EventSystem> mEventSystem;
 	};
 }
 

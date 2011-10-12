@@ -6,7 +6,7 @@ using namespace GLESGAE;
 int main(void)
 {
 	Application* application(Application::getInstance());
-	application->setLifecycle(new TestLifecycle);
+	application->setLifecycle(Resource<Lifecycle>(new TestLifecycle));
 	
 	application->onCreate();	
 	application->onStart();

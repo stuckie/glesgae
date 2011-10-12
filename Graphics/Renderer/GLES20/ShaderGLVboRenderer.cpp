@@ -43,7 +43,7 @@ void ShaderGlVboRenderer::drawMesh(const Resource<Mesh>& mesh, const Resource<Ma
 	
 	if (mLastVertexBuffer != vertexBuffer) {
 		mLastVertexBuffer = vertexBuffer;
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer->getVboId());
+		glBindBuffer(GL_ARRAY_BUFFER, *vertexBuffer->getVboId());
 
 		const VertexBuffer::Format* meshFormat(vertexBuffer->getFormat());
 		for (unsigned int index(0U); index < VertexBuffer::FORMAT_SIZE; ++index) {
@@ -118,7 +118,7 @@ void ShaderGlVboRenderer::drawMesh(const Resource<Mesh>& mesh, const Resource<Ma
 
 	if (mLastIndexBuffer != indexBuffer) {
 		mLastIndexBuffer = indexBuffer;
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer->getVboId());
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *indexBuffer->getVboId());
 	}
 	
 	switch (indexBuffer->getType()) {

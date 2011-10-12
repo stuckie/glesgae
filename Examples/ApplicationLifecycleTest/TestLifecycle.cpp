@@ -42,77 +42,77 @@ using namespace GLESGAE;
 
 namespace LifecycleTest
 {
-	Resources::Id TextureBank = Resources::INVALID;
-	Resources::Type Texture = 0U;
+	Resources::Id TextureBank = GLESGAE::INVALID;
+	Resources::Type Texture = HashString("Texture");
 	namespace Textures
 	{
-		Resources::Group TestGroup = Resources::INVALID;
-		Resources::Id MrSmileyFace = Resources::INVALID;
+		Resources::Group TestGroup = GLESGAE::INVALID;
+		Resources::Id MrSmileyFace = GLESGAE::INVALID;
 	}
 	
-	Resources::Id ShaderBank = Resources::INVALID;
-	Resources::Type Shader = 1U;
+	Resources::Id ShaderBank = GLESGAE::INVALID;
+	Resources::Type Shader = HashString("Shader");
 	namespace Shaders
 	{
-		Resources::Group TestGroup = Resources::INVALID;
-		Resources::Id SpriteShader = Resources::INVALID;
+		Resources::Group TestGroup = GLESGAE::INVALID;
+		Resources::Id SpriteShader = GLESGAE::INVALID;
 	}
 	
-	Resources::Id CameraBank = Resources::INVALID;
-	Resources::Type Camera = 2U;
+	Resources::Id CameraBank = GLESGAE::INVALID;
+	Resources::Type Camera = HashString("Camera");
 	namespace Cameras
 	{
-		Resources::Group TestGroup = Resources::INVALID;
-		Resources::Id SceneCamera = Resources::INVALID;
+		Resources::Group TestGroup = GLESGAE::INVALID;
+		Resources::Id SceneCamera = GLESGAE::INVALID;
 	}
 	
-	Resources::Id MeshBank = Resources::INVALID;
-	Resources::Type Mesh = 3U;
+	Resources::Id MeshBank = GLESGAE::INVALID;
+	Resources::Type Mesh = HashString("Mesh");
 	namespace Meshes
 	{
-		Resources::Group TestGroup = Resources::INVALID;
-		Resources::Id MrSmileyFace = Resources::INVALID;
+		Resources::Group TestGroup = GLESGAE::INVALID;
+		Resources::Id MrSmileyFace = GLESGAE::INVALID;
 	}
 	
-	Resources::Id ShaderUniformUpdaterBank = Resources::INVALID;
-	Resources::Type ShaderUniformUpdater = 4U;
+	Resources::Id ShaderUniformUpdaterBank = GLESGAE::INVALID;
+	Resources::Type ShaderUniformUpdater = HashString("ShaderUniformUpdater");
 	namespace ShaderUniformUpdaters
 	{
-		Resources::Group TestGroup = Resources::INVALID;
-		Resources::Id MVPUpdater = Resources::INVALID;
-		Resources::Id TextureUpdater = Resources::INVALID;
+		Resources::Group TestGroup = GLESGAE::INVALID;
+		Resources::Id MVPUpdater = GLESGAE::INVALID;
+		Resources::Id TextureUpdater = GLESGAE::INVALID;
 	}
 	
-	Resources::Id IndexBufferBank = Resources::INVALID;
-	Resources::Type IndexBuffer = 5U;
+	Resources::Id IndexBufferBank = GLESGAE::INVALID;
+	Resources::Type IndexBuffer = HashString("IndexBuffer");
 	namespace IndexBuffers
 	{
-		Resources::Group TestGroup = Resources::INVALID;
-		Resources::Id SpriteIndexBuffer = Resources::INVALID;
+		Resources::Group TestGroup = GLESGAE::INVALID;
+		Resources::Id SpriteIndexBuffer = GLESGAE::INVALID;
 	}
 	
-	Resources::Id VertexBufferBank = Resources::INVALID;
-	Resources::Type VertexBuffer = 6U;
+	Resources::Id VertexBufferBank = GLESGAE::INVALID;
+	Resources::Type VertexBuffer = HashString("VertexBuffer");
 	namespace VertexBuffers
 	{
-		Resources::Group TestGroup = Resources::INVALID;
-		Resources::Id SpriteVertexBuffer = Resources::INVALID;
+		Resources::Group TestGroup = GLESGAE::INVALID;
+		Resources::Id SpriteVertexBuffer = GLESGAE::INVALID;
 	}
 	
-	Resources::Id MaterialBank = Resources::INVALID;
-	Resources::Type Material = 7U;
+	Resources::Id MaterialBank = GLESGAE::INVALID;
+	Resources::Type Material = HashString("Material");
 	namespace Materials
 	{
-		Resources::Group TestGroup = Resources::INVALID;
-		Resources::Id SpriteMaterial = Resources::INVALID;
+		Resources::Group TestGroup = GLESGAE::INVALID;
+		Resources::Id SpriteMaterial = GLESGAE::INVALID;
 	}
 	
-	Resources::Id TransformBank = Resources::INVALID;
-	Resources::Type Transform = 8U;
+	Resources::Id TransformBank = GLESGAE::INVALID;
+	Resources::Type Transform = HashString("Transform");
 	namespace Transforms
 	{
-		Resources::Group TestGroup = Resources::INVALID;
-		Resources::Id SpriteTransform = Resources::INVALID;
+		Resources::Group TestGroup = GLESGAE::INVALID;
+		Resources::Id SpriteTransform = GLESGAE::INVALID;
 	}
 	
 	namespace Controllers
@@ -129,8 +129,8 @@ Shader* makeSpriteShader();
 void TestLifecycle::onCreate()
 {
 	Application* application(Application::getInstance());
-	GraphicsSystem* graphicsSystem(application->getGraphicsSystem());
-	EventSystem* eventSystem(application->getEventSystem());
+	const Resource<GraphicsSystem>& graphicsSystem(application->getGraphicsSystem());
+	const Resource<EventSystem>& eventSystem(application->getEventSystem());
 	
 	if (false == graphicsSystem->initialise("GLESGAE Application Lifecycle Test", 800, 480, 16, false)) {
 		//TODO: OH NOES! WE'VE DIEDED!
@@ -146,8 +146,8 @@ void TestLifecycle::onCreate()
 void TestLifecycle::onStart()
 {
 	Application* application(Application::getInstance());
-	ResourceManager* resourceManager(application->getResourceManager());
-	InputSystem* inputSystem(application->getInputSystem());
+	const Resource<ResourceManager>& resourceManager(application->getResourceManager());
+	const Resource<InputSystem>& inputSystem(application->getInputSystem());
 	
 	ResourceBank<Texture>& textureBank(resourceManager->createBank<Texture>(LifecycleTest::Texture));
 	LifecycleTest::TextureBank = textureBank.getId();
@@ -208,7 +208,7 @@ void TestLifecycle::onStart()
 	LifecycleTest::Controllers::Keyboard = myKeyboard->getControllerId();
 	
 	// Setup Fixed Function settings
-	GraphicsSystem* graphicsSystem(application->getGraphicsSystem());
+	const Resource<GraphicsSystem>& graphicsSystem(application->getGraphicsSystem());
 	Resource<RenderContext> currentContext(graphicsSystem->getCurrentContext());
 	Resource<GLES1State> currentState(currentContext->getRenderState().recast<GLES1State>());
 	currentState->setTexturingEnabled(true);
@@ -222,13 +222,13 @@ void TestLifecycle::onResume()
 bool TestLifecycle::onLoop()
 {
 	Application* application(Application::getInstance());
-	EventSystem* eventSystem(application->getEventSystem());
-	InputSystem* inputSystem(application->getInputSystem());
-	GraphicsSystem* graphicsSystem(application->getGraphicsSystem());
+	const Resource<EventSystem>& eventSystem(application->getEventSystem());
+	const Resource<InputSystem>& inputSystem(application->getInputSystem());
+	const Resource<GraphicsSystem>& graphicsSystem(application->getGraphicsSystem());
 	Resource<RenderContext> currentContext(graphicsSystem->getCurrentContext());
 	Resource<RenderState> currentState(currentContext->getRenderState());
 	
-	ResourceManager* resourceManager(application->getResourceManager());
+	const Resource<ResourceManager>& resourceManager(application->getResourceManager());
 	
 	ResourceBank<Camera>& cameraBank(resourceManager->getBank<Camera>(LifecycleTest::CameraBank, LifecycleTest::Camera));
 	Resource<Camera>& camera(cameraBank.get(LifecycleTest::Cameras::TestGroup, LifecycleTest::Cameras::SceneCamera));
@@ -262,7 +262,7 @@ void TestLifecycle::onPause()
 void TestLifecycle::onStop()
 {
 	Application* application(Application::getInstance());
-	ResourceManager* resourceManager(application->getResourceManager());
+	const Resource<ResourceManager>& resourceManager(application->getResourceManager());
 	
 	resourceManager->removeBank<Mesh>(LifecycleTest::MeshBank, LifecycleTest::Mesh);
 	resourceManager->removeBank<Texture>(LifecycleTest::TextureBank, LifecycleTest::Texture);
@@ -297,7 +297,7 @@ Mesh* makeSprite(Resource<Shader>& shader, Resource<Texture>& texture)
 	unsigned char indexData[6] = { 0, 1, 2, 2, 3, 0 };
 	unsigned int indexSize = 6 * sizeof(unsigned char);
 
-	ResourceManager* resourceManager(Application::getInstance()->getResourceManager());
+	const Resource<ResourceManager>& resourceManager(Application::getInstance()->getResourceManager());
 	ResourceBank<Material>& materialBank(resourceManager->getBank<Material>(LifecycleTest::MaterialBank, LifecycleTest::Material));
 	ResourceBank<VertexBuffer>& vertexBank(resourceManager->getBank<VertexBuffer>(LifecycleTest::VertexBufferBank, LifecycleTest::VertexBuffer));
 	ResourceBank<IndexBuffer>& indexBank(resourceManager->getBank<IndexBuffer>(LifecycleTest::IndexBufferBank, LifecycleTest::IndexBuffer));

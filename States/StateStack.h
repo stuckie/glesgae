@@ -23,19 +23,20 @@ namespace GLESGAE
 			void pop();
 			
 			/// Retrieves the current State.
-			State* get();
+			Resource<State> get();
 			
 			/// Update the current State.
 			bool update(const float delta);
 			
 		private:
-			std::vector<State*> mStack;
+			Resource<State> mLastState;
+			std::vector<Resource<State> > mStack;
 	};
 	
 	template <typename T_State>
 	void StateStack::push()
 	{
-		mStack.push_back(new T_State);
+		mStack.push_back(Resource<State>(new T_State));
 	}
 
 	template <typename T_State>

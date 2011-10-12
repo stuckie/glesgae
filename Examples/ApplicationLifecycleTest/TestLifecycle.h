@@ -9,6 +9,7 @@ class TestLifecycle : public GLESGAE::Lifecycle
 {
 	public:
 		TestLifecycle() : GLESGAE::Lifecycle(), mScreenTarget() {}
+		~TestLifecycle() {}
 		
 		/// Called directly after the system has started
 		void onCreate();

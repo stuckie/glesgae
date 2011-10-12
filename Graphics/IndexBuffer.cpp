@@ -18,15 +18,11 @@ using namespace GLESGAE;
 IndexBuffer::IndexBuffer(unsigned char* const data, const unsigned int size, const IndexType type, const FormatType format)
 : mSize(size)
 , mData(new unsigned char[size])
-, mVboId(0U)
+, mVboId(0)
 , mFormat(format)
 , mType(type)
 {
 	std::memcpy(mData, data, size);
-	
-	glGenBuffers(1U, &mVboId);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mVboId);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mSize, mData, GL_STATIC_DRAW);
 }
 
 IndexBuffer::IndexBuffer(const IndexBuffer& indexBuffer)
@@ -37,3 +33,29 @@ IndexBuffer::IndexBuffer(const IndexBuffer& indexBuffer)
 , mType(indexBuffer.mType)
 {
 }
+
+IndexBuffer& IndexBuffer::operator=(const IndexBuffer& indexBuffer)
+{
+	if (this != &indexBuffer) {
+		mSize = indexBuffer.mSize;
+		mData = indexBuffer.mData;
+		mVboId = indexBuffer.mVboId;
+		mFormat = indexBuffer.mFormat;
+		mType = indexBuffer.mType;
+	}
+	
+	return *this;
+}
+
+IndexBuffer::~IndexBuffer()
+{
+	if (0 != mData) {
+		delete[] mData;
+		mData = 0;
+	}
+	if (0 != mVboId) {
+		glDeleteBuffers(1, mVboId);
+		mVboId = 0;
+	}
+}
+

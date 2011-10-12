@@ -14,7 +14,8 @@ namespace GLESGAE
 			,	RGB
 			};
 			
-			Texture() : mId(), mData(0), mWidth(), mHeight(), mType(INVALID_FORMAT) {}
+			Texture() : mId(static_cast<unsigned int>(-1)), mData(0), mWidth(), mHeight(), mType(INVALID_FORMAT) {}
+			~Texture();
 			
 			/// Load as BMP
 			void loadBMP(const std::string& fileName);

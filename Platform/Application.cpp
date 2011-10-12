@@ -1,25 +1,21 @@
 #include "Application.h"
 
-#include "Lifecycle.h"
-#include "../Events/EventSystem.h"
-#include "../Graphics/GraphicsSystem.h"
-#include "../Input/InputSystem.h"
-#include "../Resources/ResourceManager.h"
-#include "../States/StateStack.h"
-#include "../Time/Clock.h"
-
 using namespace GLESGAE;
 
 Application* Application::mInstance = 0;
 
 Application::Application()
-: mEventSystem(0)
-, mGraphicsSystem(0)
-, mInputSystem(0)
-, mResourceManager(0)
-, mLifecycle(0)
-, mStateStack(0)
-, mClock(0)
+: mEventSystem()
+, mGraphicsSystem()
+, mInputSystem()
+, mResourceManager()
+, mLifecycle()
+, mStateStack()
+, mClock()
+{
+}
+
+Application::~Application()
 {
 }
 
@@ -31,44 +27,44 @@ Application* Application::getInstance()
 	return mInstance;
 }
 
-void Application::setLifecycle(Lifecycle* const lifecycle)
+void Application::setLifecycle(const Resource<Lifecycle>& lifecycle)
 {
 	mLifecycle = lifecycle;
 }
 
 void Application::onCreate()
 {
-	if (0 == mEventSystem)
-		mEventSystem = new EventSystem;
-	if (0 == mInputSystem)
-		mInputSystem = new InputSystem(mEventSystem);
-	if (0 == mResourceManager)
-		mResourceManager = new ResourceManager;
-	if (0 == mGraphicsSystem)
-		mGraphicsSystem = new GraphicsSystem();
-	if (0 == mStateStack)
-		mStateStack = new StateStack;
-	if (0 == mClock)
-		mClock = new Clock;
-	if (0 != mLifecycle)
+	if (mEventSystem == 0)
+		mEventSystem = Resource<EventSystem>(new EventSystem);
+	if (mInputSystem == 0)
+		mInputSystem = Resource<InputSystem>(new InputSystem(mEventSystem));
+	if (mResourceManager == 0)
+		mResourceManager = Resource<ResourceManager>(new ResourceManager);
+	if (mGraphicsSystem == 0)
+		mGraphicsSystem = Resource<GraphicsSystem>(new GraphicsSystem());
+	if (mStateStack == 0)
+		mStateStack = Resource<StateStack>(new StateStack);
+	if (mClock == 0)
+		mClock = Resource<Clock>(new Clock);
+	if (mLifecycle != 0)
 		mLifecycle->onCreate();
 }
 
 void Application::onStart()
 {
-	if (0 != mLifecycle)
+	if (mLifecycle != 0)
 		mLifecycle->onStart();
 }
 
 void Application::onResume()
 {
-	if (0 != mLifecycle)
+	if (mLifecycle != 0)
 		mLifecycle->onResume();
 }
 
 bool Application::onLoop()
 {
-	if (0 != mLifecycle)
+	if (mLifecycle != 0)
 		return mLifecycle->onLoop();
 	else
 		return false;
@@ -76,47 +72,21 @@ bool Application::onLoop()
 
 void Application::onPause()
 {
-	if (0 != mLifecycle)
+	if (mLifecycle != 0)
 		mLifecycle->onPause();
 }
 
 void Application::onStop()
 {
-	if (0 != mLifecycle)
+	if (mLifecycle != 0)
 		mLifecycle->onStop();
 }
 
 void Application::onDestroy()
 {
-	if (0 != mLifecycle) {
+	if (mLifecycle != 0)
 		mLifecycle->onDestroy();
-		delete mLifecycle;
-		mLifecycle = 0;
-	}
-		
-	if (0 != mEventSystem) {
-		delete mEventSystem;
-		mEventSystem = 0;
-	}
-	if (0 != mInputSystem) {
-		delete mInputSystem;
-		mInputSystem = 0;
-	}
-	if (0 != mResourceManager) {
-		delete mResourceManager;
-		mResourceManager = 0;
-	}
-	if (0 != mGraphicsSystem) {
-		delete mGraphicsSystem;
-		mGraphicsSystem = 0;
-	}
-	if (0 != mStateStack) {
-		delete mStateStack;
-		mStateStack = 0;
-	}
-	if (0 != mClock) {
-		delete mClock;
-		mClock = 0;
-	}
+
+	delete mInstance;
 }
 

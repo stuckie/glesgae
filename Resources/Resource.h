@@ -2,6 +2,8 @@
 #define _RESOURCE_H_
 
 #include "BaseResource.h"
+#include <cassert>
+#include <cstdio>
 
 namespace GLESGAE
 {
@@ -14,11 +16,11 @@ namespace GLESGAE
 		template <typename T_ResourceCast> friend class Resource;
 		public:
 			/// Dummy Constructor for creation of empty Resources.
-			Resource() : BaseResource(Resources::INVALID, Resources::INVALID, Resources::INVALID), mResource(0) {}
+			Resource() : BaseResource(INVALID, INVALID_HASHSTRING, INVALID), mResource(0) {}
 			~Resource() { remove(); }
 			
 			/// Constructor for taking ownership over raw pointers.
-			Resource(T_Resource* const resource) : BaseResource(Resources::INVALID, Resources::INVALID, Resources::INVALID), mResource(resource) { instance(); }
+			Resource(T_Resource* const resource) : BaseResource(INVALID, INVALID_HASHSTRING, INVALID), mResource(resource) { instance(); }
 			
 			/// Pointer Operator overload to return the actual resource.
 			T_Resource* operator-> () { return mResource; }
@@ -35,12 +37,9 @@ namespace GLESGAE
 			/// Recast Copy into a another Resource.
 			template <typename T_ResourceCast> Resource<T_ResourceCast> recast()
 			{
-				Resource<T_ResourceCast> newResource;
-				newResource.mGroup = mGroup;
-				newResource.mType = mType;
-				newResource.mId = mId;
+				Resource<T_ResourceCast> newResource(mGroup, mType, mId, reinterpret_cast<T_ResourceCast*>(mResource));
+				delete newResource.mCount;
 				newResource.mCount = mCount;
-				newResource.mResource = reinterpret_cast<T_ResourceCast*>(mResource);
 				instance();
 				return newResource;
 			}
@@ -48,12 +47,9 @@ namespace GLESGAE
 			/// Recast Copy into a another Resource.
 			template <typename T_ResourceCast> const Resource<T_ResourceCast> recast() const
 			{
-				Resource<T_ResourceCast> newResource;
-				newResource.mGroup = mGroup;
-				newResource.mType = mType;
-				newResource.mId = mId;
+				Resource<T_ResourceCast> newResource(mGroup, mType, mId, reinterpret_cast<T_ResourceCast*>(mResource));
+				delete newResource.mCount;
 				newResource.mCount = mCount;
-				newResource.mResource = reinterpret_cast<T_ResourceCast*>(mResource);
 				instance();
 				return newResource;
 			}
@@ -70,6 +66,8 @@ namespace GLESGAE
 			Resource& operator=(const Resource& resource)
 			{
 				if (this != &resource) { // if someone's being daft and assigning ourselves, do nothing else we're likely to commit suicide.
+					remove();
+					
 					BaseResource::operator=(resource);
 					mResource = resource.mResource;
 					
@@ -109,6 +107,7 @@ namespace GLESGAE
 			: BaseResource(group, type, id)
 			, mResource(resource)
 			{
+				instance();
 			}
 			
 			/// Delete the actual resource.
@@ -118,20 +117,27 @@ namespace GLESGAE
 					delete mResource; 
 					mResource = 0;
 				}
+				
+				if (0 != mCount) {
+					delete mCount;
+					mCount = 0;
+				}
 			}
 			
 			/// Increase the instance count of this Resource.
 			void instance() const
 			{
+				assert(mCount);
 				++(*mCount);
 			}
 
 			/// Remove an instance count of this Resource, and if there are no more instances, purge it.
 			void remove()
 			{
+				assert(mCount);
 				if ((*mCount) > 0U)
 					--(*mCount);
-	
+
 				if ((*mCount) == 0U)
 					purge();
 			}

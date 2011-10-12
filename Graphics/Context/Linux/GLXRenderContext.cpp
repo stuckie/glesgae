@@ -28,10 +28,10 @@ void GLXRenderContext::initialise()
 		// Need to handle this...
 	}
 	
-	// Grab us a double buffered display, with RGB colour specs and a 24bit Colour Buffer
+	// Grab us a double buffered display, with RGBA colour specs and whatever the Window wants for BPP.
 	int visualArgs[]  = {
 		GLX_RGBA
-	,	GLX_DEPTH_SIZE, 24
+	,	GLX_DEPTH_SIZE, mWindow->getBPP()
 	,	GLX_DOUBLEBUFFER
 	,	None
 	};
