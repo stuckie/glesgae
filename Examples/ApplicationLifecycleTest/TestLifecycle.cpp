@@ -35,7 +35,7 @@
 #include "Texture0UniformUpdater.h"
 
 #include <cstdio>
-#include "../../Graphics/Renderer/GLES11/FixedFunctionGlVboRenderer.h"
+#include "../../Graphics/Renderer/GLES10/FixedFunctionGlVARenderer.h"
 #include "../../Graphics/State/GLES1/GLES1State.h"
 
 using namespace GLESGAE;
@@ -140,7 +140,7 @@ void TestLifecycle::onCreate()
 	
 	Resource<RenderContext> currentContext(graphicsSystem->getCurrentContext());
 	mScreenTarget = currentContext->createRenderTarget(RenderTarget::TARGET_SCREEN, RenderTarget::OPTIONS_WITH_COLOUR);
-	currentContext->setRenderer(Resource<Renderer>(new FixedFunctionGlVboRenderer));
+	currentContext->setRenderer(Resource<Renderer>(new FixedFunctionGlVARenderer));
 }
 
 void TestLifecycle::onStart()

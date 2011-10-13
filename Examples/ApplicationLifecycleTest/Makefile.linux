@@ -47,6 +47,7 @@ SOURCES		:=	../../Graphics/Window \
 				../../Graphics/State/GLES2 \
 				../../Graphics/State/OGL \
 				../../Graphics/Renderer \
+				../../Graphics/Renderer/GLES10 \
 				../../Graphics/Renderer/GLES11 \
 				../../Graphics/Renderer/GLES20 \
 				../../Graphics/Renderer/OGL \
