@@ -48,8 +48,6 @@ namespace GLESGAE
 			private:
 				Resource<Texture> mTexture;
 				Settings mSettings;
-			
-			
 	};
 }
 

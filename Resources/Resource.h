@@ -101,6 +101,30 @@ namespace GLESGAE
 				return !(*this == rhs);
 			}
 			
+			/// Increase the instance count of this Resource.
+			/// Be exceptionally careful with using this manually, you will need to call remove manually as well!
+			/// This is however, useful for anything that has to be sent a raw pointer which may leave C-scope.
+			/// For example, Physics Engines and Scripting Languages.
+			void instance() const
+			{
+				assert(mCount);
+				++(*mCount);
+			}
+
+			/// Remove an instance count of this Resource, and if there are no more instances, purge it.
+			/// Calling this manually should be used with caution, and only on a Resource which has been manually instanced.
+			/// Otherwise, you will get into a situation whereby you've deleted something which still has a reference.
+			/// Again, this is primarily useful for Physics Engines and Scripting Languages only.
+			void remove()
+			{
+				assert(mCount);
+				if ((*mCount) > 0U)
+					--(*mCount);
+
+				if ((*mCount) == 0U)
+					purge();
+			}
+			
 		protected:
 			/// Protected Constructor so we can't create Managed Resources all over the place.
 			Resource(const Resources::Group group, const Resources::Type type, const Resources::Id id, T_Resource* const resource)
@@ -122,24 +146,6 @@ namespace GLESGAE
 					delete mCount;
 					mCount = 0;
 				}
-			}
-			
-			/// Increase the instance count of this Resource.
-			void instance() const
-			{
-				assert(mCount);
-				++(*mCount);
-			}
-
-			/// Remove an instance count of this Resource, and if there are no more instances, purge it.
-			void remove()
-			{
-				assert(mCount);
-				if ((*mCount) > 0U)
-					--(*mCount);
-
-				if ((*mCount) == 0U)
-					purge();
 			}
 			
 		private:

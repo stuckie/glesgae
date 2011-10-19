@@ -3,6 +3,10 @@
 #include <cstdio>
 #if defined(GLX)
 	#include "Context/Linux/GLee.h"
+#elif defined(WGL)
+	#include "Context/Win32/GLee.h"
+#elif defined(AGL)
+	#include "Context/Darwin/GLee.h"
 #elif defined(PANDORA)
 	#if defined(GLES1)
 		#include <GLES/gl.h>
@@ -110,7 +114,6 @@ void Texture::createGLid()
 	
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-
 
 	// Load up our data into the texture reference
 	switch (mType) {

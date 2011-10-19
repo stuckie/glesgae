@@ -1,6 +1,8 @@
 #ifndef _TIMER_H_
 #define _TIMER_H_
 
+#include "../Resources/Resource.h"
+
 namespace GLESGAE
 {
 	//! Timers can read from a Clock and scale the time as it sees fit.
@@ -33,7 +35,10 @@ namespace GLESGAE
 			float getScale() const { return mScale; }
 			
 			/// Update to this Clock - should be done only once per frame.
-			void update(Clock* const clock);
+			void update(const Resource<Clock>& clock);
+			
+			/// Reset the timer
+			void reset();
 			
 		private:
 			float mLastTime;
