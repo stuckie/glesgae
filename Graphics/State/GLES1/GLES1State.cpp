@@ -150,3 +150,4 @@ void GLES1State::setFullBlendingFunction(const GLenum sourceRGB, const GLenum de
 {
 	glBlendFuncSeparate(sourceRGB, destinationRGB, sourceAlpha, destinationAlpha);
 }
+

@@ -20,7 +20,7 @@ namespace GLESGAE
 			~Resource() { remove(); }
 			
 			/// Constructor for taking ownership over raw pointers.
-			Resource(T_Resource* const resource) : BaseResource(INVALID, INVALID_HASHSTRING, INVALID), mResource(resource) { instance(); }
+			explicit Resource(T_Resource* const resource) : BaseResource(INVALID, INVALID_HASHSTRING, INVALID), mResource(resource) { instance(); }
 			
 			/// Pointer Operator overload to return the actual resource.
 			T_Resource* operator-> () { return mResource; }
@@ -78,25 +78,25 @@ namespace GLESGAE
 			}
 			
 			/// Overloaded Equals Operator for pointer checking.
-			bool operator==(const Resource& resource)
+			bool operator==(const Resource& resource) const
 			{
 				return (mResource == resource.mResource);
 			}
 			
 			/// Overloaded Equals Operator for 0 pointer checking.
-			bool operator==(const void* rhs)
+			bool operator==(const void* rhs) const
 			{
 				return (reinterpret_cast<void*>(mResource) == rhs);
 			}
 			
 			/// Overloaded Not Equals Operator for pointer checking.
-			bool operator!=(const Resource& resource)
+			bool operator!=(const Resource& resource) const
 			{
 				return !(*this == resource);
 			}
 			
 			/// Overloaded Not Equals Operator for 0 pointer checking.
-			bool operator!=(const void* rhs)
+			bool operator!=(const void* rhs) const
 			{
 				return !(*this == rhs);
 			}
@@ -127,7 +127,7 @@ namespace GLESGAE
 			
 		protected:
 			/// Protected Constructor so we can't create Managed Resources all over the place.
-			Resource(const Resources::Group group, const Resources::Type type, const Resources::Id id, T_Resource* const resource)
+			explicit Resource(const Resources::Group group, const Resources::Type type, const Resources::Id id, T_Resource* const resource)
 			: BaseResource(group, type, id)
 			, mResource(resource)
 			{

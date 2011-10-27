@@ -1,6 +1,8 @@
 #ifndef _EVENT_TRIGGER_H_
 #define _EVENT_TRIGGER_H_
 
+#include "../Resources/Resource.h"
+
 namespace GLESGAE
 {
 	class Event;
@@ -11,9 +13,8 @@ namespace GLESGAE
 			virtual ~EventTrigger() {}
 			
 			/// Check if this trigger has an Event ready.
-			/// This MUST return 0 if there is no Event, otherwise it's the event pointer.
-			/// This event WILL be cleaned up by the Event System once all Observers have observed the event.
-			virtual Event* hasEvent() = 0;
+			/// This MUST return an empty resource if there is no Event, otherwise it's an Event Resource.
+			virtual Resource<Event> hasEvent() = 0;
 	};
 }
 

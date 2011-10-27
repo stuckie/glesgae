@@ -120,3 +120,4 @@ void GLXRenderContext::bindToWindow(const Resource<RenderWindow>& window)
 	// Rememeber the Window we're bound to
 	mWindow = window.recast<X11RenderWindow>();
 }
+

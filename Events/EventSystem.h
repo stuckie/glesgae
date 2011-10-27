@@ -43,14 +43,14 @@ namespace GLESGAE
 			void deregisterObserver(const EventType& eventType, EventObserver* const observer);
 
 			/// Register a Custom Event Trigger.
-			void registerEventTrigger(const EventType& eventType, EventTrigger* const trigger);
+			void registerTrigger(const EventType& eventType, EventTrigger* const trigger);
 
 			/// Deregister a Custom Event Trigger.
-			void deregisterEventTrigger(const EventType& eventType, EventTrigger* const trigger);
+			void deregisterTrigger(const EventType& eventType, EventTrigger* const trigger);
 
 			/// Send an Event to all Observers of this type.
 			/// If you want to retain this event beyond it being in the receiving scope, you'll have to copy it.
-			void sendEvent(const EventType& eventType, Event* event);
+			void sendEvent(const EventType& eventType, const Resource<Event>& event);
 
 		protected:
 			/// Update all the Triggers to send Events if necessary.

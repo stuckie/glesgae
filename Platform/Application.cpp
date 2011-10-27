@@ -86,7 +86,5 @@ void Application::onDestroy()
 {
 	if (mLifecycle != 0)
 		mLifecycle->onDestroy();
-
-	delete mInstance;
 }
 
