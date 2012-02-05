@@ -319,6 +319,7 @@ void controlCamera(Resource<Camera>& camera, Controller::KeyboardController* con
 {
 	Vector3 newPosition;
 	camera->getTransformMatrix().getPosition(&newPosition);
+	
 	if (true == keyboard->getKey(Controller::KEY_ARROW_DOWN))
 		newPosition.z() -= 0.01F;
 	
@@ -330,8 +331,8 @@ void controlCamera(Resource<Camera>& camera, Controller::KeyboardController* con
 	
 	if (true == keyboard->getKey(Controller::KEY_ARROW_RIGHT))
 		newPosition.x() += 0.01F;
-	camera->getTransformMatrix().setPosition(newPosition);
 	
+	camera->getTransformMatrix().setPosition(newPosition);
 	camera->update();
 }
 

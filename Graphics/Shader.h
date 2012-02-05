@@ -1,6 +1,7 @@
 #ifndef _SHADER_H_
 #define _SHADER_H_
 
+#include "../Utils/HashString.h"
 #include <string>
 #include <vector>
 
@@ -31,19 +32,19 @@ namespace GLESGAE
 			void createFromFile(const std::string& vertex, const std::string& fragment);
 
 			/// Get Attribute Location
-			GLint getAttribute(const std::string& attribute) const;
+			GLint getAttribute(const HashString attribute) const;
 
 			/// Get Uniform Location
-			GLint getUniform(const std::string& uniform) const;
+			GLint getUniform(const HashString uniform) const;
 
 			/// Get Program Id
 			GLuint getProgramId() const { return mShaderProgram; }
 			
 			/// Gain access to the attribute array
-			const std::vector<std::pair<std::string, GLint> >& getAttributeArray() const { return mAttributes; }
+			const std::vector<std::pair<HashString, GLint> >& getAttributeArray() const { return mAttributes; }
 
 			/// Gain access to the uniform array
-			const std::vector<std::pair<std::string, GLint> >& getUniformArray() const { return mUniforms; }
+			const std::vector<std::pair<HashString, GLint> >& getUniformArray() const { return mUniforms; }
 
 		protected:
 			/// Actually load and compile the shader source
@@ -53,8 +54,8 @@ namespace GLESGAE
 			void resetShader();
 
 		private:
-			std::vector<std::pair<std::string, GLint> > mUniforms;
-			std::vector<std::pair<std::string, GLint> > mAttributes;
+			std::vector<std::pair<HashString, GLint> > mUniforms;
+			std::vector<std::pair<HashString, GLint> > mAttributes;
 			GLuint mVertexShader;
 			GLuint mFragmentShader;
 			GLuint mShaderProgram;

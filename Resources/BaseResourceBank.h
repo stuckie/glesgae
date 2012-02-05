@@ -10,7 +10,7 @@ namespace GLESGAE
 		friend class BaseResource;
 		friend class ResourceManager;
 		
-		public:			
+		public:
 			virtual ~BaseResourceBank() {} 
 			
 			/// Get the Type of this Resource Bank
@@ -21,12 +21,12 @@ namespace GLESGAE
 			
 			/// Create a new resource group.
 			virtual Resources::Group newGroup() = 0;
-									
+			
 			/// Remove Group
 			virtual void removeGroup(const Resources::Group groupId) = 0;
-						
 			
-		protected:			
+			
+		protected:
 			/// Private constructor as this is a derived class only
 			BaseResourceBank(const Resources::Id id, const Resources::Type type)
 			: mId(id)

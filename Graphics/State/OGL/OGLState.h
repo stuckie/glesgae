@@ -60,7 +60,7 @@ namespace GLESGAE
 			bool isAlphaBlendingEnabled() const { return mAlphaBlending; }
 			
 			/// Add a uniform updater
-			void addUniformUpdater(const std::string& uniformName, const Resource<ShaderUniformUpdater>& updater);
+			void addUniformUpdater(const HashString uniformName, const Resource<ShaderUniformUpdater>& updater);
 			
 			/// Clear uniform updaters
 			void clearUniformUpdaters() { mUniformUpdaters.clear(); }
@@ -97,7 +97,7 @@ namespace GLESGAE
 			Resource<Texture> mLastTexture;
 			GLenum mLastTextureUnit;
 			
-			std::map<std::string, Resource<ShaderUniformUpdater> > mUniformUpdaters;
+			std::map<HashString, Resource<ShaderUniformUpdater> > mUniformUpdaters;
 	};
 }
 

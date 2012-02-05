@@ -22,7 +22,6 @@ namespace GLESGAE
 			: mEventObservers()
 			, mEventTriggers()
 			{
-
 			}
 
 			virtual ~CommonEventSystem() {}

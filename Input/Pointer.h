@@ -20,7 +20,6 @@ namespace GLESGAE
 				, mAxes(2U)
 				, mButtons(buttons)
 				{
-					
 				}
 				
 				/// Get the value of the specified axis

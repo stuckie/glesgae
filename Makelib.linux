@@ -64,6 +64,7 @@ SOURCES		:=	.\
 				Resources \
 				Platform \
 				Platform/Linux \
+				Scripting \
 				States \
 				Time \
 				Time/Linux \
@@ -71,7 +72,7 @@ SOURCES		:=	.\
 				Utils 
 				
 DATA		:=
-INCLUDES	:=
+INCLUDES	:= 
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -85,9 +86,8 @@ CFLAGS	:=	-g\
 			-Wcast-align\
 			-Wredundant-decls
 
-CFLAGS		+=	$(INCLUDE)
-CXXFLAGS	+=	$(CFLAGS) 
-#-pedantic -fdata-sections -ffunction-sections -Wextra -Weffc++ -fno-rtti -fno-exceptions -Wno-long-long -Wold-style-cast -Wstrict-overflow -Woverloaded-virtual -Wsign-promo -Wabi -Wmissing-declarations
+CFLAGS		+=	$(INCLUDE) `pkg-config --cflags javascriptcoregtk-3.0`
+CXXFLAGS	+=	$(CFLAGS) -pedantic -fdata-sections -ffunction-sections -Wextra -Weffc++ -fno-rtti -fno-exceptions -Wno-long-long -Wold-style-cast -Wstrict-overflow -Woverloaded-virtual -Wsign-promo -Wabi -Wmissing-declarations
 
 ASFLAGS	:=
 

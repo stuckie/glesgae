@@ -72,8 +72,8 @@ void Shader::createFromSource(const std::string& vertex, const std::string& frag
 			glGetActiveUniform(mShaderProgram, index, maxUniformLen, NULL, &size, &type, uniformName);
 			location = glGetUniformLocation(mShaderProgram, uniformName);
 
-			std::pair<std::string, GLint> parameter;
-			parameter.first = std::string(uniformName);
+			std::pair<HashString, GLint> parameter;
+			parameter.first = HashString(uniformName);
 			parameter.second = location;
 			mUniforms.push_back(parameter);
 		}
@@ -96,8 +96,8 @@ void Shader::createFromSource(const std::string& vertex, const std::string& frag
 			glGetActiveAttrib(mShaderProgram, index, maxAttributeLen, NULL, &size, &type, attributeName);
 			location = glGetAttribLocation(mShaderProgram, attributeName);
 
-			std::pair<std::string, GLint> parameter;
-			parameter.first = std::string(attributeName);
+			std::pair<HashString, GLint> parameter;
+			parameter.first = HashString(attributeName);
 			parameter.second = location;
 			mAttributes.push_back(parameter);
 		}
@@ -134,9 +134,9 @@ GLuint Shader::loadShader(const std::string& shader, const GLenum type)
 	return newShader;
 }
 
-GLint Shader::getAttribute(const std::string& attribute) const
+GLint Shader::getAttribute(const HashString attribute) const
 {
-	for (std::vector<std::pair<std::string, GLint> >::const_iterator itr(mAttributes.begin()); itr < mAttributes.end(); ++itr) {
+	for (std::vector<std::pair<HashString, GLint> >::const_iterator itr(mAttributes.begin()); itr < mAttributes.end(); ++itr) {
 		if (attribute == itr->first)
 			return itr->second;
 	}
@@ -145,9 +145,9 @@ GLint Shader::getAttribute(const std::string& attribute) const
 	return GL_INVALID_VALUE;
 }
 
-GLint Shader::getUniform(const std::string& uniform) const
+GLint Shader::getUniform(const HashString uniform) const
 {
-	for (std::vector<std::pair<std::string, GLint> >::const_iterator itr(mUniforms.begin()); itr < mUniforms.end(); ++itr) {
+	for (std::vector<std::pair<HashString, GLint> >::const_iterator itr(mUniforms.begin()); itr < mUniforms.end(); ++itr) {
 		if (uniform == itr->first)
 			return itr->second;
 	}
@@ -178,4 +178,3 @@ void Shader::resetShader()
 }
 
 #endif
-

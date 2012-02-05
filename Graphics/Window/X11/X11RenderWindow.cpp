@@ -18,7 +18,7 @@ void X11RenderWindow::open()
 							, XDefaultRootWindow(mDisplay)	// Parent Window
 							, 0								// X of top-left corner
 							, 0								// Y of top-left corner
-							, mWidth							// requested width
+							, mWidth						// requested width
 							, mHeight						// requested height
 							, 0								// border width
 							, CopyFromParent				// window depth

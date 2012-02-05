@@ -3,7 +3,6 @@
 
 #include "BaseResource.h"
 #include <cassert>
-#include <cstdio>
 
 namespace GLESGAE
 {

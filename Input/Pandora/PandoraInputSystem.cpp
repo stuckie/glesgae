@@ -17,26 +17,26 @@
 
 using namespace GLESGAE;
 
-Controller::Button Controller::Pandora::Up	= 0U;
+Controller::Button Controller::Pandora::Up		= 0U;
 Controller::Button Controller::Pandora::Down	= 1U;
 Controller::Button Controller::Pandora::Left	= 2U;
 Controller::Button Controller::Pandora::Right	= 3U;
 Controller::Button Controller::Pandora::Start	= 4U;
 Controller::Button Controller::Pandora::Select	= 5U;
 Controller::Button Controller::Pandora::Pandora	= 6U;
-Controller::Button Controller::Pandora::Y	= 7U;
-Controller::Button Controller::Pandora::B	= 8U;
-Controller::Button Controller::Pandora::X	= 9U;
-Controller::Button Controller::Pandora::A	= 10U;
-Controller::Button Controller::Pandora::L1	= 11U;
-Controller::Button Controller::Pandora::R1	= 12U;
-Controller::Button Controller::Pandora::L2	= 13U;
-Controller::Button Controller::Pandora::R2	= 14U;
+Controller::Button Controller::Pandora::Y		= 7U;
+Controller::Button Controller::Pandora::B		= 8U;
+Controller::Button Controller::Pandora::X		= 9U;
+Controller::Button Controller::Pandora::A		= 10U;
+Controller::Button Controller::Pandora::L1		= 11U;
+Controller::Button Controller::Pandora::R1		= 12U;
+Controller::Button Controller::Pandora::L2		= 13U;
+Controller::Button Controller::Pandora::R2		= 14U;
 
 Controller::Id Controller::Pandora::LeftNub 	= 0U;
 Controller::Id Controller::Pandora::RightNub	= 1U;
 
-Controller::Id Controller::Pandora::Buttons	= 0U;
+Controller::Id Controller::Pandora::Buttons		= 0U;
 
 InputSystem::InputSystem(EventSystem* const eventSystem)
 : CommonInputSystem()

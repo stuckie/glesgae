@@ -19,7 +19,6 @@ namespace GLESGAE
 				: CommonController(Pad, controllerId)
 				, mButtons(buttons)
 				{
-					
 				}
 				
 				/// Get the value of the specified button

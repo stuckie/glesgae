@@ -24,9 +24,9 @@ export STRIP	:=	$(PREFIX)strip
 	@$(CC) -MMD -MP -MF $(DEPSDIR)/$*.d $(CFLAGS) -c $< -o $@
 
 
-%.a:
-	@echo archiving...
-	@$(AR) r $@ $(OFILES)
+%.linux:
+	@echo linking...
+	@$(LD) $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
 
 #---------------------------------------------------------------------------------
 # TARGET is the name of the output, if this ends with _mb a multiboot image is generated
@@ -35,70 +35,67 @@ export STRIP	:=	$(PREFIX)strip
 # DATA is a list of directories containing data files
 # INCLUDES is a list of directories containing header files
 #---------------------------------------------------------------------------------
-TARGET		:=	lib/libGLESGAE
+TARGET		:=	GLESGAE
 BUILD		:=	build-linux
-SOURCES		:=	.\
-				Graphics/Window \
-				Graphics/Context \
-				Graphics/Context/Linux \
-				Graphics/Platform \
-				Graphics/Platform/Linux \
-				Graphics/State \
-				Graphics/State/GLES1 \
-				Graphics/State/GLES2 \
-				Graphics/State/OGL \
-				Graphics/Renderer \
-				Graphics/Renderer/GLES11 \
-				Graphics/Renderer/GLES20 \
-				Graphics/Renderer/OGL \
-				Graphics/Target/Screen/OGL \
-				Graphics/Target/Buffer/OGL \
-				Graphics/Window \
-				Graphics/Window/X11 \
-				Graphics \
-				Events \
-				Events/X11 \
-				Input \
-				Input/Linux \
-				Maths \
-				Resources \
-				Platform \
-				Platform/Linux \
-				Scripting \
-				States \
-				Time \
-				Time/Linux \
-				Factories \
-				Utils
-				
+SOURCES		:=	../../Graphics/Window \
+				../../Graphics/Context \
+				../../Graphics/Context/Linux \
+				../../Graphics/Platform \
+				../../Graphics/Platform/Linux \
+				../../Graphics/State \
+				../../Graphics/State/GLES1 \
+				../../Graphics/State/GLES2 \
+				../../Graphics/State/OGL \
+				../../Graphics/Renderer \
+				../../Graphics/Renderer/GLES11 \
+				../../Graphics/Renderer/GLES20 \
+				../../Graphics/Renderer/OGL \
+				../../Graphics/Target/Screen/OGL \
+				../../Graphics/Target/Buffer/OGL \
+				../../Graphics/Window \
+				../../Graphics/Window/X11 \
+				../../Graphics \
+				../../Events \
+				../../Events/X11 \
+				../../Input \
+				../../Input/Linux \
+				../../Maths \
+				../../Resources \
+				../../Platform \
+				../../Platform/Linux \
+				../../Scripting \
+				../../States \
+				../../Time \
+				../../Time/Linux \
+				../../Factories \
+				../../Utils \
+				../../ \
+				.
 DATA		:=
-INCLUDES	:= 
+INCLUDES	:=
 
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
-CFLAGS	:=	-DGLX\
-			-DLINUX\
-			-O3\
-			-Wall\
-			-Werror\
-			-Wno-variadic-macros\
-			-Wuninitialized\
-			-Wcast-align\
-			-Wredundant-decls\
-			-fomit-frame-pointer\
-			-ffast-math
+CFLAGS := -g -DGLX -DLINUX -Wall -Werror -Wno-variadic-macros -Wuninitialized -Wcast-align -Wredundant-decls
+#CFLAGS	:=		-O3\			-DGLX\			-DLINUX\			-Wall\			-Werror\			-Wno-variadic-macros\			-Wuninitialized\			-Wcast-align\			-Wredundant-decls\			-fomit-frame-pointer\			-ffast-math
 
 CFLAGS		+=	$(INCLUDE) `pkg-config --cflags javascriptcoregtk-3.0`
 CXXFLAGS	+=	$(CFLAGS) -pedantic -fdata-sections -ffunction-sections -Wextra -Weffc++ -fno-rtti -fno-exceptions -Wno-long-long -Wold-style-cast -Wstrict-overflow -Woverloaded-virtual -Wsign-promo -Wabi -Wmissing-declarations
 
 ASFLAGS	:=
+LDFLAGS	= 
+
+#---------------------------------------------------------------------------------
+# any extra libraries we wish to link with the project
+#---------------------------------------------------------------------------------
+LIBS	:=	-lX11 -lGL -lrt `pkg-config --libs javascriptcoregtk-3.0`
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:=	/usr
+LIBDIRS	:=	/usr /
 
 #---------------------------------------------------------------------------------
 # no real need to edit anything past this point unless you need to add additional
@@ -154,14 +151,19 @@ export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 #---------------------------------------------------------------------------------
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
-	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makeoptlib.linux
+	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile.linux
 
 all	: $(BUILD)
 
 #---------------------------------------------------------------------------------
+strip	:
+	@echo stripping...
+	@$(STRIP) $(OUTPUT).linux
+
+#---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
-	@rm -fr $(BUILD) $(TARGET).a
+	@rm -fr $(BUILD) $(TARGET).elf $(TARGET).linux
 
 #---------------------------------------------------------------------------------
 else
@@ -171,7 +173,11 @@ DEPENDS	:=	$(OFILES:.o=.d)
 #---------------------------------------------------------------------------------
 # main targets
 #---------------------------------------------------------------------------------
-$(OUTPUT).a:	$(OFILES)
+$(OUTPUT).linux:	$(OFILES)
+
+%.o	:	%.pcx
+	@echo $(notdir $<)
+	@$(bin2o)
 
 -include $(DEPENDS)
 

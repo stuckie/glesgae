@@ -3,7 +3,7 @@
 #---------------------------------------------------------------------------------
 # the prefix on the compiler executables
 #---------------------------------------------------------------------------------
-PREFIX		:=
+PREFIX		:=	
 
 export CC	:=	$(PREFIX)gcc
 export CXX	:=	$(PREFIX)g++
@@ -16,17 +16,17 @@ export STRIP	:=	$(PREFIX)strip
 #---------------------------------------------------------------------------------
 %.o: %.cpp
 	@echo $(notdir $<)
-	@$(CXX) -MMD -MP -MF $(DEPSDIR)/$*.d $(CXXFLAGS) -c $< -o $@
-
+	$(CXX) -MMD -MP -MF $(DEPSDIR)/$*.d $(CXXFLAGS) -c $< -o $@
+	
 #---------------------------------------------------------------------------------
 %.o: %.c
 	@echo $(notdir $<)
-	@$(CC) -MMD -MP -MF $(DEPSDIR)/$*.d $(CFLAGS) -c $< -o $@
+	$(CC) -MMD -MP -MF $(DEPSDIR)/$*.d $(CFLAGS) -c $< -o $@
 
 
-%.a:
-	@echo archiving...
-	@$(AR) r $@ $(OFILES)
+%.pandora:
+	@echo linking...
+	$(LD) $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
 
 #---------------------------------------------------------------------------------
 # TARGET is the name of the output, if this ends with _mb a multiboot image is generated
@@ -35,70 +35,49 @@ export STRIP	:=	$(PREFIX)strip
 # DATA is a list of directories containing data files
 # INCLUDES is a list of directories containing header files
 #---------------------------------------------------------------------------------
-TARGET		:=	lib/libGLESGAE
-BUILD		:=	build-linux
-SOURCES		:=	.\
-				Graphics/Window \
-				Graphics/Context \
-				Graphics/Context/Linux \
-				Graphics/Platform \
-				Graphics/Platform/Linux \
-				Graphics/State \
-				Graphics/State/GLES1 \
-				Graphics/State/GLES2 \
-				Graphics/State/OGL \
-				Graphics/Renderer \
-				Graphics/Renderer/GLES11 \
-				Graphics/Renderer/GLES20 \
-				Graphics/Renderer/OGL \
-				Graphics/Target/Screen/OGL \
-				Graphics/Target/Buffer/OGL \
-				Graphics/Window \
-				Graphics/Window/X11 \
-				Graphics \
-				Events \
-				Events/X11 \
-				Input \
-				Input/Linux \
-				Maths \
-				Resources \
-				Platform \
-				Platform/Linux \
-				Scripting \
-				States \
-				Time \
-				Time/Linux \
-				Factories \
-				Utils
-				
+TARGET		:=	GLESGAE
+BUILD		:=	build-pandora
+SOURCES		:=	../../Graphics/Window \
+				../../Graphics/Context \
+				../../Graphics \
+				../../Events \
+				../../Events/X11 \
+				../../Input \
+				../../Input/Pandora \
+				../../Maths \
+				../../Resources \
+				.
 DATA		:=
-INCLUDES	:= 
+INCLUDES	:=
 
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
-CFLAGS	:=	-DGLX\
-			-DLINUX\
-			-O3\
-			-Wall\
-			-Werror\
-			-Wno-variadic-macros\
-			-Wuninitialized\
-			-Wcast-align\
-			-Wredundant-decls\
-			-fomit-frame-pointer\
-			-ffast-math
+CFLAGS	:=	-DLINUX\
+		-DPANDORA\
+		-DGLES2\
+		-g
+#		-O3\
+#		-Wall\
+# 		-fomit-frame-pointer\
+#		-ffast-math
 
-CFLAGS		+=	$(INCLUDE) `pkg-config --cflags javascriptcoregtk-3.0`
-CXXFLAGS	+=	$(CFLAGS) -pedantic -fdata-sections -ffunction-sections -Wextra -Weffc++ -fno-rtti -fno-exceptions -Wno-long-long -Wold-style-cast -Wstrict-overflow -Woverloaded-virtual -Wsign-promo -Wabi -Wmissing-declarations
+CFLAGS		+=	$(INCLUDE) 
+CXXFLAGS	+=	$(CFLAGS)
 
 ASFLAGS	:=
+LDFLAGS	=
+
+#---------------------------------------------------------------------------------
+# any extra libraries we wish to link with the project
+#---------------------------------------------------------------------------------
+LIBS	:=	-lX11 -lGLESv2 -lEGL -lpnd
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:=	/usr
+LIBDIRS	:=	
 
 #---------------------------------------------------------------------------------
 # no real need to edit anything past this point unless you need to add additional
@@ -154,14 +133,19 @@ export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 #---------------------------------------------------------------------------------
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
-	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makeoptlib.linux
+	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/MakefileES2.pandora
 
 all	: $(BUILD)
 
 #---------------------------------------------------------------------------------
+strip	:
+	@echo stripping...
+	@$(STRIP) $(OUTPUT).pandora
+
+#---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
-	@rm -fr $(BUILD) $(TARGET).a
+	@rm -fr $(BUILD) $(TARGET).elf $(TARGET).pandora
 
 #---------------------------------------------------------------------------------
 else
@@ -171,7 +155,11 @@ DEPENDS	:=	$(OFILES:.o=.d)
 #---------------------------------------------------------------------------------
 # main targets
 #---------------------------------------------------------------------------------
-$(OUTPUT).a:	$(OFILES)
+$(OUTPUT).pandora:	$(OFILES)
+
+%.o	:	%.pcx
+	@echo $(notdir $<)
+	@$(bin2o)
 
 -include $(DEPENDS)
 

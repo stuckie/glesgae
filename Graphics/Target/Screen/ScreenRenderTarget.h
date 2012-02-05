@@ -14,7 +14,7 @@ namespace GLESGAE
 			/// Bind the Screen Render Target for drawing to.
 			void bind();
 			
-			// Unbind the Screen Render Target as the current drawing surface.
+			/// Unbind the Screen Render Target as the current drawing surface.
 			void unbind();
 	};
 }

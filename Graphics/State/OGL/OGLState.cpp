@@ -9,6 +9,15 @@
 
 using namespace GLESGAE;
 
+const HashString aPositionHS("a_position");
+const HashString aColourHS("a_colour");
+const HashString aNormalHS("a_normal");
+const HashString aTexCoord0HS("a_texCoord0");
+const HashString aTexCoord1HS("a_texCoord1");
+const HashString aCustom0HS("a_custom0");
+const HashString aCustom1HS("a_custom1");
+const HashString aCustom2HS("a_custom2");
+
 OGLState::OGLState()
 : mCamera()
 , mTextureMatrix()
@@ -110,7 +119,7 @@ void OGLState::setFullBlendingFunction(const GLenum sourceRGB, const GLenum dest
 	glBlendFuncSeparate(sourceRGB, destinationRGB, sourceAlpha, destinationAlpha);
 }
 
-void OGLState::addUniformUpdater(const std::string& uniformName, const Resource<ShaderUniformUpdater>& updater)
+void OGLState::addUniformUpdater(const HashString uniformName, const Resource<ShaderUniformUpdater>& updater)
 {
 	// should probably check and assert if we already have something for this uniform name.
 	mUniformUpdaters[uniformName] = updater;
@@ -123,8 +132,8 @@ void OGLState::bindShader(const Resource<Shader>& shader)
 		glUseProgram(shader->getProgramId());
 		resetAttributes();
 		
-		const std::vector<std::pair<std::string, GLint> >& attributes(shader->getAttributeArray());
-		for (std::vector<std::pair<std::string, GLint> >::const_iterator itr(attributes.begin()); itr < attributes.end(); ++itr)
+		const std::vector<std::pair<HashString, GLint> >& attributes(shader->getAttributeArray());
+		for (std::vector<std::pair<HashString, GLint> >::const_iterator itr(attributes.begin()); itr < attributes.end(); ++itr)
 			glEnableVertexAttribArray(itr->second);
 	}
 }
@@ -141,14 +150,14 @@ void OGLState::resetAttributes()
 	a_custom2 = GL_INVALID_VALUE;
 
 	if (mCurrentShader != 0) {
-		a_position = mCurrentShader->getAttribute("a_position");
-		a_colour = mCurrentShader->getAttribute("a_colour");
-		a_normal = mCurrentShader->getAttribute("a_normal");
-		a_texCoord0 = mCurrentShader->getAttribute("a_texCoord0");
-		a_texCoord1 = mCurrentShader->getAttribute("a_texCoord1");
-		a_custom0 = mCurrentShader->getAttribute("a_custom0");
-		a_custom1 = mCurrentShader->getAttribute("a_custom1");
-		a_custom2 = mCurrentShader->getAttribute("a_custom2");
+		a_position = mCurrentShader->getAttribute(aPositionHS);
+		a_colour = mCurrentShader->getAttribute(aColourHS);
+		a_normal = mCurrentShader->getAttribute(aNormalHS);
+		a_texCoord0 = mCurrentShader->getAttribute(aTexCoord0HS);
+		a_texCoord1 = mCurrentShader->getAttribute(aTexCoord1HS);
+		a_custom0 = mCurrentShader->getAttribute(aCustom0HS);
+		a_custom1 = mCurrentShader->getAttribute(aCustom1HS);
+		a_custom2 = mCurrentShader->getAttribute(aCustom2HS);
 	}
 
 	if (GL_INVALID_VALUE != a_position)
@@ -171,8 +180,8 @@ void OGLState::resetAttributes()
 
 void OGLState::updateUniforms(const Resource<Material>& material, const Resource<Matrix4>& transform)
 {
-	std::vector<std::pair<std::string, GLint> > uniforms(mCurrentShader->getUniformArray());
-	for (std::vector<std::pair<std::string, GLint> >::iterator itr(uniforms.begin()); itr < uniforms.end(); ++itr)
+	std::vector<std::pair<HashString, GLint> > uniforms(mCurrentShader->getUniformArray());
+	for (std::vector<std::pair<HashString, GLint> >::iterator itr(uniforms.begin()); itr < uniforms.end(); ++itr)
 		mUniformUpdaters[itr->first]->update(itr->second, mCamera, material, transform);
 }
 
