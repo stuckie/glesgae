@@ -78,8 +78,7 @@ bool TestLifecycle::onLoop()
 	const Resource<InputSystem>& inputSystem(application->getInputSystem());
 	const Resource<GraphicsSystem>& graphicsSystem(application->getGraphicsSystem());
 	Resource<RenderContext> currentContext(graphicsSystem->getCurrentContext());
-	
-	Controller::KeyboardController* myKeyboard(inputSystem->getKeyboard(0));
+	Resource<Controller::KeyboardController> myKeyboard(inputSystem->getKeyboard(0));
 
 	eventSystem->update();
 	inputSystem->update();

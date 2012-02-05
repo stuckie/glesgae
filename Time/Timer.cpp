@@ -12,7 +12,7 @@ Timer::Timer()
 {
 }
 
-void Timer::update(Clock* const clock)
+void Timer::update(const Resource<Clock>& clock)
 {
 	mCurrentTime = clock->getTime() * mScale;
 	if (false == mPaused)
@@ -20,5 +20,11 @@ void Timer::update(Clock* const clock)
 	else
 		mDeltaTime = 0.0F;
 	mLastTime = mCurrentTime;
+}
+
+void Timer::reset()
+{
+	mLastTime = 0.0F;
+	mDeltaTime = 0.0F;
 }
 

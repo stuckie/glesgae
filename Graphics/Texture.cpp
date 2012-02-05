@@ -3,6 +3,10 @@
 #include <cstdio>
 #if defined(GLX)
 	#include "Context/Linux/GLee.h"
+#elif defined(WGL)
+	#include "Context/Win32/GLee.h"
+#elif defined(AGL)
+	#include "Context/Darwin/GLee.h"
 #elif defined(PANDORA)
 	#if defined(GLES1)
 		#include <GLES/gl.h>
@@ -34,29 +38,46 @@ void Texture::loadBMP(const std::string& fileName)
 	unsigned short int bpp(0U);		// number of bits per pixel (must be 24)
 
 	// make sure the file is there.
-	if ((file = fopen(fileName.c_str(), "rb"))==NULL)
+	if ((file = fopen(fileName.c_str(), "rb"))==NULL) {
+		printf("cannot open file: %s\n", fileName.c_str());
 		return;
+	}
 
 	// seek through the bmp header, up to the width/height:
 	fseek(file, 18, SEEK_CUR);
 
-	if (1 != fread(&mWidth, 4, 1, file))
+	if (1 != fread(&mWidth, 4, 1, file)) {
+		printf("cannot read file: %s\n", fileName.c_str());
+		fclose(file);
 		return;
+	}
 
 	// read the height 
-	if (1 != fread(&mHeight, 4, 1, file))
+	if (1 != fread(&mHeight, 4, 1, file)) {
+		printf("cannot read file: %s\n", fileName.c_str());
+		fclose(file);
 		return;
+	}
 
 	// read the planes
-	if (1 != fread(&planes, 2, 1, file))
+	if (1 != fread(&planes, 2, 1, file)) {
+		printf("cannot read file: %s\n", fileName.c_str());
+		fclose(file);
 		return;
+	}
 
-	if (1 != planes) // Only supporting single layer BMP just now
+	if (1 != planes) {// Only supporting single layer BMP just now
+		printf("more than one plane\n");
+		fclose(file);
 		return;
+	}
 
 	// read the bpp
-	if (1 != fread(&bpp, 2, 1, file))
+	if (1 != fread(&bpp, 2, 1, file)) {
+		printf("cannot read file: %s\n", fileName.c_str());
+		fclose(file);
 		return;
+	}
 
 	if (24 == bpp) {
 		size = mWidth * mHeight * 3U; // RGB
@@ -72,13 +93,20 @@ void Texture::loadBMP(const std::string& fileName)
 
 	// read the data. 
 	mData = new unsigned char[size];
-	if (mData == 0)
-		return;	
-
-	if (1 != fread(mData, size, 1, file))
+	if (mData == 0) {
+		printf("cannot read file: %s\n", fileName.c_str());
+		fclose(file);
 		return;
+	}
+
+	if (1 != fread(mData, size, 1, file)) {
+		printf("cannot read file: %s\n", fileName.c_str());
+		fclose(file);
+		return;
+	}
 
 	if (24 == bpp) {
+		printf("Found 24bit Texture..\n");
 		for (unsigned int index(0U); index < size; index += 3U) { // reverse all of the colors. (bgr -> rgb)
 			unsigned char temp(mData[index]);
 			mData[index] = mData[index + 2U];
@@ -86,17 +114,22 @@ void Texture::loadBMP(const std::string& fileName)
 		}
 	}
 	else if (32 == bpp) {
+		printf("Found 32bit Texture..\n");
 		for (unsigned int index(0U); index < size; index += 4U) { // reverse all of the colors. (bgra -> rgba)
 			unsigned char temp(mData[index]);
 			mData[index] = mData[index + 2U];
 			mData[index + 2U] = temp;
 		}
 	}
+	else {
+		printf("Unknown bpp:%d\n", bpp);
+	}
 
 	createGLid();
 
 	delete [] mData;
 	mData = 0;
+	fclose(file);
 }
 
 void Texture::createGLid()
@@ -110,7 +143,6 @@ void Texture::createGLid()
 	
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-
 
 	// Load up our data into the texture reference
 	switch (mType) {

@@ -1,11 +1,13 @@
 #ifndef _STATE_H_
 #define _STATE_H_
 
+#include "../Utils/HashString.h"
+
 namespace GLESGAE
 {
 	namespace States
 	{
-		typedef unsigned int Id;
+		typedef HashString Id;
 	}
 	
 	class State

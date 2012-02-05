@@ -102,7 +102,7 @@ Resource<BaseJavaScriptClass> JavaScriptContext::findJavaScriptClass(const HashS
 	
 	Logger::getInstance().log("Cannot find classId: " + toString<unsigned int>(classId.getValue()) + "\n", Logger::LOG_TYPE_ERROR);
 	
-	return 0;
+	return Resource<BaseJavaScriptClass>();
 }
 
 void JavaScriptContext::logException(JSValueRef exception)

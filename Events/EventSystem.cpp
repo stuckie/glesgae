@@ -40,7 +40,7 @@ void CommonEventSystem::deregisterObserver(const EventType& eventType, EventObse
 	printf("EventSystem: tried to deregister an event observer which was not registered.\n");
 }
 
-void CommonEventSystem::registerEventTrigger(const EventType& eventType, EventTrigger* const trigger)
+void CommonEventSystem::registerTrigger(const EventType& eventType, EventTrigger* const trigger)
 {
 	// Should probably sanity check to ensure we don't already have this registered.
 	
@@ -48,7 +48,7 @@ void CommonEventSystem::registerEventTrigger(const EventType& eventType, EventTr
 	mEventTriggers[eventType].push_back(trigger);
 }
 
-void CommonEventSystem::deregisterEventTrigger(const EventType& eventType, EventTrigger* const trigger)
+void CommonEventSystem::deregisterTrigger(const EventType& eventType, EventTrigger* const trigger)
 {
 	std::vector<EventTrigger*>& eventArray(mEventTriggers[eventType]);
 	
@@ -64,7 +64,7 @@ void CommonEventSystem::deregisterEventTrigger(const EventType& eventType, Event
 	printf("EventSystem: tried to deregister an event trigger which was not registered.\n");
 }
 
-void CommonEventSystem::sendEvent(const EventType& eventType, Event* event)
+void CommonEventSystem::sendEvent(const EventType& eventType, const Resource<Event>& event)
 {
 	// Quick Sanity Check
 	if (eventType != event->getEventType()) {
@@ -77,9 +77,6 @@ void CommonEventSystem::sendEvent(const EventType& eventType, Event* event)
 	// Send to all Observers in this list.
 	for (std::vector<EventObserver*>::iterator itr(eventArray.begin()); itr < eventArray.end(); ++itr)
 		(*itr)->receiveEvent(event);
-		
-	// Delete the event.
-	delete event;
 }
 
 void CommonEventSystem::updateAllTriggers()
@@ -87,7 +84,8 @@ void CommonEventSystem::updateAllTriggers()
 	for (std::map<EventType, std::vector<EventTrigger*> >::iterator eventType(mEventTriggers.begin()); eventType != mEventTriggers.end(); ++eventType) {
 		std::vector<EventTrigger*>& eventArray(eventType->second);
 		for (std::vector<EventTrigger*>::iterator itr(eventArray.begin()); itr < eventArray.end(); ++itr) {
-			if (Event* event = (*itr)->hasEvent())
+			const Resource<Event>& event((*itr)->hasEvent());
+			if (event != 0)
 				sendEvent(eventType->first, event);
 		}
 	}

@@ -35,7 +35,7 @@
 #include "Texture0UniformUpdater.h"
 
 #include <cstdio>
-#include "../../Graphics/Renderer/GLES11/FixedFunctionGlVboRenderer.h"
+#include "../../Graphics/Renderer/GLES10/FixedFunctionGlVARenderer.h"
 #include "../../Graphics/State/GLES1/GLES1State.h"
 
 using namespace GLESGAE;
@@ -122,7 +122,7 @@ namespace LifecycleTest
 }
 
 // Good 'ol Helper Functions
-void controlCamera(Resource<Camera>& camera, Controller::KeyboardController* const keyboard);
+void controlCamera(Resource<Camera>& camera, const Resource<Controller::KeyboardController>& keyboard);
 Mesh* makeSprite(Resource<Shader>& shader, Resource<Texture>& texture);
 Shader* makeSpriteShader();
 
@@ -140,7 +140,7 @@ void TestLifecycle::onCreate()
 	
 	Resource<RenderContext> currentContext(graphicsSystem->getCurrentContext());
 	mScreenTarget = currentContext->createRenderTarget(RenderTarget::TARGET_SCREEN, RenderTarget::OPTIONS_WITH_COLOUR);
-	currentContext->setRenderer(Resource<Renderer>(new FixedFunctionGlVboRenderer));
+	currentContext->setRenderer(Resource<Renderer>(new FixedFunctionGlVARenderer));
 }
 
 void TestLifecycle::onStart()
@@ -204,7 +204,7 @@ void TestLifecycle::onStart()
 	
 	camera->getTransformMatrix().setPosition(Vector3(0.0F, 0.0F, 5.0F));
 
-	Controller::KeyboardController* myKeyboard(inputSystem->newKeyboard());
+	Resource<Controller::KeyboardController> myKeyboard(inputSystem->newKeyboard());
 	LifecycleTest::Controllers::Keyboard = myKeyboard->getControllerId();
 	
 	// Setup Fixed Function settings
@@ -239,7 +239,7 @@ bool TestLifecycle::onLoop()
 	ResourceBank<Matrix4>& transformBank(resourceManager->getBank<Matrix4>(LifecycleTest::TransformBank, LifecycleTest::Transform));
 	Resource<Matrix4>& transform(transformBank.get(LifecycleTest::Transforms::TestGroup, LifecycleTest::Transforms::SpriteTransform));
 	
-	Controller::KeyboardController* myKeyboard(inputSystem->getKeyboard(LifecycleTest::Controllers::Keyboard));
+	Resource<Controller::KeyboardController> myKeyboard(inputSystem->getKeyboard(LifecycleTest::Controllers::Keyboard));
 	
 	controlCamera(camera, myKeyboard);
 
@@ -315,7 +315,7 @@ Mesh* makeSprite(Resource<Shader>& shader, Resource<Texture>& texture)
 	return new Mesh(newVertexBuffer, newIndexBuffer, newMaterial);
 }
 
-void controlCamera(Resource<Camera>& camera, Controller::KeyboardController* const keyboard)
+void controlCamera(Resource<Camera>& camera, const Resource<Controller::KeyboardController>& keyboard)
 {
 	Vector3 newPosition;
 	camera->getTransformMatrix().getPosition(&newPosition);

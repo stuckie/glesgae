@@ -1,6 +1,8 @@
 #ifndef _EVENT_OBSERVER_H_
 #define _EVENT_OBSERVER_H_
 
+#include "../Resources/Resource.h"
+
 namespace GLESGAE
 {
 	class Event;
@@ -11,7 +13,7 @@ namespace GLESGAE
 			virtual ~EventObserver() {}
 			
 			/// Trigger this Observer to receive an event.
-			virtual void receiveEvent(Event* const event) = 0;
+			virtual void receiveEvent(const Resource<Event>& event) = 0;
 	};
 }
 

@@ -81,19 +81,19 @@ Matrix4 Camera::createViewMatrix(const Vector3& eye, const Vector3& centre, cons
 	Vector3 upVector(rightVector.cross(forwardVector));
 
 	Matrix4 viewMatrix;
-	viewMatrix(0, 0) = rightVector.x();
+	viewMatrix(0, 0) = -rightVector.x();
 	viewMatrix(0, 1) = upVector.x();
-	viewMatrix(0, 2) = -forwardVector.x();
+	viewMatrix(0, 2) = forwardVector.x();
 	viewMatrix(0, 3) = 0.0F;
 	
-	viewMatrix(1, 0) = rightVector.y();
+	viewMatrix(1, 0) = -rightVector.y();
 	viewMatrix(1, 1) = upVector.y();
-	viewMatrix(1, 2) = -forwardVector.y();
+	viewMatrix(1, 2) = forwardVector.y();
 	viewMatrix(1, 3) = 0.0F;
 	
-	viewMatrix(2, 0) = rightVector.z();
+	viewMatrix(2, 0) = -rightVector.z();
 	viewMatrix(2, 1) = upVector.z();
-	viewMatrix(2, 2) = -forwardVector.z();
+	viewMatrix(2, 2) = forwardVector.z();
 	viewMatrix(2, 3) = 0.0F;
 	
 	viewMatrix(3, 0) = 0.0F;

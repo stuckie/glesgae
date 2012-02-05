@@ -11,8 +11,8 @@ StateStack::StateStack()
 void StateStack::pop()
 {
 	if (false == mStack.empty()) {
+		mLastState = *(mStack.end() - 1U);
 		mStack.pop_back();
-		mLastState = *(mStack.end());
 	}
 }
 
@@ -21,7 +21,7 @@ Resource<State> StateStack::get()
 	if (false == mStack.empty())
 		return mStack[mStack.size() - 1U];
 	else
-		return 0;
+		return Resource<State>();
 }
 
 bool StateStack::update(const float delta)
@@ -32,7 +32,7 @@ bool StateStack::update(const float delta)
 		status = mStack[mStack.size() - 1U]->update(delta);
 	
 	if (mLastState != 0)
-		mLastState = 0;
+		mLastState = Resource<State>();
 	
 	return status;
 }
