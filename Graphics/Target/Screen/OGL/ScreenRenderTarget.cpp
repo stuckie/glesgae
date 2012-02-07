@@ -1,8 +1,6 @@
 #include "../ScreenRenderTarget.h"
 
-#if defined(GLX)
-	#include "../../../Context/Linux/GLee.h"
-#endif
+#include "../../../Context/Linux/GLee.h"
 
 using namespace GLESGAE;
 

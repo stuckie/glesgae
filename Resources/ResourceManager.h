@@ -14,6 +14,7 @@ namespace GLESGAE
 		friend class BaseResource;
 		public:
 			ResourceManager() : mResourceBanks() {}
+			~ResourceManager() { assert(mResourceBanks.empty()); }
 			
 			/// Create a new Resource Bank of the specified
 			template <typename T_Resource> ResourceBank<T_Resource>& createBank(const Resources::Type bankType);

@@ -1,5 +1,9 @@
 #include "ScreenRenderTarget.h"
 
+#if defined(PANDORA)
+	#include <GLES2/gl.h>
+#endif
+
 void ScreenRenderTarget::bind()
 {
 	// As per OpenGL Reference Manual, id 0 is kept for the Screen.
