@@ -1,11 +1,9 @@
 #include "FixedFunctionGlVboRenderer.h"
 
-#if defined(GLX)
+#if defined(LINUX)
 	#include "../../Context/Linux/GLee.h"
 #elif defined(PANDORA)
-	#if defined(GLES1)
-		#include <GLES/gl.h>
-	#endif
+	#include <GLES/gl.h>
 #endif
 
 #include "../../Camera.h"

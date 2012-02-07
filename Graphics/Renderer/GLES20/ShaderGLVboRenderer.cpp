@@ -9,6 +9,8 @@
 #include "../../ShaderUniformUpdater.h"
 #include "../../State/GLES2/GLES2State.h"
 
+#if !defined(GLES1)
+
 using namespace GLESGAE;
 
 ShaderGlVboRenderer::ShaderGlVboRenderer()
@@ -135,3 +137,5 @@ void ShaderGlVboRenderer::drawMesh(const Resource<Mesh>& mesh, const Resource<Ma
 			break;
 	};
 }
+
+#endif // not ES1

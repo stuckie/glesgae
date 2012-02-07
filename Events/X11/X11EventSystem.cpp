@@ -1,4 +1,4 @@
-#if defined(LINUX)
+#if defined(LINUX) || defined(PANDORA)
 
 #include "../../Graphics/Window/X11/X11RenderWindow.h"
 #include "../EventSystem.h"

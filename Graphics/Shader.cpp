@@ -1,7 +1,5 @@
 #include "Shader.h"
 
-#ifndef GLES1
-
 using namespace GLESGAE;
 
 Shader::Shader()
@@ -13,6 +11,10 @@ Shader::Shader()
 {
 
 }
+
+#if defined(GLES1)
+Shader::~Shader() {}
+#else
 
 Shader::~Shader()
 {

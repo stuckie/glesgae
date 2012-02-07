@@ -60,7 +60,7 @@ namespace GLESGAE
 	};
 }
 
-#if defined(LINUX)
+#if defined(LINUX) || defined(PANDORA)
 	#include "X11/X11EventSystem.h"
 #endif
 

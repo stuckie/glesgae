@@ -5,14 +5,12 @@
 #include <string>
 #include <vector>
 
-#if defined(GLX)
+#if defined(LINUX)
 	#include "Context/Linux/GLee.h"
-#elif defined(GLES1)
-	#if defined(PANDORA)
+#elif defined(PANDORA)	
+	#if defined(GLES1)
 		#include <GLES/gl.h>
-	#endif
-#elif defined(GLES2)
-	#if defined(PANDORA)
+	#elif defined(GLES2)
 		#include <GLES2/gl2.h>
 	#endif
 #endif

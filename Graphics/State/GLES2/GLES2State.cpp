@@ -1,5 +1,7 @@
 #include "GLES2State.h"
 
+
+
 #include "../../Camera.h"
 #include "../../Shader.h"
 #include "../../ShaderUniformUpdater.h"
@@ -8,6 +10,8 @@
 #include "../../../Maths/Matrix4.h"
 
 using namespace GLESGAE;
+
+#if !defined(GLES1)
 
 const HashString aPositionHS("a_position");
 const HashString aColourHS("a_colour");
@@ -45,16 +49,16 @@ GLES2State::~GLES2State()
 void GLES2State::setCamera(const Resource<Camera>& camera)
 {
 	if (mCamera != camera) {
-		glMatrixMode(GL_PROJECTION);
-		glLoadMatrixf(camera->getProjectionMatrix().getData());
+//		glMatrixMode(GL_PROJECTION);
+//		glLoadMatrixf(camera->getProjectionMatrix().getData());
 		
-		glMatrixMode(GL_MODELVIEW);
+//		glMatrixMode(GL_MODELVIEW);
 		Matrix4& viewMatrix(camera->getViewMatrix());
 		viewMatrix(0U, 2U) = -viewMatrix(0U, 2U);
 		viewMatrix(1U, 2U) = -viewMatrix(1U, 2U);
 		viewMatrix(2U, 2U) = -viewMatrix(2U, 2U);
 		viewMatrix(3U, 2U) = -viewMatrix(3U, 2U);
-		glLoadMatrixf(viewMatrix.getData());
+//		glLoadMatrixf(viewMatrix.getData());
 		
 		mCamera = camera;
 	}
@@ -63,10 +67,10 @@ void GLES2State::setCamera(const Resource<Camera>& camera)
 void GLES2State::setTextureMatrix(const Resource<Matrix4>& matrix)
 {
 	if (mTextureMatrix != matrix) {
-		glMatrixMode(GL_TEXTURE);
-		glLoadMatrixf(matrix->getData());
+//		glMatrixMode(GL_TEXTURE);
+//		glLoadMatrixf(matrix->getData());
 		
-		glMatrixMode(GL_MODELVIEW);
+//		glMatrixMode(GL_MODELVIEW);
 		
 		mTextureMatrix = matrix;
 	}
@@ -203,3 +207,6 @@ void GLES2State::updateTextures(const Resource<Material>& material)
 		}
 	}
 }
+
+#endif // not ES 1
+

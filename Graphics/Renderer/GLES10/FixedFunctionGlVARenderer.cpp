@@ -1,6 +1,6 @@
 #include "FixedFunctionGlVARenderer.h"
 
-#if defined(GLX)
+#if defined(LINUX)
 	#include "../../Context/Linux/GLee.h"
 #elif defined(PANDORA)
 	#if defined(GLES1)

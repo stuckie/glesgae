@@ -38,23 +38,42 @@ export STRIP	:=	$(PREFIX)strip
 TARGET		:=	GLESGAE
 BUILD		:=	build-pandora
 SOURCES		:=	../../Graphics/Window \
-				../../Graphics/Context \
-				../../Graphics \
-				../../Events \
-				../../Events/X11 \
-				../../Input \
-				../../Input/Pandora \
-				../../Maths \
-				../../Resources \
-				.
+			../../Graphics/Context \
+			../../Graphics/Context/Pandora \
+			../../Graphics/Platform \
+			../../Graphics/Platform/Pandora \
+			../../Graphics/State \
+			../../Graphics/State/GLES1 \
+			../../Graphics/Renderer \
+			../../Graphics/Renderer/GLES10 \
+			../../Graphics/Renderer/GLES11 \
+			../../Graphics/Target/Buffer/GLES11 \
+			../../Graphics/Target/Screen/GLES11 \
+			../../Graphics/Window \
+			../../Graphics/Window/X11 \
+			../../Graphics \
+			../../Events \
+			../../Events/X11 \
+			../../Input \
+			../../Input/Pandora \
+			../../Maths \
+			../../Resources \
+			../../Platform \
+			../../Platform/Pandora \
+			../../States \
+			../../Time \
+			../../Time/Linux \
+			../../Factories \
+			../../Utils \
+			../../ \
+			.
 DATA		:=
 INCLUDES	:=
 
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
-CFLAGS	:=	-DLINUX\
-		-DPANDORA\
+CFLAGS	:=	-DPANDORA\
 		-DGLES1\
 		-g
 #		-O3\
@@ -71,7 +90,7 @@ LDFLAGS	=
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project
 #---------------------------------------------------------------------------------
-LIBS	:=	-lX11 -lGLES_CM -lEGL -lpnd
+LIBS	:=	-lX11 -lGLES_CM -lEGL -lpnd -lrt
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing

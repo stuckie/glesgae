@@ -4,8 +4,10 @@
 #if defined(GLX)
 	#include "../../Context/Linux/GLee.h"
 #elif defined(PANDORA)
-	#if defined(GLES2)
-		#include <GLES2/gl.h>
+	#if defined(GLES1)
+		#include <GLES/gl.h>
+	#elif defined(GLES2)
+		#include <GLES2/gl2.h>
 	#endif
 #endif
 
