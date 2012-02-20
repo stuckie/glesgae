@@ -2055,7 +2055,7 @@ int query_DXT_capability( void )
 				CFRelease( bundleURL );
 				CFRelease( extensionName );
 				CFRelease( bundle );
-			#else
+			#elif defined(LINUX)
 				ext_addr = (P_SOIL_GLCOMPRESSEDTEXIMAGE2DPROC)
 						glXGetProcAddressARB
 						(

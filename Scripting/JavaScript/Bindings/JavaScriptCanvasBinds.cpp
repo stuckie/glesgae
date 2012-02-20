@@ -236,6 +236,6 @@ Resource<Shader> JavaScriptCanvasBinds::makeShader()
 
 		return Resource<Shader>(newShader);
 	#else
-		return 0;
+		return Resource<Shader>(0);
 	#endif
 }

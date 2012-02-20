@@ -1,19 +1,6 @@
 .SUFFIXES:
 
 #---------------------------------------------------------------------------------
-# the prefix on the compiler executables
-#---------------------------------------------------------------------------------
-PREFIX		:=	
-
-export CC	:=	$(PREFIX)gcc
-export CXX	:=	$(PREFIX)g++
-export AS	:=	$(PREFIX)as
-export AR	:=	$(PREFIX)ar
-export OBJCOPY	:=	$(PREFIX)objcopy
-export READELF	:=	$(PREFIX)readelf
-export STRIP	:=	$(PREFIX)strip
-
-#---------------------------------------------------------------------------------
 %.o: %.cpp
 	@echo $(notdir $<)
 	$(CXX) -MMD -MP -MF $(DEPSDIR)/$*.d $(CXXFLAGS) -c $< -o $@
@@ -49,6 +36,7 @@ SOURCES		:=	../../Graphics/Window \
 			../../Graphics/Renderer/GLES11 \
 			../../Graphics/Target/Buffer/GLES11 \
 			../../Graphics/Target/Screen/GLES11 \
+			../../Graphics/Target/Texture/GLES11 \
 			../../Graphics/Window \
 			../../Graphics/Window/X11 \
 			../../Graphics \
@@ -65,6 +53,9 @@ SOURCES		:=	../../Graphics/Window \
 			../../Time/Linux \
 			../../Factories \
 			../../Utils \
+			../../File \
+			../../File/Linux \
+			../../External/SOIL \
 			../../ \
 			.
 DATA		:=

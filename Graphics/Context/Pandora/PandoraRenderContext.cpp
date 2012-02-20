@@ -7,7 +7,7 @@
 #elif defined(GLES2)
 	#include "../../State/GLES2/GLES2State.h"
 #endif
-#include "../../../Utils/Logger.h"
+#include "../../../Platform/Application.h"
 
 using namespace GLESGAE;
 
@@ -36,11 +36,11 @@ void PandoraRenderContext::initialise()
 	// Get the EGL Display..
 	mDisplay = eglGetDisplay( (reinterpret_cast<EGLNativeDisplayType>(mWindow->getDisplay())) );
 	if (EGL_NO_DISPLAY == mDisplay) 
-		Logger::getInstance().log("Failed to get egl display..\n", Logger::LOG_TYPE_ERROR);
+		Application::getInstance()->getLogger()->log("Failed to get egl display..\n", Logger::LOG_TYPE_ERROR);
 
 	// Initialise the EGL Display
 	if (0 == eglInitialize(mDisplay, NULL, NULL))
-		Logger::getInstance().log("Failed to init egl..\n", Logger::LOG_TYPE_ERROR);
+		Application::getInstance()->getLogger()->log("Failed to init egl..\n", Logger::LOG_TYPE_ERROR);
 
 	// Now we want to find an EGL Surface that will work for us...
 	EGLint eglAttribs[] = {
@@ -54,12 +54,12 @@ void PandoraRenderContext::initialise()
 	EGLConfig  eglConfig;
 	EGLint     numConfig;
 	if (0 == eglChooseConfig(mDisplay, eglAttribs, &eglConfig, 1, &numConfig))
-		Logger::getInstance().log("Failed to get context..\n", Logger::LOG_TYPE_ERROR);
+		Application::getInstance()->getLogger()->log("Failed to get context..\n", Logger::LOG_TYPE_ERROR);
 
 	// Create the actual surface based upon the list of configs we've just gotten...
 	mSurface = eglCreateWindowSurface(mDisplay, eglConfig, reinterpret_cast<EGLNativeWindowType>(mWindow->getWindow()), NULL);
 	if (EGL_NO_SURFACE == mSurface)
-		Logger::getInstance().log("Failed to get surface..\n", Logger::LOG_TYPE_ERROR);
+		Application::getInstance()->getLogger()->log("Failed to get surface..\n", Logger::LOG_TYPE_ERROR);
 
 	// Setup the EGL Context
 	EGLint contextAttribs[] = {
@@ -74,7 +74,7 @@ void PandoraRenderContext::initialise()
 	// Create our Context
 	mContext = eglCreateContext (mDisplay, eglConfig, EGL_NO_CONTEXT, contextAttribs);
 	if (EGL_NO_CONTEXT == mContext)
-		Logger::getInstance().log("Failed to get context...\n", Logger::LOG_TYPE_ERROR);
+		Application::getInstance()->getLogger()->log("Failed to get context...\n", Logger::LOG_TYPE_ERROR);
 
 	// Bind the Display, Surface and Contexts together
 	eglMakeCurrent(mDisplay, mSurface, mSurface, mContext);

@@ -1,19 +1,6 @@
 .SUFFIXES:
 
 #---------------------------------------------------------------------------------
-# the prefix on the compiler executables
-#---------------------------------------------------------------------------------
-PREFIX		:=	
-
-export CC	:=	$(PREFIX)gcc
-export CXX	:=	$(PREFIX)g++
-export AS	:=	$(PREFIX)as
-export AR	:=	$(PREFIX)ar
-export OBJCOPY	:=	$(PREFIX)objcopy
-export READELF	:=	$(PREFIX)readelf
-export STRIP	:=	$(PREFIX)strip
-
-#---------------------------------------------------------------------------------
 %.o: %.cpp
 	@echo $(notdir $<)
 	$(CXX) -MMD -MP -MF $(DEPSDIR)/$*.d $(CXXFLAGS) -c $< -o $@
@@ -38,25 +25,50 @@ export STRIP	:=	$(PREFIX)strip
 TARGET		:=	GLESGAE
 BUILD		:=	build-pandora
 SOURCES		:=	../../Graphics/Window \
-				../../Graphics/Context \
-				../../Graphics \
-				../../Events \
-				../../Events/X11 \
-				../../Input \
-				../../Input/Pandora \
-				../../Maths \
-				../../Resources \
-				.
+			../../Graphics/Context \
+			../../Graphics/Context/Pandora \
+			../../Graphics/Platform \
+			../../Graphics/Platform/Pandora \
+			../../Graphics/State \
+			../../Graphics/State/GLES1 \
+			../../Graphics/Renderer \
+			../../Graphics/Renderer/GLES10 \
+			../../Graphics/Renderer/GLES11 \
+			../../Graphics/Target/Buffer/GLES11 \
+			../../Graphics/Target/Screen/GLES11 \
+			../../Graphics/Target/Texture/GLES11 \
+			../../Graphics/Window \
+			../../Graphics/Window/X11 \
+			../../Graphics \
+			../../Events \
+			../../Events/X11 \
+			../../Input \
+			../../Input/Pandora \
+			../../Maths \
+			../../Resources \
+			../../Platform \
+			../../Platform/Pandora \
+			../../Scripting/JavaScript \
+			../../Scripting/JavaScript/Bindings \
+			../../States \
+			../../Time \
+			../../Time/Linux \
+			../../Factories \
+			../../Utils \
+			../../File \
+			../../File/Linux \
+			../../External/SOIL \
+			../../ \
+			.
 DATA		:=
 INCLUDES	:=
 
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
-CFLAGS	:=	-DLINUX\
-		-DPANDORA\
-		-DGLES1\
-		-g
+CFLAGS	:=	-DPANDORA\
+			-DGLES1\
+			-g
 #		-O3\
 #		-Wall\
 # 		-fomit-frame-pointer\
@@ -71,13 +83,13 @@ LDFLAGS	=
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project
 #---------------------------------------------------------------------------------
-LIBS	:=	-lX11 -lGLES_CM -lEGL -lpnd
+LIBS	:=	-lX11 -lGLES_CM -lEGL -lpnd -lrt -ljavascriptcoregtk-1.0
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:=	
+LIBDIRS	:=	/mnt/utmp/glesgae
 
 #---------------------------------------------------------------------------------
 # no real need to edit anything past this point unless you need to add additional
