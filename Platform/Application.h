@@ -9,6 +9,8 @@
 #include "../Resources/ResourceManager.h"
 #include "../States/StateStack.h"
 #include "../Time/Clock.h"
+#include "../Utils/Logger.h"
+#include "../Scripting/ScriptSystem.h"
 
 namespace GLESGAE
 {
@@ -22,6 +24,9 @@ namespace GLESGAE
 			
 			/// Set the user lifecycle
 			void setLifecycle(const Resource<Lifecycle>& lifecycle);
+			
+			/// Set the Scripting System
+			void setScriptSystem(const Resource<ScriptSystem>& scriptSystem);
 			
 			// Lifecycle Bits
 			/// onCreate - Called by the platform as soon as the application is started - IE: To setup Platform specifics.
@@ -64,6 +69,12 @@ namespace GLESGAE
 			/// Retrieve the System Clock
 			const Resource<Clock>& getClock() { return mClock; }
 			
+			/// Retrieve the Logger
+			const Resource<Logger>& getLogger() { return mLogger; }
+			
+			/// Retrieve the Script System
+			const Resource<ScriptSystem>& getScriptSystem() { return mScriptSystem; }
+			
 		private:
 			/// Private constructor as this can only be created and managed through it's singleton.
 			Application();
@@ -81,6 +92,8 @@ namespace GLESGAE
 			Resource<Lifecycle> mLifecycle;
 			Resource<StateStack> mStateStack;
 			Resource<Clock> mClock;
+			Resource<Logger> mLogger;
+			Resource<ScriptSystem> mScriptSystem;
 	};
 }
 

@@ -47,11 +47,13 @@ SOURCES		:=	../../Graphics/Window \
 				../../Graphics/State/GLES2 \
 				../../Graphics/State/OGL \
 				../../Graphics/Renderer \
+				../../Graphics/Renderer/GLES10 \
 				../../Graphics/Renderer/GLES11 \
 				../../Graphics/Renderer/GLES20 \
 				../../Graphics/Renderer/OGL \
 				../../Graphics/Target/Screen/OGL \
 				../../Graphics/Target/Buffer/OGL \
+				../../Graphics/Target/Texture/OGL \
 				../../Graphics/Window \
 				../../Graphics/Window/X11 \
 				../../Graphics \
@@ -63,12 +65,16 @@ SOURCES		:=	../../Graphics/Window \
 				../../Resources \
 				../../Platform \
 				../../Platform/Linux \
-				../../Scripting \
+				../../Scripting/JavaScript \
+				../../Scripting/JavaScript/Bindings \
 				../../States \
 				../../Time \
 				../../Time/Linux \
 				../../Factories \
 				../../Utils \
+				../../File \
+				../../File/Linux \
+				../../External/SOIL \
 				../../ \
 				.
 DATA		:=

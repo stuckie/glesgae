@@ -3,44 +3,55 @@
 
 #include <vector>
 #include <JavaScriptCore/JavaScript.h>
-#include "../Resources/Resource.h"
-#include "../Utils/HashString.h"
+#include "../../Resources/Resource.h"
+#include "../../Utils/HashString.h"
+#include "../ScriptSystem.h"
 
 namespace GLESGAE
 {
 
 class BaseJavaScriptClass;
-//! To keep some sense of sanity, we're effectively marking this as a static class so that there is only the one context.
-//! This shouldn't matter to us too much, as we'd likely only need the one script context.
-class JavaScriptContext
+class JavaScriptContext : public ScriptSystem
 {
 	public:
-		~JavaScriptContext();
+		JavaScriptContext();
 		
-		/// Get an instance of the Java Script Context
-		static JavaScriptContext& getInstance();
-
+		/// Initialise the instance.
+		void initialise();
+		
+		/// Update this Context ( for timers )
+		void update(const float delta);
+		
+		/// Shutdown the instance.
+		void shutdown();
+		
+		/// Get the JSContext.
+		JSContextRef getContext() { return mContext; }
+		
 		/// Executes the specified script data in this Context, and returns any value from it.
 		/// Will return NULL if there's an exception thrown.
-		JSValueRef callScript(const char* data);
+		static JSValueRef callScript(JSContextRef context, const char* data);
 		
 		/// Call a function.
-		JSValueRef callFunction(JSObjectRef function, JSObjectRef object, size_t argc, const JSValueRef argv[]);
+		static JSValueRef callFunction(JSContextRef context, JSObjectRef callback, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[]);
 		
 		/// Add a new Class to the Context.
 		void addClass(const Resource<BaseJavaScriptClass>& scriptClass);
 		
 		/// Convert a JSValueRef to a String.
-		std::string valueToString(JSValueRef value);
+		static std::string valueToString(JSContextRef context, JSValueRef value);
+		
+		/// Convert a JSStringRef to a String.
+		static std::string stringRefToString(JSStringRef value);
 		
 		/// Convert a JSValueRef to a Boolean.
-		bool valueToBool(JSValueRef value);
+		static bool valueToBool(JSContextRef context, JSValueRef value);
 		
 		/// Convert a JSValueRef to a Number (double).
-		double valueToNumber(JSValueRef value);
+		static double valueToNumber(JSContextRef context, JSValueRef value);
 		
 		/// Convert a JSValueRef to an ObjectRef ( effectively a void pointer )
-		JSObjectRef valueToObject(JSValueRef value);
+		static JSObjectRef valueToObject(JSContextRef context, JSValueRef value);
 		
 		/// Return reference to the Constructor of this Context.
 		JSClassRef getConstructorClass() { return mConstructor; }
@@ -54,7 +65,7 @@ class JavaScriptContext
 		Resource<BaseJavaScriptClass> findJavaScriptClass(const HashString classId);
 		
 		/// Log an exception.
-		void logException(JSValueRef exception);
+		static void logException(JSContextRef context, JSValueRef exception);
 		
 		/// Get a native class in the list of known bound classes.
 		static JSValueRef getNativeClass(JSContextRef context, JSObjectRef object, JSStringRef propertyNameJS, JSValueRef* exception);
@@ -63,12 +74,9 @@ class JavaScriptContext
 		static JSObjectRef callAsConstructor(JSContextRef context, JSObjectRef constructor, size_t argc, const JSValueRef argv[], JSValueRef* exception);
 
 	private:
-		JavaScriptContext();
 		JavaScriptContext(const JavaScriptContext&);
 		JavaScriptContext& operator=(const JavaScriptContext&);
 		
-		
-		static JavaScriptContext* mInstance;
 		JSGlobalContextRef mContext;
 		JSClassRef mConstructor;
 		std::vector<std::pair<HashString, Resource<BaseJavaScriptClass> > > mClasses;

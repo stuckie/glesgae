@@ -19,9 +19,7 @@ namespace GLESGAE
 class Logger
 {
 	public:
-		/// Creates or returns the current active instance of Logger.
-		static Logger& getInstance();
-
+		Logger();
 		~Logger();
 
 		enum Output {
@@ -75,15 +73,10 @@ class Logger
 		std::string getFooter();
 
 	private:
-		/// Private constructor to stop accidental creations outside of the instance.
-		Logger();
-
 		Output mOutput;				//!< Default Log Output
 		Type mType;					//!< Default Log Type
 		FileType mFileType;			//!< Current File Type
 		std::string mFilename;		//!< Current File Name
-
-		static Logger* mInstance;	//!< Active instance of the Logger
 };
 
 }

@@ -1,5 +1,30 @@
 CHANGELOG:
 
+20th February 2012
+Initial bindings to JavaScript for Canvas, Image and an Audio stub.
+Added SOIL for handling images - and added a function for returning the loaded image width/height.
+Added File wrapper for platform-specific files and general purpose buffers.
+Added Texture Filtering to Texture.
+Setup build for local JavaScriptCore libraries... though haven't included libraries as yet.
+Pushed Scripting Systems off to separate libraries, so we have GLESGAEJS and GLESGAELua for instance.
+Added ScriptSystem class to deal with Script Systems now being pushed to separate libraries.
+Various bullet-proofing throughout the system, and ran everything through Valgrind - two remaining errors are in JavaScriptCore.
+
+7th February 2012
+Pandora tested and verified.
+
+5th February 2012
+Adding JavaScriptCore as a scripting language.
+Pushed the HashString functionality throughout the system... much faster than string conversions.
+
+27th October 2011
+Fixed Camera so right is actually right.
+Bullet proofing Resource some more.
+Created a Sprite class for easier management of them.
+
+19th October 2011
+Updated Resource to allow for manual management - useful for scripting systems, for example.
+
 12th October 2011
 Created HashString class based on standard djb2 algo.
 Created INVALID constant.

@@ -2,7 +2,11 @@
 #include "../../Window/X11/X11RenderWindow.h"
 #include "../../Target/Screen/ScreenRenderTarget.h"
 #include "../../Target/Buffer/BufferRenderTarget.h"
+#include "../../Target/Texture/TextureRenderTarget.h"
 #include "../../State/GLES1/GLES1State.h"
+#include "../../../Utils/Logger.h"
+
+#include <cstdlib>
 
 using namespace GLESGAE;
 
@@ -47,6 +51,9 @@ void GLXRenderContext::initialise()
 		// More death...
 	}
 	
+	// Cleanup X junk
+	free(visualInfo);
+	
 	// Bind the context
 	glXMakeCurrent(mWindow->getDisplay(), mWindow->getWindow(), mContext);
 	
@@ -63,8 +70,10 @@ void GLXRenderContext::initialise()
 
 void GLXRenderContext::shutdown()
 {
-	// Destroy the Context.. we should be fine here as the Context should die before the Window.
+	// Destroy the Context.. we should be fine here as the Context should die before the Window
 	glXDestroyContext(mWindow->getDisplay(), mContext);
+	mContext = 0;
+	glXMakeCurrent(mWindow->getDisplay(), 0, 0);
 }
 
 void GLXRenderContext::refresh()
@@ -96,7 +105,7 @@ Resource<RenderTarget> GLXRenderContext::createRenderTarget(const RenderTarget::
 			return Resource<RenderTarget>(new BufferRenderTarget(options));
 		break;
 		case RenderTarget::TARGET_TEXTURE:
-			//return Resource<RenderTarget>(new TextureRenderTarget(options));
+			return Resource<RenderTarget>(new TextureRenderTarget(options));
 		break;
 		default:
 		break;
@@ -108,6 +117,11 @@ Resource<RenderTarget> GLXRenderContext::createRenderTarget(const RenderTarget::
 Resource<RenderState> GLXRenderContext::getRenderState()
 {
 	return mRenderState;
+}
+
+void GLXRenderContext::setRenderState(const Resource<RenderState>& state)
+{
+	mRenderState = state;
 }
 
 void GLXRenderContext::setRenderer(const Resource<Renderer>& renderer)

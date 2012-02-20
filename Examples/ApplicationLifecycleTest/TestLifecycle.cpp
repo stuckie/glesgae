@@ -183,9 +183,9 @@ void TestLifecycle::onStart()
 		
 	// Create Texture resources
 	LifecycleTest::Textures::TestGroup = textureBank.newGroup();
-	Resource<Texture>& texture(textureBank.add(LifecycleTest::Textures::TestGroup, LifecycleTest::Texture, new Texture));
+	Resource<Texture>& texture(textureBank.add(LifecycleTest::Textures::TestGroup, LifecycleTest::Texture, new Texture(Resource<File>(new File("Texture.bmp")))));
 	LifecycleTest::Textures::MrSmileyFace = texture.getId();
-	texture->loadBMP("Texture.bmp");
+	texture->load(Texture::FILTER_TRILINEAR);
 	
 	// Create Shader resources
 	LifecycleTest::Shaders::TestGroup = shaderBank.newGroup();
@@ -202,7 +202,7 @@ void TestLifecycle::onStart()
 	Resource<Camera>& camera(cameraBank.add(LifecycleTest::Cameras::TestGroup, LifecycleTest::Camera, new Camera(Camera::CAMERA_3D)));
 	LifecycleTest::Cameras::SceneCamera = camera.getId();
 	
-	camera->getTransformMatrix().setPosition(Vector3(0.0F, 0.0F, 5.0F));
+	camera->getTransformMatrix().setPosition(Vector3(0.0F, 0.0F, -5.0F));
 
 	Resource<Controller::KeyboardController> myKeyboard(inputSystem->newKeyboard());
 	LifecycleTest::Controllers::Keyboard = myKeyboard->getControllerId();
@@ -213,6 +213,7 @@ void TestLifecycle::onStart()
 	Resource<GLES1State> currentState(currentContext->getRenderState().recast<GLES1State>());
 	currentState->setTexturingEnabled(true);
 	currentState->setVertexPositionsEnabled(true);
+	currentState->setAlphaBlendingEnabled(true);
 }
 
 void TestLifecycle::onResume()
@@ -287,10 +288,11 @@ Mesh* makeSprite(Resource<Shader>& shader, Resource<Texture>& texture)
 					1.0F, -1.0F, 0.0F, 1.0F,
 					-1.0F, -1.0F, 0.0F, 1.0F,
 					// Tex Coords - 8 floats
-					1.0F, 1.0F, 	// top right
 					0.0F, 1.0F, 	// top left
-					0.0F, 0.0F, 	// bottom left
-					1.0F, 0.0F};	// bottom right
+					1.0F, 1.0F, 	// top right
+					1.0F, 0.0F,		// bottom right
+					0.0F, 0.0F}; 	// bottom left
+					
 
 	unsigned int vertexSize = 25 * sizeof(float);
 

@@ -33,7 +33,7 @@ namespace GLESGAE
 			void setFarClip(const float farClip) { mFarClip = farClip; }
 			
 			/// Set 2d Parameters
-			void set2dParams(const float left, const float bottom, const float right, const float top) { m2dLeft = left; m2dRight = right; m2dTop = top; m2dBottom = bottom; }
+			void set2dParams(const float left, const float right, const float bottom, const float top) { m2dLeft = left; m2dRight = right; m2dTop = top; m2dBottom = bottom; }
 			
 			/// Set 3d Parameters
 			void set3dParams(const float fov, const float aspectRatio) { mFov = fov; mAspectRatio = aspectRatio; }

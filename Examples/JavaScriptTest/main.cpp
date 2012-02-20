@@ -1,4 +1,5 @@
 #include "../../Platform/Application.h"
+#include "../../Scripting/JavaScript/JavaScriptContext.h"
 #include "TestLifecycle.h"
 
 using namespace GLESGAE;
@@ -7,6 +8,7 @@ int main(void)
 {
 	Application* application(Application::getInstance());
 	application->setLifecycle(Resource<Lifecycle>(new TestLifecycle));
+	application->setScriptSystem(Resource<ScriptSystem>(new JavaScriptContext));
 	
 	application->onCreate();	
 	application->onStart();

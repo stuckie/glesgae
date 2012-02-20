@@ -22,6 +22,7 @@ namespace GLESGAE
 			,	OPTIONS_WITH_COLOUR_DEPTH_AND_STENCIL
 			};
 			
+			RenderTarget(const Type type, const Options options) : mType(type), mOptions(options) {}
 			virtual ~RenderTarget() {}
 			
 			/// Bind and Start Drawing to this Render Target.
@@ -29,6 +30,16 @@ namespace GLESGAE
 			
 			/// Unbind End Drawing to this Render Target.
 			virtual void unbind() = 0;
+			
+			/// Get the type of this RenderTarget
+			Type getType() const { return mType; }
+			
+			/// Get the options of this RenderTarget
+			Options getOptions() const { return mOptions; }
+			
+		private:
+			Type mType;
+			Options mOptions;
 	};
 }
 

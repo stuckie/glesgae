@@ -39,6 +39,9 @@ namespace GLESGAE
 			/// Get the Render State.
 			Resource<RenderState> getRenderState();
 			
+			/// Set the Render State.
+			void setRenderState(const Resource<RenderState>& state);
+			
 			/// Bind us to a Window.
 			void bindToWindow(const Resource<RenderWindow>& window);
 			

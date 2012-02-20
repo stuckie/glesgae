@@ -21,9 +21,21 @@ Shader::~Shader()
 	resetShader();
 }
 
-void Shader::createFromFile(const std::string&, const std::string&)
+void Shader::createFromFile(const std::string& /*vertex*/, const std::string& /*fragment*/)
 {
-	// TODO: implement
+	/*
+	File vertexFile(vertex);	
+	vertexFile.open(File::READ_ONLY);
+	vertexFile.read();
+	vertexFile.close();
+	
+	File fragmentFile(fragment);
+	fragmentFile.open(File::READ_ONLY);
+	fragmentFile.read();
+	fragmentFile.close();
+	
+	createFromSource(std::string(vertexFile.readBuffer()), std::string(fragmentFile.readBuffer()));
+	*/
 }
 
 void Shader::createFromSource(const std::string& vertex, const std::string& fragment)

@@ -1,5 +1,8 @@
 #include "X11RenderWindow.h"
 #include <X11/Xlib.h>
+#include <cstdlib>
+
+#include "../../../Utils/Logger.h"
 
 using namespace GLESGAE;
 
@@ -45,8 +48,11 @@ X11RenderWindow::~X11RenderWindow()
 {
 	if (0 != mWindow)
 		close();
-
-	XCloseDisplay(mDisplay);
+	
+	if (0 != mDisplay)
+		XCloseDisplay(mDisplay);
+	
+	mDisplay = 0;
 }
 
 void X11RenderWindow::close()

@@ -16,10 +16,23 @@ namespace GLESGAE
 		public:
 			/// Dummy Constructor for creation of empty Resources.
 			Resource() : BaseResource(INVALID, INVALID_HASHSTRING, INVALID), mResource(0) {}
-			~Resource() { remove(); }
+			~Resource()
+			{ 
+				if (0 != mResource) 
+					remove(); 
+				else {
+					if (0 != mCount) {
+						if ((*mCount) == 0) 
+							delete mCount;
+						else {
+							--(*mCount);
+						}
+					}
+				}
+			}
 			
 			/// Constructor for taking ownership over raw pointers.
-			explicit Resource(T_Resource* const resource) : BaseResource(INVALID, INVALID_HASHSTRING, INVALID), mResource(resource) { instance(); }
+			explicit Resource(T_Resource* const resource) : BaseResource(INVALID, INVALID_HASHSTRING, INVALID), mResource(resource) { if (0 != mResource) instance(); }
 			
 			/// Pointer Operator overload to return the actual resource.
 			T_Resource* operator-> () { return mResource; }

@@ -38,39 +38,43 @@ export STRIP	:=	$(PREFIX)strip
 TARGET		:=	GLESGAE
 BUILD		:=	build-linux
 SOURCES		:=	../../Graphics/Window \
-				../../Graphics/Context \
-				../../Graphics/Context/Linux \
-				../../Graphics/Platform \
-				../../Graphics/Platform/Linux \
-				../../Graphics/State \
-				../../Graphics/State/GLES1 \
-				../../Graphics/State/GLES2 \
-				../../Graphics/State/OGL \
-				../../Graphics/Renderer \
-				../../Graphics/Renderer/GLES10 \
-				../../Graphics/Renderer/GLES11 \
-				../../Graphics/Renderer/GLES20 \
-				../../Graphics/Renderer/OGL \
-				../../Graphics/Target/Screen/OGL \
-				../../Graphics/Target/Buffer/OGL \
-				../../Graphics/Window \
-				../../Graphics/Window/X11 \
-				../../Graphics \
-				../../Events \
-				../../Events/X11 \
-				../../Input \
-				../../Input/Linux \
-				../../Maths \
-				../../Resources \
-				../../Platform \
-				../../Platform/Linux \
-				../../States \
-				../../Time \
-				../../Time/Linux \
-				../../Factories \
-				../../Utils \
-				../../ \
-				.
+			../../Graphics/Context \
+			../../Graphics/Context/Linux \
+			../../Graphics/Platform \
+			../../Graphics/Platform/Linux \
+			../../Graphics/State \
+			../../Graphics/State/GLES1 \
+			../../Graphics/State/GLES2 \
+			../../Graphics/State/OGL \
+			../../Graphics/Renderer \
+			../../Graphics/Renderer/GLES10 \
+			../../Graphics/Renderer/GLES11 \
+			../../Graphics/Renderer/GLES20 \
+			../../Graphics/Renderer/OGL \
+			../../Graphics/Target/Screen/OGL \
+			../../Graphics/Target/Buffer/OGL \
+			../../Graphics/Target/Texture/OGL \
+			../../Graphics/Window \
+			../../Graphics/Window/X11 \
+			../../Graphics \
+			../../Events \
+			../../Events/X11 \
+			../../Input \
+			../../Input/Linux \
+			../../Maths \
+			../../Resources \
+			../../Platform \
+			../../Platform/Linux \
+			../../States \
+			../../Time \
+			../../Time/Linux \
+			../../Factories \
+			../../Utils \
+			../../File \
+			../../File/Linux \
+			../../External/SOIL \
+			../../ \
+			.
 DATA		:=
 INCLUDES	:=
 

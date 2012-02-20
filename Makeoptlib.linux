@@ -90,7 +90,7 @@ CFLAGS	:=	-DGLX\
 			-fomit-frame-pointer\
 			-ffast-math
 
-CFLAGS		+=	$(INCLUDE) `pkg-config --cflags javascriptcoregtk-3.0`
+CFLAGS		+=	$(INCLUDE)
 CXXFLAGS	+=	$(CFLAGS) -pedantic -fdata-sections -ffunction-sections -Wextra -Weffc++ -fno-rtti -fno-exceptions -Wno-long-long -Wold-style-cast -Wstrict-overflow -Woverloaded-virtual -Wsign-promo -Wabi -Wmissing-declarations
 
 ASFLAGS	:=

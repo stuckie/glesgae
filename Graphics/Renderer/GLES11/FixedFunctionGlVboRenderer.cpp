@@ -15,8 +15,6 @@
 #include "../../../Maths/Matrix4.h"
 #include "../../../Resources/Resource.h"
 
-#include <cstdio>
-
 using namespace GLESGAE;
 
 FixedFunctionGlVboRenderer::FixedFunctionGlVboRenderer()

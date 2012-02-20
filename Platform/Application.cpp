@@ -12,6 +12,8 @@ Application::Application()
 , mLifecycle()
 , mStateStack()
 , mClock()
+, mLogger()
+, mScriptSystem()
 {
 }
 
@@ -32,8 +34,15 @@ void Application::setLifecycle(const Resource<Lifecycle>& lifecycle)
 	mLifecycle = lifecycle;
 }
 
+void Application::setScriptSystem(const Resource<ScriptSystem>& scriptSystem)
+{
+	mScriptSystem = scriptSystem;
+}
+
 void Application::onCreate()
 {
+	if (mLogger == 0)
+		mLogger = Resource<Logger>(new Logger);
 	if (mEventSystem == 0)
 		mEventSystem = Resource<EventSystem>(new EventSystem);
 	if (mInputSystem == 0)

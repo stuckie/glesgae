@@ -28,7 +28,7 @@ namespace GLESGAE
 			
 		protected:
 			/// Private constructor as this is a derived class only
-			BaseResourceBank(const Resources::Id id, const Resources::Type type)
+			explicit BaseResourceBank(const Resources::Id id, const Resources::Type type)
 			: mId(id)
 			, mType(type)
 			{

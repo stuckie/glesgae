@@ -38,7 +38,6 @@ namespace GLESGAE
 
 		public:
 			FixedFunctionGlVARenderer();
-			~FixedFunctionGlVARenderer();
 			
 			/// Draw a Mesh
 			void drawMesh(const Resource<Mesh>& mesh, const Resource<Matrix4>& transform);
@@ -54,7 +53,6 @@ namespace GLESGAE
 			bool mFixedFunctionTexUnits[8]; 			// 8 Texture Units sounds like they'd be enough to me!
 			unsigned int mFixedFunctionLastTexUnit;		// Last Texture Unit we were working on, in case it's the same.
 			Resource<VertexBuffer> mLastVertexBuffer;
-			Resource<IndexBuffer> mLastIndexBuffer;
 			Resource<Texture> mLastTexture;
 	};
 

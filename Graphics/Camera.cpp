@@ -35,7 +35,7 @@ void Camera::update()
 	
 	switch (mType) {
 		case CAMERA_2D:
-			mProjectionMatrix = create2dProjectionMatrix(m2dLeft, m2dBottom, m2dRight, m2dTop, mNearClip, mFarClip);
+			mProjectionMatrix = create2dProjectionMatrix(m2dLeft, m2dBottom, m2dRight, m2dTop, -mNearClip, mFarClip);
 			break;
 		case CAMERA_3D:
 			mProjectionMatrix = create3dProjectionMatrix(mNearClip, mFarClip, mFov, mAspectRatio);

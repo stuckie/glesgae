@@ -8,13 +8,13 @@ namespace GLESGAE
 	class ScreenRenderTarget : public RenderTarget
 	{
 		public:
-			ScreenRenderTarget() {}
+			ScreenRenderTarget() : RenderTarget(RenderTarget::TARGET_SCREEN, RenderTarget::OPTIONS_WITH_COLOUR) {}
 			~ScreenRenderTarget() {}
 			
-			/// Bind the Screen Render Target for drawing to.
+			/// Bind the Render Target for drawing to.
 			void bind();
 			
-			/// Unbind the Screen Render Target as the current drawing surface.
+			/// Unbind the Render Target as the current drawing surface.
 			void unbind();
 	};
 }

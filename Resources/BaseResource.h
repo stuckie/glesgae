@@ -65,10 +65,10 @@ namespace GLESGAE
 			void setCount(const Resources::Count& count) { *mCount = count; }
 		
 			/// Private constructor as this is a derived class only
-			BaseResource(const Resources::Group group, const Resources::Type type, const Resources::Id id);
+			explicit BaseResource(const Resources::Group group, const Resources::Type type, const Resources::Id id);
 			
 			/// Overloaded Copy Constructor, so we keep track of how many instances we have.
-			BaseResource(const BaseResource& resource);
+			explicit BaseResource(const BaseResource& resource);
 		
 			/// Overloaded Assignment Operator, so we can keep track of everything.
 			BaseResource& operator=(const BaseResource& resource)

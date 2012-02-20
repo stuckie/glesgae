@@ -7,16 +7,6 @@
 
 using namespace GLESGAE;
 
-Logger* Logger::mInstance = 0;
-
-Logger& Logger::getInstance()
-{
-	if (0 == mInstance)
-		mInstance = new Logger;
-		
-	return *mInstance;		
-}
-
 Logger::Logger()
 : mOutput(LOG_OUTPUT_TERMINAL)
 , mType(LOG_TYPE_DEBUG)
@@ -29,11 +19,6 @@ Logger::Logger()
 Logger::~Logger()
 {
 	closeFile();
-	
-	if (0 != mInstance) {
-		delete mInstance;
-		mInstance = 0;
-	}
 }
 
 void Logger::setFile(const std::string& filename, const FileType& fileType)

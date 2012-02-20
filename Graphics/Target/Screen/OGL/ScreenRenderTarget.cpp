@@ -1,6 +1,8 @@
 #include "../ScreenRenderTarget.h"
 
+#if defined(LINUX)
 #include "../../../Context/Linux/GLee.h"
+#endif
 
 using namespace GLESGAE;
 
