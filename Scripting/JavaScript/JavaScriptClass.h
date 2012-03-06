@@ -70,7 +70,9 @@ class JavaScriptClass : public BaseJavaScriptClass
 			mClassDefinition.finalize = T_Class::garbageCollect;
 			mClassDefinition.staticValues = values;
 			mClassDefinition.staticFunctions = functions;
+#if defined(DEBUG) // this is INSANELY slow
 			mClassDefinition.hasProperty = hasProperty;
+#endif
 			JSClassRef newClass(JSClassCreate(&mClassDefinition));
 			free(functions);
 			free(values);
@@ -92,6 +94,7 @@ class JavaScriptClass : public BaseJavaScriptClass
 		static bool hasProperty(JSContextRef /*context*/, JSObjectRef object, JSStringRef propertyName)
 		{
 			const std::string property(JavaScriptContext::stringRefToString(propertyName));
+			Application::getInstance()->getLogger()->log("Property: " + property + "\n", Logger::LOG_TYPE_ERROR);
 			JavaScriptClass<T_Class>* self(reinterpret_cast<JavaScriptClass<T_Class>*>(JSObjectGetPrivate(object)));
 			for (std::vector<std::pair<std::string, std::pair<GetterPtr, SetterPtr> > >::const_iterator itr(self->mParameters.begin()); itr < self->mParameters.end(); ++itr) {
 				if (property == itr->first)

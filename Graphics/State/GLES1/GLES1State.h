@@ -50,7 +50,7 @@ namespace GLESGAE
 			
 			/// Set Blending Function
 			void setBlendingFunction(const GLenum source, const GLenum destination);
-						
+			
 			/// Is Texturing Enabled
 			bool isTexturingEnabled() const { return mTexturing; }
 			

@@ -177,7 +177,7 @@ void FixedFunctionGlVARenderer::setupTexturing(unsigned int* textureUnit, const 
 	}
 
 	const Resource<Texture>& texture(material->getTexture(*textureUnit));
-	if (mLastTexture != texture) {
+	if ((texture != 0) && (mLastTexture != texture)) {
 		mLastTexture = texture;
 		glBindTexture(GL_TEXTURE_2D, texture->getId());
 	}

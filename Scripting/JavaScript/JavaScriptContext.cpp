@@ -10,6 +10,8 @@ JavaScriptContext::JavaScriptContext()
 : mContext(0)
 , mConstructor()
 , mClasses()
+, mCallbacks()
+, mCallbackId(0U)
 {
 }
 
@@ -26,14 +28,24 @@ void JavaScriptContext::initialise()
 	mContext = JSGlobalContextCreate(0);
 	JSObjectRef globalObject(JSContextGetGlobalObject(mContext));
 	JSObjectRef glesgaeObject(JSObjectMake(mContext, globalClass, 0));
-	JSObjectSetProperty(mContext, globalObject, JSStringCreateWithUTF8CString("glesgae"), glesgaeObject, kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly, 0);
+	JSStringRef glesgaeName(JSStringCreateWithUTF8CString("glesgae"));
+	JSObjectSetProperty(mContext, globalObject, glesgaeName, glesgaeObject, kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly, 0);
+	JSStringRelease(glesgaeName);
+}
+
+void JavaScriptContext::update()
+{
+	for (std::list<std::pair<unsigned int, JavaScriptTimedFunction> >::iterator itr(mCallbacks.begin()); itr != mCallbacks.end(); ++itr) {
+		if (false == itr->second.update())
+			mCallbacks.erase(itr--);
+	}
 }
 
 void JavaScriptContext::shutdown()
 {
-	JSClassRelease(mConstructor);
 	for (std::vector<std::pair<HashString, Resource<BaseJavaScriptClass> > >::const_iterator itr(mClasses.begin()); itr < mClasses.end(); ++itr)
 		JSClassRelease(itr->second->getClassReference());
+	JSClassRelease(mConstructor);
 	JSGlobalContextRelease(mContext);
 	mContext = 0;
 	mConstructor = 0;
@@ -114,7 +126,7 @@ void JavaScriptContext::collectGarbage()
 
 Resource<BaseJavaScriptClass> JavaScriptContext::findJavaScriptClass(const HashString classId)
 {
-	for (std::vector<std::pair<HashString, Resource<BaseJavaScriptClass> > >::iterator itr(mClasses.begin()); itr < mClasses.end(); ++itr) {
+	for (std::vector<std::pair<HashString, Resource<BaseJavaScriptClass> > >::iterator itr(mClasses.begin()); itr != mClasses.end(); ++itr) {
 		if (itr->first == classId)
 			return itr->second;
 	}
@@ -142,8 +154,8 @@ void JavaScriptContext::logException(JSContextRef context, JSValueRef exception)
 	
 	Application::getInstance()->getLogger()->log(std::string("JavaScript: " + exceptionString + " at line: " + lineString + " in file: " + fileString + "\n"), Logger::LOG_TYPE_ERROR);
 	
-	JSStringRelease( jsLinePropertyName );
-	JSStringRelease( jsFilePropertyName );
+	JSStringRelease(jsLinePropertyName);
+	JSStringRelease(jsFilePropertyName);
 }
 
 JSValueRef JavaScriptContext::getNativeClass(JSContextRef context, JSObjectRef /*object*/, JSStringRef propertyNameJS, JSValueRef* /*exception*/)
@@ -171,4 +183,20 @@ JSObjectRef JavaScriptContext::callAsConstructor(JSContextRef context, JSObjectR
 	JSObjectSetPrivate(object, instance);
 	
 	return object;
+}
+
+unsigned int JavaScriptContext::addCallback(const JavaScriptTimedFunction& function)
+{
+	mCallbacks.push_back(std::pair<unsigned int, JavaScriptTimedFunction>(mCallbackId++, function));
+	return mCallbackId;
+}
+
+void JavaScriptContext::removeCallback(const unsigned int id)
+{
+	for (std::list<std::pair<unsigned int, JavaScriptTimedFunction> >::iterator itr(mCallbacks.begin()); itr != mCallbacks.end(); ++itr) {
+		if (id == itr->first) {
+			mCallbacks.erase(itr);
+			return;
+		}
+	}
 }

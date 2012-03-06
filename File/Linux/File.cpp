@@ -115,10 +115,8 @@ bool File::deleteBuffer()
 	if (0 == mBuffer)
 		return false;
 	
-	if (false == mBufferOwned) {
-		Application::getInstance()->getLogger()->log("File: Buffer not ours\n", Logger::LOG_TYPE_ERROR);
+	if (false == mBufferOwned)
 		return false;
-	}
 	
 	delete [] mBuffer;
 	mBuffer = 0;

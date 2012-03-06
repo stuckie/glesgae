@@ -34,6 +34,7 @@ JSValueRef JavaScriptImageBinds::jsGetSrc(JSContextRef context, JSObjectRef obje
 	if (self->mTexture != 0) {
 		JSStringRef stringRef(JSStringCreateWithUTF8CString(self->mTexture->getFile()->getFilePath().c_str()));
 		JSValueRef string(JSValueMakeString(context, stringRef));
+		JSStringRelease(stringRef);
 		return string;
 	}
 	return JSValueMakeNull(context);

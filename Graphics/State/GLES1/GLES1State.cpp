@@ -52,92 +52,77 @@ void GLES1State::setTextureMatrix(const Resource<Matrix4>& matrix)
 
 void GLES1State::setTexturingEnabled(const bool isEnabled)
 {
-	switch (isEnabled) {
-		case true:
-			if (false == mTexturing) {
-				glEnable(GL_TEXTURE_2D);
-				mTexturing = true;
-			}
-		break;
-		case false:
-			if (true == mTexturing) {
-				glDisable(GL_TEXTURE_2D);
-				mTexturing = false;
-			}
-		break;
-	};
+	if (true == isEnabled) {
+		if (false == mTexturing) {
+			glEnable(GL_TEXTURE_2D);
+			mTexturing = true;
+		}
+	} else {
+		if (true == mTexturing) {
+			glDisable(GL_TEXTURE_2D);
+			mTexturing = false;
+		}
+	}
 }
 
 void GLES1State::setAlphaBlendingEnabled(const bool isEnabled)
 {
-	switch (isEnabled) {
-		case true:
-			if (false == mAlphaBlending) {
-				glEnable(GL_BLEND);
-				mAlphaBlending = true;
-			}
-		break;
-		case false:
-			if (true == mAlphaBlending) {
-				glDisable(GL_BLEND);
-				mAlphaBlending = false;
-			}
-		break;
-	};
+	if (true == isEnabled) {
+		if (false == mAlphaBlending) {
+			glEnable(GL_BLEND);
+			mAlphaBlending = true;
+		}
+	} else {
+		if (true == mAlphaBlending) {
+			glDisable(GL_BLEND);
+			mAlphaBlending = false;
+		}
+	}
 }
 
 void GLES1State::setVertexPositionsEnabled(const bool isEnabled)
 {
-	switch (isEnabled) {
-		case true:
-			if (false == mVertexPositions) {
-				glEnableClientState(GL_VERTEX_ARRAY);
-				mVertexPositions = true;
-			}
-		break;
-		case false:
-			if (true == mVertexPositions) {
-				glDisableClientState(GL_VERTEX_ARRAY);
-				mVertexPositions = false;
-			}
-		break;
-	};
+	if (true == isEnabled) {
+		if (false == mVertexPositions) {
+			glEnableClientState(GL_VERTEX_ARRAY);
+			mVertexPositions = true;
+		}
+	} else {
+		if (true == mVertexPositions) {
+			glDisableClientState(GL_VERTEX_ARRAY);
+			mVertexPositions = false;
+		}
+	}
 }
 
 void GLES1State::setVertexColoursEnabled(const bool isEnabled)
 {
-	switch (isEnabled) {
-		case true:
-			if (false == mVertexColours) {
-				glEnableClientState(GL_COLOR_ARRAY);
-				mVertexColours = true;
-			}
-		break;
-		case false:
-			if (true == mVertexColours) {
-				glDisableClientState(GL_COLOR_ARRAY);
-				mVertexColours = false;
-			}
-		break;
-	};
+	if (true == isEnabled) {
+		if (false == mVertexColours) {
+			glEnableClientState(GL_COLOR_ARRAY);
+			mVertexColours = true;
+		}
+	} else {
+		if (true == mVertexColours) {
+			glDisableClientState(GL_COLOR_ARRAY);
+			mVertexColours = false;
+		}
+	}
 }
 
 void GLES1State::setVertexNormalsEnabled(const bool isEnabled)
 {
-	switch (isEnabled) {
-		case true:
-			if (false == mVertexNormals) {
-				glEnableClientState(GL_NORMAL_ARRAY);
-				mVertexNormals = true;
-			}
-		break;
-		case false:
-			if (true == mVertexNormals) {
-				glDisableClientState(GL_NORMAL_ARRAY);
-				mVertexNormals = false;
-			}
-		break;
-	};
+	if (true == isEnabled) {
+		if (false == mVertexNormals) {
+			glEnableClientState(GL_NORMAL_ARRAY);
+			mVertexNormals = true;
+		}
+	} else {
+		if (true == mVertexNormals) {
+			glDisableClientState(GL_NORMAL_ARRAY);
+			mVertexNormals = false;
+		}
+	}
 }
 
 void GLES1State::setBlendingFunction(const GLenum source, const GLenum destination)

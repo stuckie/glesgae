@@ -9,6 +9,9 @@ class ScriptSystem
 	public:
 		ScriptSystem() {};
 		virtual ~ScriptSystem() {};
+		
+		/// Update the Script System
+		virtual void update() = 0;
 };
 
 }

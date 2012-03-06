@@ -8,7 +8,10 @@
 #include "../../../Graphics/VertexBuffer.h"
 #include "../../../Graphics/IndexBuffer.h"
 #include "../../../Graphics/Material.h"
+#include "../../../Graphics/Camera.h"
+
 #include "JavaScriptImageBinds.h"
+#include "JavaScriptImageDataBinds.h"
 
 using namespace GLESGAE;
 
@@ -19,12 +22,17 @@ JavaScriptCanvasBinds::JavaScriptCanvasBinds()
 , mTexture()
 , mShader(makeShader())
 , mTransform(new Matrix4)
+, mWidth(480U)
+, mHeight(320U)
+, mWindowWidth(1U)
+, mWindowHeight(1U)
 {
-	mTransform->setToIdentity();
 	addMethod("getContext", &jsGetContext);
 	addMethod("drawImage", &jsDrawImage);
 	addMethod("getImageData", &jsGetImageData);
 	addMethod("putImageData", &jsPutImageData);
+	addMethod("fillRect", &jsFillRect);
+	addMethod("clearRect", &jsClearRect);
 	addMethod("refresh", &jsRefresh);
 	addParameter("width", &jsGetWidth, &jsSetWidth);
 	addParameter("height", &jsGetHeight, &jsSetHeight);
@@ -37,6 +45,9 @@ void* JavaScriptCanvasBinds::getNewInstance(size_t argc, const JSValueRef /*argv
 		return 0;
 	}
 	
+	mWindowWidth = Application::getInstance()->getGraphicsSystem()->getCurrentWindow()->getWidth();
+	mWindowHeight = Application::getInstance()->getGraphicsSystem()->getCurrentWindow()->getHeight();
+	
 	JavaScriptCanvasBinds* self(new JavaScriptCanvasBinds);
 	return reinterpret_cast<void*>(self);
 }
@@ -44,6 +55,46 @@ void* JavaScriptCanvasBinds::getNewInstance(size_t argc, const JSValueRef /*argv
 JSValueRef JavaScriptCanvasBinds::jsGetContext(JSContextRef /*context*/, JSObjectRef /*function*/, JSObjectRef thisObject, size_t /*argumentCount*/, const JSValueRef /*arguments*/[], JSValueRef* /*exception*/)
 {
 	return reinterpret_cast<JSValueRef>(thisObject);
+}
+
+JSValueRef JavaScriptCanvasBinds::jsFillRect(JSContextRef context, JSObjectRef /*function*/, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef* /*exception*/)
+{
+	if (argumentCount != 4) {
+		Application::getInstance()->getLogger()->log("Invalid arguments to Canvas:fillRect.\n", Logger::LOG_TYPE_ERROR);
+		return JSValueMakeBoolean(context, false);
+	}
+	else { 
+		const float dX(JSValueToNumber(context, arguments[0], 0));
+		const float dY(JSValueToNumber(context, arguments[1], 0));
+		const float dW(JSValueToNumber(context, arguments[2], 0));
+		const float dH(JSValueToNumber(context, arguments[3], 0));
+		
+		JavaScriptCanvasBinds* self(reinterpret_cast<JavaScriptCanvasBinds*>(JSObjectGetPrivate(thisObject)));
+		const Resource<Mesh> mesh(self->makeQuad(0.0F, 0.0F, 0.0F, 1.0F, dX, dY, dW, dH));
+		Application::getInstance()->getGraphicsSystem()->getCurrentContext()->getRenderState()->setTexturingEnabled(false);
+		Application::getInstance()->getGraphicsSystem()->getCurrentContext()->drawMesh(mesh, self->mTransform);
+		return JSValueMakeBoolean(context, true);
+	}
+}
+
+JSValueRef JavaScriptCanvasBinds::jsClearRect(JSContextRef context, JSObjectRef /*function*/, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef* /*exception*/)
+{
+	if (argumentCount != 4) {
+		Application::getInstance()->getLogger()->log("Invalid arguments to Canvas:clearRect.\n", Logger::LOG_TYPE_ERROR);
+		return JSValueMakeBoolean(context, false);
+	}
+	else { 
+		const float dX(JSValueToNumber(context, arguments[0], 0));
+		const float dY(JSValueToNumber(context, arguments[1], 0));
+		const float dW(JSValueToNumber(context, arguments[2], 0));
+		const float dH(JSValueToNumber(context, arguments[3], 0));
+		
+		JavaScriptCanvasBinds* self(reinterpret_cast<JavaScriptCanvasBinds*>(JSObjectGetPrivate(thisObject)));
+		const Resource<Mesh> mesh(self->makeQuad(0.0F, 0.0F, 0.0F, 1.0F, dX, dY, dW, dH));
+		Application::getInstance()->getGraphicsSystem()->getCurrentContext()->getRenderState()->setTexturingEnabled(false);
+		Application::getInstance()->getGraphicsSystem()->getCurrentContext()->drawMesh(mesh, self->mTransform);
+		return JSValueMakeBoolean(context, true);
+	}
 }
 
 JSValueRef JavaScriptCanvasBinds::jsDrawImage(JSContextRef context, JSObjectRef /*function*/, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef* /*exception*/)
@@ -91,12 +142,14 @@ JSValueRef JavaScriptCanvasBinds::jsDrawImage(JSContextRef context, JSObjectRef 
 		
 		JavaScriptCanvasBinds* self(reinterpret_cast<JavaScriptCanvasBinds*>(JSObjectGetPrivate(thisObject)));
 		const Resource<Mesh> mesh(self->makeSprite(image->getTexture(), sX, sY, sW, sH, dX, dY, dW, dH));
+		Application::getInstance()->getGraphicsSystem()->getCurrentContext()->getRenderState()->setTexturingEnabled(true);
 		Application::getInstance()->getGraphicsSystem()->getCurrentContext()->drawMesh(mesh, self->mTransform);
 		return JSValueMakeBoolean(context, true);
 	}
 }
 
-JSValueRef JavaScriptCanvasBinds::jsGetImageData(JSContextRef context, JSObjectRef /*function*/, JSObjectRef /*thisObject*/, size_t argumentCount, const JSValueRef arguments[], JSValueRef* /*exception*/)
+// This seems to hemmorage memory like sweeties... though it seems to come from JavaScript, so a GC issue?
+JSValueRef JavaScriptCanvasBinds::jsGetImageData(JSContextRef context, JSObjectRef /*function*/, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef* /*exception*/)
 {
 	if (argumentCount != 4) {
 		Application::getInstance()->getLogger()->log("Invalid arguments Canvas:getImageData.\n", Logger::LOG_TYPE_ERROR);
@@ -108,37 +161,71 @@ JSValueRef JavaScriptCanvasBinds::jsGetImageData(JSContextRef context, JSObjectR
 		const float sW(JSValueToNumber(context, arguments[2], 0));
 		const float sH(JSValueToNumber(context, arguments[3], 0));
 		
-		// Need to tell the Context to refresh just now, so we're grabbing exact pixels.
-		Application::getInstance()->getGraphicsSystem()->getCurrentContext()->refresh();
-		
-		// We return RGBA data, so that's width * height * 4
-		const unsigned int dataSize(sW * sH * 4);
+		const unsigned int dataSize(sW * sH * 4); // We return RGBA data, so that's width * height * 4
 		unsigned char* data(new unsigned char[dataSize]);
-		memset(data, 0x0, dataSize);
-		// Technically this is naughty, and should be hidden in the context...
-		glReadPixels(sX, sY, sW, sH, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		if (data == 0)
+			return JSValueMakeNull(context);
 		
-		/*JSStringRef scriptJS(JSStringCreateWithUTF8CString("return new glesgae.ImageData()"));
+		memset(data, 0xFF, dataSize);
+		// Technically this is naughty, and should be hidden in the context...
+		JavaScriptCanvasBinds* self(reinterpret_cast<JavaScriptCanvasBinds*>(JSObjectGetPrivate(thisObject)));
+		glReadPixels(sX, self->mHeight - sH - sY, sW, sH, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+		JSStringRef scriptJS(JSStringCreateWithUTF8CString("return new ImageData()"));
 		JSObjectRef function(JSObjectMakeFunction(context, 0, 0, 0, scriptJS, 0, 1, 0));
 		JSValueRef result(JSObjectCallAsFunction(context, function, 0, 0, 0, 0));
-		JavaScriptImageDataBinds* imageData(JSObjectGetPrivate(JSValueToObject(context, result, 0)));
-		imageData->setData(sW, sH, data);
 		JSStringRelease(scriptJS);
-		return result;*/
-		return 0;
+		JavaScriptImageDataBinds* imageData(reinterpret_cast<JavaScriptImageDataBinds*>(JSObjectGetPrivate(JSValueToObject(context, result, 0))));
+		if (imageData->getClassId() != JS_IMAGE_DATA) {
+			Application::getInstance()->getLogger()->log("First Parameter Not an Image to Canvas:drawImage - " + toString(imageData->getClassName()) + "\n", Logger::LOG_TYPE_ERROR);
+			return JSValueMakeNull(context);
+		}
+		imageData->setData(data, sW, sH);
+		delete [] data;
+		return result;
 	}
 }
 
-JSValueRef JavaScriptCanvasBinds::jsPutImageData(JSContextRef context, JSObjectRef /*function*/, JSObjectRef /*thisObject*/, size_t argumentCount, const JSValueRef /*arguments*/[], JSValueRef* /*exception*/)
+// This seems to hemmorage memory like sweeties... though it seems to come from JavaScript, so a GC issue?
+JSValueRef JavaScriptCanvasBinds::jsPutImageData(JSContextRef context, JSObjectRef /*function*/, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef* /*exception*/)
 {
-	if ((argumentCount != 3) || (argumentCount != 7)) {
+	if ((argumentCount != 3) && (argumentCount != 7)) {
 		Application::getInstance()->getLogger()->log("Invalid arguments Canvas:putImageData.\n", Logger::LOG_TYPE_ERROR);
 		return JSValueMakeNull(context);
 	}
 	else {
-		// Create an image based on the ImageData pointer
-		// Draw it as a normal sprite
-		// Let it die.
+		JavaScriptImageDataBinds* imageData(reinterpret_cast<JavaScriptImageDataBinds*>(JSObjectGetPrivate(JSValueToObject(context, arguments[0], 0))));
+		Resource<File> buffer(new File("Texture"));
+		unsigned char* imageBuffer(imageData->convertData());
+		buffer->setBuffer(imageBuffer, imageData->getSize());
+		Resource<Texture> texture(new Texture(buffer, imageData->getWidth(), imageData->getHeight()));
+		texture->load(Texture::FILTER_NONE, true, Texture::FORMAT_RGBA);
+		float dX, dY, dW, dH, sX, sY, sW, sH;
+		if (argumentCount == 3) {
+			sX = 0.0F;
+			sY = 0.0F;
+			sW = texture->getWidth();
+			sH = texture->getHeight();
+			dX = JSValueToNumber(context, arguments[1], 0);
+			dY = JSValueToNumber(context, arguments[2], 0);
+			dW = texture->getWidth();
+			dH = texture->getHeight();
+		} else {
+			sX = JSValueToNumber(context, arguments[1], 0);
+			sY = JSValueToNumber(context, arguments[2], 0);
+			sW = JSValueToNumber(context, arguments[3], 0);
+			sH = JSValueToNumber(context, arguments[4], 0);
+			dX = JSValueToNumber(context, arguments[5], 0);
+			dY = JSValueToNumber(context, arguments[6], 0);
+			dW = JSValueToNumber(context, arguments[7], 0);
+			dH = JSValueToNumber(context, arguments[8], 0);
+		}
+		JavaScriptCanvasBinds* self(reinterpret_cast<JavaScriptCanvasBinds*>(JSObjectGetPrivate(thisObject)));
+		const Resource<Mesh> mesh(self->makeSprite(texture, sX, sY, sW, sH, dX, dY, dW, dH));
+		Application::getInstance()->getGraphicsSystem()->getCurrentContext()->getRenderState()->setTexturingEnabled(true);
+		Application::getInstance()->getGraphicsSystem()->getCurrentContext()->drawMesh(mesh, self->mTransform);
+		delete [] imageBuffer;
+		
 		return 0;
 	}
 }
@@ -155,40 +242,58 @@ JSValueRef JavaScriptCanvasBinds::jsRefresh(JSContextRef context, JSObjectRef /*
 	}
 }
 
-JSValueRef JavaScriptCanvasBinds::jsGetWidth(JSContextRef context, JSObjectRef /*object*/, JSStringRef /*propertyName*/, JSValueRef* /*exception*/)
+JSValueRef JavaScriptCanvasBinds::jsGetWidth(JSContextRef context, JSObjectRef object, JSStringRef /*propertyName*/, JSValueRef* /*exception*/)
 {
-	return JSValueMakeNumber(context, Application::getInstance()->getGraphicsSystem()->getCurrentWindow()->getWidth());
+	JavaScriptCanvasBinds* self(reinterpret_cast<JavaScriptCanvasBinds*>(JSObjectGetPrivate(object)));
+	return JSValueMakeNumber(context, self->mWidth);
 }
 
-bool JavaScriptCanvasBinds::jsSetWidth(JSContextRef /*context*/, JSObjectRef /*object*/, JSStringRef /*propertyName*/, JSValueRef /*value*/, JSValueRef* /*exception*/)
+bool JavaScriptCanvasBinds::jsSetWidth(JSContextRef context, JSObjectRef object, JSStringRef /*propertyName*/, JSValueRef value, JSValueRef* exception)
 {
-	return false;
+	JavaScriptCanvasBinds* self(reinterpret_cast<JavaScriptCanvasBinds*>(JSObjectGetPrivate(object)));
+	self->mWidth = JSValueToNumber(context, value, exception);
+	const Resource<Camera> camera(Application::getInstance()->getGraphicsSystem()->getCurrentContext()->getRenderState()->getCamera());
+	camera->set2dParams(0, self->mWidth, self->mHeight, 0);
+	camera->update();
+	return true;
 }
 
-JSValueRef JavaScriptCanvasBinds::jsGetHeight(JSContextRef context, JSObjectRef /*object*/, JSStringRef /*propertyName*/, JSValueRef* /*exception*/)
+JSValueRef JavaScriptCanvasBinds::jsGetHeight(JSContextRef context, JSObjectRef object, JSStringRef /*propertyName*/, JSValueRef* /*exception*/)
 {
-	return JSValueMakeNumber(context, Application::getInstance()->getGraphicsSystem()->getCurrentWindow()->getHeight());
+	JavaScriptCanvasBinds* self(reinterpret_cast<JavaScriptCanvasBinds*>(JSObjectGetPrivate(object)));
+	return JSValueMakeNumber(context, self->mHeight);
 }
 
-bool JavaScriptCanvasBinds::jsSetHeight(JSContextRef /*context*/, JSObjectRef /*object*/, JSStringRef /*propertyName*/, JSValueRef /*value*/, JSValueRef* /*exception*/)
+bool JavaScriptCanvasBinds::jsSetHeight(JSContextRef context, JSObjectRef object, JSStringRef /*propertyName*/, JSValueRef value, JSValueRef* exception)
 {
-	return false;
+	JavaScriptCanvasBinds* self(reinterpret_cast<JavaScriptCanvasBinds*>(JSObjectGetPrivate(object)));
+	self->mHeight = JSValueToNumber(context, value, exception);
+	const Resource<Camera> camera(Application::getInstance()->getGraphicsSystem()->getCurrentContext()->getRenderState()->getCamera());
+	camera->set2dParams(0, self->mWidth, self->mHeight, 0);
+	camera->update();
+	return true;
 }
 
 Resource<Mesh> JavaScriptCanvasBinds::makeSprite(const Resource<Texture>& texture, const float sX, const float sY, const float sW, const float sH, const float dX, const float dY, const float dW, const float dH)
 {
-	float vertexData[16] = {// Position - 8 floats
+	float vertexData[32] = {// Position - 8 floats
 					dX, 		dY,
 					dX + dW, 	dY,
 					dX, 		dY + dH,
 					dX + dW, 	dY + dH,
 					// Tex Coords - 8 floats
+					sX / texture->getWidth()		, sY / texture->getHeight(),
+					(sX + sW) / texture->getWidth()	, sY / texture->getHeight(),
 					sX / texture->getWidth()		, (sY + sH) / texture->getHeight(),
 					(sX + sW) / texture->getWidth()	, (sY + sH) / texture->getHeight(),
-					sX / texture->getWidth()		, sY / texture->getHeight(),
-					(sX + sW) / texture->getWidth()	, sY / texture->getHeight()};
+					// Colour - 16 floats
+					1.0F, 1.0F, 1.0F, 1.0F,
+					1.0F, 1.0F, 1.0F, 1.0F,
+					1.0F, 1.0F, 1.0F, 1.0F,
+					1.0F, 1.0F, 1.0F, 1.0F
+	};
 	
-	unsigned int vertexSize = 16 * sizeof(float);
+	unsigned int vertexSize = 32 * sizeof(float);
 	
 	unsigned char indexData[6] = { 0, 1, 2, 1, 2, 3 };
 	unsigned int indexSize = 6 * sizeof(unsigned char);
@@ -196,12 +301,48 @@ Resource<Mesh> JavaScriptCanvasBinds::makeSprite(const Resource<Texture>& textur
 	Resource<VertexBuffer> newVertexBuffer(new VertexBuffer(reinterpret_cast<unsigned char*>(&vertexData), vertexSize));
 	newVertexBuffer->addFormatIdentifier(VertexBuffer::FORMAT_POSITION_2F, 4U);
 	newVertexBuffer->addFormatIdentifier(VertexBuffer::FORMAT_TEXTURE_2F, 4U);
+	newVertexBuffer->addFormatIdentifier(VertexBuffer::FORMAT_COLOUR_4F, 4U);
 	
 	Resource<IndexBuffer> newIndexBuffer(new IndexBuffer(reinterpret_cast<unsigned char*>(&indexData), indexSize, IndexBuffer::INDEX_UNSIGNED_BYTE, IndexBuffer::FORMAT_TRIANGLES));
 	
 	Resource<Material> newMaterial(new Material);
 	newMaterial->setShader(mShader);
 	newMaterial->addTexture(texture);
+	
+	return Resource<Mesh>(new Mesh(newVertexBuffer, newIndexBuffer, newMaterial));
+}
+
+Resource<Mesh> JavaScriptCanvasBinds::makeQuad(const float r, const float g, const float b, const float a, const float dX, const float dY, const float dW, const float dH)
+{
+	float vertexData[32] = {// Position - 8 floats
+					dX, 		dY,
+					dX + dW, 	dY,
+					dX, 		dY + dH,
+					dX + dW, 	dY + dH,
+					// Tex Coords - 8 floats
+					0, 0,
+					0, 0,
+					0, 0,
+					0, 0,
+					// Colour - 16 floats
+					r, g, b, a,
+					r, g, b, a,
+					r, g, b, a,
+					r, g, b, a
+	};
+	
+	unsigned int vertexSize = 32 * sizeof(float);
+	
+	unsigned char indexData[6] = { 0, 1, 2, 1, 2, 3 };
+	unsigned int indexSize = 6 * sizeof(unsigned char);
+	
+	Resource<VertexBuffer> newVertexBuffer(new VertexBuffer(reinterpret_cast<unsigned char*>(&vertexData), vertexSize));
+	newVertexBuffer->addFormatIdentifier(VertexBuffer::FORMAT_POSITION_2F, 4U);
+	newVertexBuffer->addFormatIdentifier(VertexBuffer::FORMAT_TEXTURE_2F, 4U);
+	newVertexBuffer->addFormatIdentifier(VertexBuffer::FORMAT_COLOUR_4F, 4U);
+	
+	Resource<IndexBuffer> newIndexBuffer(new IndexBuffer(reinterpret_cast<unsigned char*>(&indexData), indexSize, IndexBuffer::INDEX_UNSIGNED_BYTE, IndexBuffer::FORMAT_TRIANGLES));
+	Resource<Material> newMaterial(new Material);
 	
 	return Resource<Mesh>(new Mesh(newVertexBuffer, newIndexBuffer, newMaterial));
 }

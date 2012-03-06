@@ -48,8 +48,10 @@ VertexBuffer::VertexBuffer(const VertexBuffer& vertexBuffer)
 , mStride(vertexBuffer.mStride)
 , mType(vertexBuffer.mType)
 , mVboId(vertexBuffer.mVboId)
-, mFormat(vertexBuffer.mFormat)
+, mFormat()
 {
+	for (unsigned int index(0U); index < FORMAT_SIZE; ++index)
+		mFormat[index] = vertexBuffer.mFormat[index];
 }
 
 VertexBuffer& VertexBuffer::operator=(const VertexBuffer& vertexBuffer)

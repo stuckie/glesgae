@@ -74,38 +74,32 @@ void OGLState::setTextureMatrix(const Resource<Matrix4>& matrix)
 
 void OGLState::setTexturingEnabled(const bool isEnabled)
 {
-	switch (isEnabled) {
-		case true:
-			if (false == mTexturing) {
-				glEnable(GL_TEXTURE_2D);
-				mTexturing = true;
-			}
-		break;
-		case false:
-			if (true == mTexturing) {
-				glDisable(GL_TEXTURE_2D);
-				mTexturing = false;
-			}
-		break;
-	};
+	if (true == isEnabled) {
+		if (false == mTexturing) {
+			glEnable(GL_TEXTURE_2D);
+			mTexturing = true;
+		}
+	} else {
+		if (true == mTexturing) {
+			glDisable(GL_TEXTURE_2D);
+			mTexturing = false;
+		}
+	}
 }
 
 void OGLState::setAlphaBlendingEnabled(const bool isEnabled)
 {
-	switch (isEnabled) {
-		case true:
-			if (false == mAlphaBlending) {
-				glEnable(GL_BLEND);
-				mAlphaBlending = true;
-			}
-		break;
-		case false:
-			if (true == mAlphaBlending) {
-				glDisable(GL_BLEND);
-				mAlphaBlending = false;
-			}
-		break;
-	};
+	if (true == isEnabled) {
+		if (false == mAlphaBlending) {
+			glEnable(GL_BLEND);
+			mAlphaBlending = true;
+		}
+	} else {
+		if (true == mAlphaBlending) {
+			glDisable(GL_BLEND);
+			mAlphaBlending = false;
+		}
+	}
 }
 
 void OGLState::setBlendingFunction(const GLenum source, const GLenum destination)

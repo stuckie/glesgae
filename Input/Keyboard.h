@@ -109,14 +109,14 @@ namespace GLESGAE
 				{
 					
 				}
-							
+				
 				/// Get the value of the specified key
 				bool getKey(const KeyType key) const
 				{ 
 					// TODO: actual error checking
 					return mKeys[key];
 				}
-								
+				
 			protected:
 				/// Set Key data
 				void setKey(const KeyType key, const bool data)

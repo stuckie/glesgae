@@ -68,14 +68,24 @@ INCLUDES	:=
 #---------------------------------------------------------------------------------
 CFLAGS	:=	-DPANDORA\
 			-DGLES1\
-			-g
-#		-O3\
-#		-Wall\
-# 		-fomit-frame-pointer\
-#		-ffast-math
+			-Os\
+			-pipe\
+			-ffast-math\
+			-fsingle-precision-constant\
+			-march=armv7-a\
+			-mcpu=cortex-a8\
+			-mtune=cortex-a8\
+			-mfpu=neon\
+			-mfloat-abi=softfp\
+			-Wall\
+			-Werror\
+			-Wno-variadic-macros\
+			-Wuninitialized\
+			-Wcast-align\
+			-Wredundant-decls
 
 CFLAGS		+=	$(INCLUDE) 
-CXXFLAGS	+=	$(CFLAGS)
+CXXFLAGS	+=	$(CFLAGS) -pedantic -fdata-sections -ffunction-sections -Wextra -Weffc++ -fno-rtti -fno-exceptions -Wno-long-long -Wstrict-overflow -Woverloaded-virtual -Wsign-promo -Wabi -Wmissing-declarations
 
 ASFLAGS	:=
 LDFLAGS	=

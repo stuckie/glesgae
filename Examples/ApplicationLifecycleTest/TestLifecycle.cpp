@@ -282,19 +282,19 @@ void TestLifecycle::onDestroy()
 
 Mesh* makeSprite(Resource<Shader>& shader, Resource<Texture>& texture)
 {
-	float vertexData[32] = {// Position - 16 floats
+	float vertexData[24] = {// Position - 16 floats
 					-1.0F, 1.0F, 0.0F, 1.0F,
 					1.0F, 1.0F, 0.0F, 1.0F,
 					1.0F, -1.0F, 0.0F, 1.0F,
 					-1.0F, -1.0F, 0.0F, 1.0F,
 					// Tex Coords - 8 floats
-					0.0F, 1.0F, 	// top left
-					1.0F, 1.0F, 	// top right
-					1.0F, 0.0F,		// bottom right
-					0.0F, 0.0F}; 	// bottom left
+					0.0F, 0.0F, 	// bottom left
+					1.0F, 0.0F, 	// bottom right
+					1.0F, 1.0F,		// top right
+					0.0F, 1.0F}; 	// top left
 					
 
-	unsigned int vertexSize = 25 * sizeof(float);
+	unsigned int vertexSize = 24 * sizeof(float);
 
 	unsigned char indexData[6] = { 0, 1, 2, 2, 3, 0 };
 	unsigned int indexSize = 6 * sizeof(unsigned char);

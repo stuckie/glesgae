@@ -14,17 +14,18 @@ Timer::Timer()
 
 void Timer::update(const Resource<Clock>& clock)
 {
-	mCurrentTime = clock->getTime() * mScale;
+	const float clockTime(clock->getTime() * mScale);
 	if (false == mPaused)
-		mDeltaTime = mCurrentTime - mLastTime;
+		mDeltaTime = clockTime - mLastTime;
 	else
 		mDeltaTime = 0.0F;
-	mLastTime = mCurrentTime;
+	mLastTime = clockTime;
+	mCurrentTime += mDeltaTime;
 }
 
 void Timer::reset()
 {
-	mLastTime = 0.0F;
+	mCurrentTime = 0.0F;
 	mDeltaTime = 0.0F;
 }
 

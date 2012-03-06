@@ -54,7 +54,7 @@ namespace GLESGAE
 				void setButton(const Button button, const float data)
 				{
 					// TODO: actual error checking
-					mButtons[button] = data;
+					mButtons[button - 1U] = data;
 				}
 				
 			private:

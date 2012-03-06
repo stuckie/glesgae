@@ -27,7 +27,13 @@ namespace GLESGAE
 			void addTexture(const Resource<Texture>& texture) { mTextures.push_back(texture); }
 
 			/// Grab a Texture
-			const Resource<Texture>& getTexture(unsigned int index) const { return mTextures[index]; }
+			Resource<Texture> getTexture(unsigned int index) const
+			{ 
+				if (true == mTextures.empty()) 
+					return Resource<Texture>(0); 
+				else 
+					return mTextures[index]; 
+			}
 			
 			/// Grab amount of Textures we have
 			unsigned int getTextureCount() const { return mTextures.size(); }

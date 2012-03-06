@@ -30,7 +30,7 @@ namespace GLESGAE
 				
 				/// Get amount of buttons
 				unsigned int getNumButtons() const { return mButtons.size(); }
-								
+				
 			protected:
 				/// Set Button data
 				void setButton(const Button button, const float data)

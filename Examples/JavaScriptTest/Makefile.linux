@@ -5,8 +5,8 @@
 #---------------------------------------------------------------------------------
 PREFIX		:=
 
-export CC	:=	$(PREFIX)gcc
-export CXX	:=	$(PREFIX)g++
+export CC	:=	$(PREFIX)clang
+export CXX	:=	$(PREFIX)clang++
 export AS	:=	$(PREFIX)as
 export AR	:=	$(PREFIX)ar
 export OBJCOPY	:=	$(PREFIX)objcopy

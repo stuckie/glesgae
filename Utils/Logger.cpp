@@ -18,7 +18,8 @@ Logger::Logger()
 
 Logger::~Logger()
 {
-	closeFile();
+	if (mFileType != LOG_FILE_UNOPENED)
+		closeFile();
 }
 
 void Logger::setFile(const std::string& filename, const FileType& fileType)

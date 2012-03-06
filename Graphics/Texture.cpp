@@ -80,11 +80,11 @@ bool Texture::load(const TextureFilter filter, const bool retainData, const Text
 			switch (format) {
 				case FORMAT_RGB:
 				case FORMAT_RGBA:
-					flags = (SOIL_FLAG_POWER_OF_TWO | SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB);
+					flags = (SOIL_FLAG_POWER_OF_TWO | SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB);
 					break;
 				case FORMAT_DXT1:
 				case FORMAT_DXT5:
-					flags = (SOIL_FLAG_POWER_OF_TWO | SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+					flags = (SOIL_FLAG_POWER_OF_TWO | SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 					break;
 				default:
 					Application::getInstance()->getLogger()->log("Invalid Texture Format specified\n", Logger::LOG_TYPE_ERROR);

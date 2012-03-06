@@ -127,8 +127,29 @@ class BaseJavaScriptClass
 			addMethod("removeEventListener", &jsRemoveEventListener);
 		}
 		
-		BaseJavaScriptClass(const BaseJavaScriptClass&);
-		BaseJavaScriptClass& operator=(const BaseJavaScriptClass&);
+		BaseJavaScriptClass(const BaseJavaScriptClass& rhs)
+		: mClassName(rhs.mClassName)
+		, mClassId(rhs.mClassId)
+		, mClassDefinition(rhs.mClassDefinition)
+		, mMethods(rhs.mMethods)
+		, mParameters(rhs.mParameters)
+		, mEvents(rhs.mEvents)
+		{
+		}
+		
+		BaseJavaScriptClass& operator=(const BaseJavaScriptClass& rhs)
+		{
+			if (this != &rhs) {
+				mClassName = rhs.mClassName;
+				mClassId = rhs.mClassId;
+				mClassDefinition = rhs.mClassDefinition;
+				mMethods = rhs.mMethods;
+				mParameters = rhs.mParameters;
+				mEvents = rhs.mEvents;
+			}
+			
+			return *this;
+		}
 		
 		std::string mClassName;
 		HashString mClassId;

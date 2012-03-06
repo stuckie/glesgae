@@ -224,12 +224,12 @@ void InputSystem::destroyKeyboard(const Resource<Controller::KeyboardController>
 	// Should error here.. somehow we've gotten a keyboard controller that doesn't belong to us!
 }
 
-void InputSystem::destroyJoystick(const Resource<Controller::JoystickController>& joystick)
+void InputSystem::destroyJoystick(const Resource<Controller::JoystickController>& /*joystick*/)
 {
 	// Run through list and check we actually own this Joystick, then delete.
 }
 
-void InputSystem::destroyPad(const Resource<Controller::PadController>& pad)
+void InputSystem::destroyPad(const Resource<Controller::PadController>& /*pad*/)
 {
 	// Run through list and check we actually own this Pad, then delete.
 }

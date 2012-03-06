@@ -1,11 +1,13 @@
 #ifndef _JAVA_SCRIPT_CONTEXT_H_
 #define _JAVA_SCRIPT_CONTEXT_H_
 
+#include <list>
 #include <vector>
 #include <JavaScriptCore/JavaScript.h>
 #include "../../Resources/Resource.h"
 #include "../../Utils/HashString.h"
 #include "../ScriptSystem.h"
+#include "JavaScriptTimedFunction.h"
 
 namespace GLESGAE
 {
@@ -19,8 +21,8 @@ class JavaScriptContext : public ScriptSystem
 		/// Initialise the instance.
 		void initialise();
 		
-		/// Update this Context ( for timers )
-		void update(const float delta);
+		/// Update this Context
+		void update();
 		
 		/// Shutdown the instance.
 		void shutdown();
@@ -60,6 +62,12 @@ class JavaScriptContext : public ScriptSystem
 		/// Useful for when we have some left over time.
 		void collectGarbage();
 		
+		/// Add a Callback
+		unsigned int addCallback(const JavaScriptTimedFunction& function);
+		
+		/// Remove a Callback
+		void removeCallback(const unsigned int id);
+		
 	protected:
 		/// Find a bound JavaScriptClass for this Context.
 		Resource<BaseJavaScriptClass> findJavaScriptClass(const HashString classId);
@@ -80,6 +88,9 @@ class JavaScriptContext : public ScriptSystem
 		JSGlobalContextRef mContext;
 		JSClassRef mConstructor;
 		std::vector<std::pair<HashString, Resource<BaseJavaScriptClass> > > mClasses;
+		
+		std::list<std::pair<unsigned int, JavaScriptTimedFunction> > mCallbacks;
+		unsigned int mCallbackId;
 };
 
 }

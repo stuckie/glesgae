@@ -17,6 +17,9 @@
 #include "../../Events/EventSystem.h"
 #include "../../Input/InputSystem.h"
 #include "../../Input/Keyboard.h"
+#include "../../Input/Pointer.h"
+#include "../../Input/Joystick.h"
+#include "../../Input/Pad.h"
 
 #include "../../Resources/Resource.h"
 #include "../../Resources/ResourceBank.h"
@@ -40,7 +43,7 @@ void TestLifecycle::onCreate()
 	const Resource<GraphicsSystem>& graphicsSystem(application->getGraphicsSystem());
 	const Resource<EventSystem>& eventSystem(application->getEventSystem());
 	
-	if (false == graphicsSystem->initialise("GLESGAE Java Test", 800, 480, 16, false)) {
+	if (false == graphicsSystem->initialise("GLESGAE Java Test", 480, 320, 16, false)) {
 		//TODO: OH NOES! WE'VE DIEDED!
 	}
 	
@@ -57,11 +60,18 @@ void TestLifecycle::onCreate()
 	
 	const Resource<InputSystem>& inputSystem(application->getInputSystem());
 	inputSystem->newKeyboard();
+	inputSystem->newPointer();
+#if defined(PANDORA)
+	inputSystem->newJoystick();	// left nub
+	inputSystem->newJoystick();	// right nub
+	inputSystem->newPad();		// buttons
+#endif
 	
 	// Setup Fixed Function settings
 	Resource<GLES1State> currentState(currentContext->getRenderState().recast<GLES1State>());
 	currentState->setTexturingEnabled(true);
 	currentState->setVertexPositionsEnabled(true);
+	currentState->setVertexColoursEnabled(true);
 	currentState->setAlphaBlendingEnabled(true);
 	currentState->setBlendingFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
@@ -96,10 +106,12 @@ bool TestLifecycle::onLoop()
 	Application* application(Application::getInstance());
 	const Resource<EventSystem>& eventSystem(application->getEventSystem());
 	const Resource<InputSystem>& inputSystem(application->getInputSystem());
+	const Resource<ScriptSystem>& scriptSystem(application->getScriptSystem());
 	Resource<Controller::KeyboardController> myKeyboard(inputSystem->getKeyboard(0));
 
 	eventSystem->update();
 	inputSystem->update();
+	scriptSystem->update();
 	
 	return !(myKeyboard->getKey(Controller::KEY_ESCAPE));
 }
