@@ -119,6 +119,7 @@ class BaseJavaScriptClass
 		: mClassName(name)
 		, mClassId(name)
 		, mClassDefinition(kJSClassDefinitionEmpty)
+		, mClassRef(0)
 		, mMethods()
 		, mParameters()
 		, mEvents()
@@ -131,6 +132,7 @@ class BaseJavaScriptClass
 		: mClassName(rhs.mClassName)
 		, mClassId(rhs.mClassId)
 		, mClassDefinition(rhs.mClassDefinition)
+		, mClassRef(rhs.mClassRef)
 		, mMethods(rhs.mMethods)
 		, mParameters(rhs.mParameters)
 		, mEvents(rhs.mEvents)
@@ -143,6 +145,7 @@ class BaseJavaScriptClass
 				mClassName = rhs.mClassName;
 				mClassId = rhs.mClassId;
 				mClassDefinition = rhs.mClassDefinition;
+				mClassRef = rhs.mClassRef;
 				mMethods = rhs.mMethods;
 				mParameters = rhs.mParameters;
 				mEvents = rhs.mEvents;
@@ -154,6 +157,7 @@ class BaseJavaScriptClass
 		std::string mClassName;
 		HashString mClassId;
 		JSClassDefinition mClassDefinition;
+		JSClassRef mClassRef;
 		std::vector<std::pair<std::string, MethodPtr> > mMethods;
 		std::vector<std::pair<std::string, std::pair<GetterPtr, SetterPtr> > > mParameters;
 		std::vector<std::pair<HashString, std::list<JSObjectRef> > > mEvents;

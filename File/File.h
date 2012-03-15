@@ -33,6 +33,12 @@ namespace FILEIO
 	,	READ_EOF
 	};
 	
+	enum BUFFER_TYPE
+	{	BUFFER_COPY
+	,	BUFFER_OWNED
+	,	BUFFER_NOT_OWNED
+	};
+	
 	enum WRITE_STATUS
 	{	WRITE_OK
 	,	WRITE_ERROR
@@ -109,7 +115,7 @@ class BaseFile
 		
 		/// Set the file buffer, with an option to make a copy of it.
 		/// Returns true if successful, false if there's an error.
-		virtual bool setBuffer(unsigned char* buffer, const unsigned long size, const bool copy = false) = 0;
+		virtual bool setBuffer(unsigned char* buffer, const unsigned long size, const FILEIO::BUFFER_TYPE type = FILEIO::BUFFER_NOT_OWNED) = 0;
 		
 		/// Create a new file buffer.
 		/// Returns true if successful, false if there's an error.

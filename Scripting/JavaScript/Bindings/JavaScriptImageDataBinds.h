@@ -14,7 +14,6 @@ class JavaScriptImageDataBinds : public JavaScriptClass<JavaScriptImageDataBinds
 		JavaScriptImageDataBinds();
 		JavaScriptImageDataBinds(const JavaScriptImageDataBinds& rhs);
 		JavaScriptImageDataBinds& operator=(const JavaScriptImageDataBinds& rhs);
-		~JavaScriptImageDataBinds();
 		
 		/// Create a new object pointer for this type.
 		void* getNewInstance(size_t argc, const JSValueRef argv[]);

@@ -32,7 +32,7 @@ class JavaScriptContext : public ScriptSystem
 		
 		/// Executes the specified script data in this Context, and returns any value from it.
 		/// Will return NULL if there's an exception thrown.
-		static JSValueRef callScript(JSContextRef context, const char* data);
+		static JSValueRef callScript(JSContextRef context, const char* data, const std::string& path = "Internal");
 		
 		/// Call a function.
 		static JSValueRef callFunction(JSContextRef context, JSObjectRef callback, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[]);
@@ -60,7 +60,7 @@ class JavaScriptContext : public ScriptSystem
 		
 		/// Force a garbage collection.
 		/// Useful for when we have some left over time.
-		void collectGarbage();
+		static void collectGarbage(JSContextRef context);
 		
 		/// Add a Callback
 		unsigned int addCallback(const JavaScriptTimedFunction& function);
@@ -68,13 +68,13 @@ class JavaScriptContext : public ScriptSystem
 		/// Remove a Callback
 		void removeCallback(const unsigned int id);
 		
-	protected:
 		/// Find a bound JavaScriptClass for this Context.
 		Resource<BaseJavaScriptClass> findJavaScriptClass(const HashString classId);
 		
 		/// Log an exception.
 		static void logException(JSContextRef context, JSValueRef exception);
 		
+	protected:
 		/// Get a native class in the list of known bound classes.
 		static JSValueRef getNativeClass(JSContextRef context, JSObjectRef object, JSStringRef propertyNameJS, JSValueRef* exception);
 		

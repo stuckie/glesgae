@@ -37,11 +37,6 @@ JavaScriptImageDataBinds& JavaScriptImageDataBinds::operator=(const JavaScriptIm
 	return *this;
 }
 
-JavaScriptImageDataBinds::~JavaScriptImageDataBinds()
-{
-	mData = 0; // Supposed to prompt the JavaScript Garbage Collector to collect this automatically...
-}
-
 void* JavaScriptImageDataBinds::getNewInstance(size_t argc, const JSValueRef /*argv*/[])
 {
 	if (argc != 0) {
@@ -63,7 +58,7 @@ void JavaScriptImageDataBinds::setData(const unsigned char* data, const unsigned
 {
 	mWidth = width;
 	mHeight = height;
-	
+
 	const unsigned int length(width * height * 4U); // RGBA
 	JSValueRef* values(new JSValueRef[length]);
 	if (values == 0)
@@ -99,6 +94,7 @@ void JavaScriptImageDataBinds::setData(const unsigned char* data, const unsigned
 	
 	for (index = 0U; index < length; ++index)
 		JSValueUnprotect(context, values[index]);
+	
 	delete [] values;
 }
 
@@ -106,24 +102,30 @@ unsigned char* JavaScriptImageDataBinds::convertData()
 {
 	const unsigned int dataSize(mHeight * mWidth * 4U); // RGBA
 	unsigned char* data(new unsigned char[dataSize]);
-	memset(data, 0x0, dataSize);
-	
-	JSContextRef context(Application::getInstance()->getScriptSystem().recast<JavaScriptContext>()->getContext());
-	JSStringRef jsString(JSValueToStringCopy(context, mData, 0));
-	const unsigned int jsStringLength(JSStringGetLength(jsString));
-	const JSChar* jsChar(JSStringGetCharactersPtr(jsString));
-	unsigned int dataIndex(0U);
-	
-	for (unsigned int index(0U); index < jsStringLength; ++index) {
-		if (isdigit(jsChar[index]))
-			data[dataIndex] = data[dataIndex] * 10 + jsChar[index] - '0'; 
-		else if(jsChar[index] == ',')
-			++dataIndex;
+	if (0 == mData) {
+		memset(data, 0xFF, dataSize);
+		return data;
 	}
-	
-	JSStringRelease(jsString);
-	
-	return data;
+	else {
+		memset(data, 0x0, dataSize);
+		
+		JSContextRef context(Application::getInstance()->getScriptSystem().recast<JavaScriptContext>()->getContext());
+		JSStringRef jsString(JSValueToStringCopy(context, mData, 0));
+		const unsigned int jsStringLength(JSStringGetLength(jsString));
+		const JSChar* jsChar(JSStringGetCharactersPtr(jsString));
+		unsigned int dataIndex(0U);
+		
+		for (unsigned int index(0U); index < jsStringLength; ++index) {
+			if (isdigit(jsChar[index]))
+				data[dataIndex] = data[dataIndex] * 10 + jsChar[index] - '0'; 
+			else if(jsChar[index] == ',')
+				++dataIndex;
+		}
+		
+		JSStringRelease(jsString);
+		
+		return data;
+	}
 }
 
 bool JavaScriptImageDataBinds::jsSetData(JSContextRef context, JSObjectRef object, JSStringRef propertyName, JSValueRef value, JSValueRef* exception)

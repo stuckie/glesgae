@@ -52,15 +52,17 @@ void JavaScriptContext::shutdown()
 	mClasses.clear();
 }
 
-JSValueRef JavaScriptContext::callScript(JSContextRef context, const char* data)
+JSValueRef JavaScriptContext::callScript(JSContextRef context, const char* data, const std::string& path)
 {
 	if (data == 0)
 		return JSValueMakeNull(context);
 	JSStringRef scriptJS(JSStringCreateWithUTF8CString(data));
+	JSStringRef pathJS(JSStringCreateWithUTF8CString(path.c_str()));
 	JSValueRef exception(0);
-	JSValueRef value(JSEvaluateScript(context, scriptJS, 0, 0, 0, &exception));
+	JSValueRef value(JSEvaluateScript(context, scriptJS, 0, pathJS, 0, &exception));
 	logException(context, exception);
 	JSStringRelease(scriptJS);
+	JSStringRelease(pathJS);
 	
 	return value;
 }
@@ -119,9 +121,9 @@ JSObjectRef JavaScriptContext::valueToObject(JSContextRef context, JSValueRef va
 	return object;
 }
 
-void JavaScriptContext::collectGarbage()
+void JavaScriptContext::collectGarbage(JSContextRef context)
 {
-	JSGarbageCollect(mContext);
+	JSGarbageCollect(context);
 }
 
 Resource<BaseJavaScriptClass> JavaScriptContext::findJavaScriptClass(const HashString classId)

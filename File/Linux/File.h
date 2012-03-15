@@ -31,7 +31,7 @@ class File : public BaseFile
 		FILEIO::READ_STATUS setReadPosition(const unsigned long readPosition);
 		
 		/// Set the file buffer.
-		bool setBuffer(unsigned char* buffer, const unsigned long size, const bool copy = false);
+		bool setBuffer(unsigned char* buffer, const unsigned long size, const FILEIO::BUFFER_TYPE type = FILEIO::BUFFER_NOT_OWNED);
 		
 		/// Create a new file buffer.
 		/// Returns true if successful, false if there's an error.

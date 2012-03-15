@@ -44,8 +44,11 @@ bool JavaScriptTimedFunction::update()
 	
 	mTimer.update(clock);
 	if (mTimer.getTime() >= mCallbackTime) {
+		JSValueRef exception(0);
 		const Resource<JavaScriptContext> javaContext(application->getScriptSystem().recast<JavaScriptContext>());
-		JSObjectCallAsFunction(javaContext->getContext(), mFunction, 0, 0, 0, 0);
+		JSContextRef context(javaContext->getContext());
+		JSObjectCallAsFunction(context, mFunction, 0, 0, 0, &exception);
+		javaContext->logException(context, exception);
 		mTimer.reset();
 		return mRecurring;
 	}

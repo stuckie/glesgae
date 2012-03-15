@@ -43,7 +43,7 @@ void TestLifecycle::onCreate()
 	const Resource<GraphicsSystem>& graphicsSystem(application->getGraphicsSystem());
 	const Resource<EventSystem>& eventSystem(application->getEventSystem());
 	
-	if (false == graphicsSystem->initialise("GLESGAE Java Test", 480, 320, 16, false)) {
+	if (false == graphicsSystem->initialise("GLESGAE JavaScript Test", 480, 320, 16, false)) {
 		//TODO: OH NOES! WE'VE DIEDED!
 	}
 	
@@ -94,7 +94,7 @@ void TestLifecycle::onStart()
 	Resource<RenderContext> currentContext(graphicsSystem->getCurrentContext());
 	mScreenTarget->bind();
 	currentContext->refresh();
-	javaContext->callScript(javaContext->getContext(), scriptFile.stringBuffer());
+	javaContext->callScript(javaContext->getContext(), scriptFile.stringBuffer(), "test.js");
 }
 
 void TestLifecycle::onResume()

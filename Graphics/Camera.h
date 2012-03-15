@@ -74,6 +74,9 @@ namespace GLESGAE
 			/// Get Aspect Ratio
 			float getAspectRatio() const { return mAspectRatio; }
 			
+			/// Get 2d width/height
+			void get2dParams(float* width, float* height) { *width = m2dRight; *height = m2dBottom; }
+			
 			/// Create a viewMatrix
 			static Matrix4 createViewMatrix(const Vector3& eye, const Vector3& centre, const Vector3& up);
 			
@@ -83,7 +86,6 @@ namespace GLESGAE
 			/// Create a 3d projection matrix
 			static Matrix4 create3dProjectionMatrix(const float nearClip, const float farClip, const float fov, const float aspectRatio);
 			
-
 		private:
 			CameraType mType;
 			

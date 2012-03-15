@@ -148,7 +148,6 @@ JSValueRef JavaScriptCanvasBinds::jsDrawImage(JSContextRef context, JSObjectRef 
 	}
 }
 
-// This seems to hemmorage memory like sweeties... though it seems to come from JavaScript, so a GC issue?
 JSValueRef JavaScriptCanvasBinds::jsGetImageData(JSContextRef context, JSObjectRef /*function*/, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef* /*exception*/)
 {
 	if (argumentCount != 4) {
@@ -167,26 +166,19 @@ JSValueRef JavaScriptCanvasBinds::jsGetImageData(JSContextRef context, JSObjectR
 			return JSValueMakeNull(context);
 		
 		memset(data, 0xFF, dataSize);
-		// Technically this is naughty, and should be hidden in the context...
 		JavaScriptCanvasBinds* self(reinterpret_cast<JavaScriptCanvasBinds*>(JSObjectGetPrivate(thisObject)));
+		
+		// Technically this is naughty, and should be hidden in the context...
+		// Additionally, this won't work too well on Desktops where the glOrtho settings may be autoscaling up.
 		glReadPixels(sX, self->mHeight - sH - sY, sW, sH, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-		JSStringRef scriptJS(JSStringCreateWithUTF8CString("return new ImageData()"));
-		JSObjectRef function(JSObjectMakeFunction(context, 0, 0, 0, scriptJS, 0, 1, 0));
-		JSValueRef result(JSObjectCallAsFunction(context, function, 0, 0, 0, 0));
-		JSStringRelease(scriptJS);
-		JavaScriptImageDataBinds* imageData(reinterpret_cast<JavaScriptImageDataBinds*>(JSObjectGetPrivate(JSValueToObject(context, result, 0))));
-		if (imageData->getClassId() != JS_IMAGE_DATA) {
-			Application::getInstance()->getLogger()->log("First Parameter Not an Image to Canvas:drawImage - " + toString(imageData->getClassName()) + "\n", Logger::LOG_TYPE_ERROR);
-			return JSValueMakeNull(context);
-		}
+		
+		JavaScriptImageDataBinds* imageData(new JavaScriptImageDataBinds);
 		imageData->setData(data, sW, sH);
 		delete [] data;
-		return result;
+		return JSObjectMake(context, Application::getInstance()->getScriptSystem().recast<JavaScriptContext>()->findJavaScriptClass(JS_IMAGE_DATA)->getClassReference(), imageData);
 	}
 }
 
-// This seems to hemmorage memory like sweeties... though it seems to come from JavaScript, so a GC issue?
 JSValueRef JavaScriptCanvasBinds::jsPutImageData(JSContextRef context, JSObjectRef /*function*/, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef* /*exception*/)
 {
 	if ((argumentCount != 3) && (argumentCount != 7)) {
@@ -197,7 +189,7 @@ JSValueRef JavaScriptCanvasBinds::jsPutImageData(JSContextRef context, JSObjectR
 		JavaScriptImageDataBinds* imageData(reinterpret_cast<JavaScriptImageDataBinds*>(JSObjectGetPrivate(JSValueToObject(context, arguments[0], 0))));
 		Resource<File> buffer(new File("Texture"));
 		unsigned char* imageBuffer(imageData->convertData());
-		buffer->setBuffer(imageBuffer, imageData->getSize());
+		buffer->setBuffer(imageBuffer, imageData->getSize(), FILEIO::BUFFER_OWNED);
 		Resource<Texture> texture(new Texture(buffer, imageData->getWidth(), imageData->getHeight()));
 		texture->load(Texture::FILTER_NONE, true, Texture::FORMAT_RGBA);
 		float dX, dY, dW, dH, sX, sY, sW, sH;
@@ -224,7 +216,6 @@ JSValueRef JavaScriptCanvasBinds::jsPutImageData(JSContextRef context, JSObjectR
 		const Resource<Mesh> mesh(self->makeSprite(texture, sX, sY, sW, sH, dX, dY, dW, dH));
 		Application::getInstance()->getGraphicsSystem()->getCurrentContext()->getRenderState()->setTexturingEnabled(true);
 		Application::getInstance()->getGraphicsSystem()->getCurrentContext()->drawMesh(mesh, self->mTransform);
-		delete [] imageBuffer;
 		
 		return 0;
 	}

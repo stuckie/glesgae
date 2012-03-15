@@ -1,4 +1,5 @@
 #include "Shader.h"
+#include "../File/File.h"
 
 using namespace GLESGAE;
 
@@ -21,21 +22,19 @@ Shader::~Shader()
 	resetShader();
 }
 
-void Shader::createFromFile(const std::string& /*vertex*/, const std::string& /*fragment*/)
+void Shader::createFromFile(const std::string& vertex, const std::string& fragment)
 {
-	/*
 	File vertexFile(vertex);	
-	vertexFile.open(File::READ_ONLY);
+	vertexFile.open(FILEIO::OPEN_READ, FILEIO::FILE_ASCII);
 	vertexFile.read();
 	vertexFile.close();
 	
 	File fragmentFile(fragment);
-	fragmentFile.open(File::READ_ONLY);
+	fragmentFile.open(FILEIO::OPEN_READ, FILEIO::FILE_ASCII);
 	fragmentFile.read();
 	fragmentFile.close();
 	
-	createFromSource(std::string(vertexFile.readBuffer()), std::string(fragmentFile.readBuffer()));
-	*/
+	createFromSource(std::string(vertexFile.stringBuffer()), std::string(fragmentFile.stringBuffer()));
 }
 
 void Shader::createFromSource(const std::string& vertex, const std::string& fragment)

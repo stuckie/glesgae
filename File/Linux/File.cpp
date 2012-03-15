@@ -237,7 +237,7 @@ FILEIO::READ_STATUS File::setReadPosition(const unsigned long readPosition)
 	}
 }
 
-bool File::setBuffer(unsigned char* buffer, const unsigned long size, const bool copy)
+bool File::setBuffer(unsigned char* buffer, const unsigned long size, const FILEIO::BUFFER_TYPE type)
 {
 	if (mFileStatus == FILEIO::FILE_OPEN) {
 		Application::getInstance()->getLogger()->log("File: File open, cannot set buffer\n", Logger::LOG_TYPE_ERROR);
@@ -247,20 +247,31 @@ bool File::setBuffer(unsigned char* buffer, const unsigned long size, const bool
 	if (mBufferOwned == true)
 		delete [] mBuffer;
 	
-	if (true == copy) {
-		mBuffer = new unsigned char[size];
-		if (0 == mBuffer)
-			return false;
-		memcpy(mBuffer, buffer, size);
-		mBufferOwned = true;
-		mBufferSize = size;
-		mReadPosition = 0U;
-	}
-	else {
-		mBuffer = buffer;
-		mBufferOwned = false;
-		mBufferSize = size;
-		mReadPosition = 0U;
+	switch(type) {
+		case FILEIO::BUFFER_COPY: {
+			mBuffer = new unsigned char[size];
+			if (0 == mBuffer)
+				return false;
+			memcpy(mBuffer, buffer, size);
+			mBufferOwned = true;
+			mBufferSize = size;
+			mReadPosition = 0U;
+		}
+		break;
+		case FILEIO::BUFFER_NOT_OWNED: {
+			mBuffer = buffer;
+			mBufferOwned = false;
+			mBufferSize = size;
+			mReadPosition = 0U;
+		}
+		break;
+		case FILEIO::BUFFER_OWNED: {
+			mBuffer = buffer;
+			mBufferOwned = true;
+			mBufferSize = size;
+			mReadPosition = 0U;
+		}
+		break;
 	}
 	
 	return true;

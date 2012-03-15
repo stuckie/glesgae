@@ -13,6 +13,7 @@
 #include "JavaScriptKeyboardDeviceBinds.h"
 #include "JavaScriptPadDeviceBinds.h"
 #include "JavaScriptPointerDeviceBinds.h"
+#include "JavaScriptSystemBinds.h"
 #include "JavaScriptTimerBinds.h"
 
 namespace GLESGAE
@@ -30,11 +31,13 @@ void bindGLESGAEJS()
 	context->addClass(Resource<BaseJavaScriptClass>(new JavaScriptKeyboardDeviceBinds));
 	context->addClass(Resource<BaseJavaScriptClass>(new JavaScriptPadDeviceBinds));
 	context->addClass(Resource<BaseJavaScriptClass>(new JavaScriptPointerDeviceBinds));
+	context->addClass(Resource<BaseJavaScriptClass>(new JavaScriptSystemBinds));
 	context->addClass(Resource<BaseJavaScriptClass>(new JavaScriptTimerBinds));
 	context->callScript(context->getContext(), "Audio = glesgae.Audio");
-	context->callScript(context->getContext(), "Input = new glesgae.Input");
+	context->callScript(context->getContext(), "Input = new glesgae.Input()");
 	context->callScript(context->getContext(), "Image = glesgae.Image");
 	context->callScript(context->getContext(), "ImageData = glesgae.ImageData");
+	context->callScript(context->getContext(), "System = new glesgae.System()");
 	context->callScript(context->getContext(), "Timer = new glesgae.Timer();");
 }
 
