@@ -90,9 +90,8 @@ int
 	header.sCaps.dwCaps1 = DDSCAPS_TEXTURE;
 	/*	write it out	*/
 	fout = fopen( filename, "wb");
-	long written;
-	written = fwrite( &header, sizeof( DDS_header ), 1, fout );
-	written = fwrite( DDS_data, 1, DDS_size, fout );
+	fwrite( &header, sizeof( DDS_header ), 1, fout );
+	fwrite( DDS_data, 1, DDS_size, fout );
 	fclose( fout );
 	/*	done	*/
 	free( DDS_data );

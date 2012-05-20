@@ -2,6 +2,8 @@
 
 #include <cstring> // for memcpy
 
+#pragma GCC diagnostic ignored "-Wstrict-overflow"
+
 using namespace GLESGAE;
 
 Matrix4::Matrix4()
@@ -182,6 +184,10 @@ const Matrix4& Matrix4::operator-=(const Matrix4& rhs)
 	return *this;
 }
 
+#if ((__GNUC__ * 100) + __GNUC_MINOR__) >= 402
+#pragma GCC push_options
+#pragma GCC optimize ("O1")
+#endif
 const Matrix4& Matrix4::operator*=(const Matrix4& rhs)
 {
 	float newElement(0.0F);
@@ -189,12 +195,15 @@ const Matrix4& Matrix4::operator*=(const Matrix4& rhs)
 		for (unsigned int column(0U); column < 4U; ++column) {
 			newElement = 0.0F;
 			for (unsigned int index(0U); index < 4U; ++index)
-				newElement += mMatrix[row * 4U + index] * rhs.mMatrix[index * 4U + column];
+				newElement += mMatrix[row * 4U + index] * rhs.mMatrix[index * 4U + column]; // Seems to cause a "possible" overflow on -O2 and -O3... which I think is bogus.
 			(*this)(row, column) = newElement;
 		}
 	}
 	return *this;
 }
+#if ((__GNUC__ * 100) + __GNUC_MINOR__) >= 402
+#pragma GCC pop_options
+#endif
 
 const Matrix4& Matrix4::operator*=(const float scalar)
 {

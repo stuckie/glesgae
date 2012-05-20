@@ -437,8 +437,9 @@ static void getn(stbi *s, stbi_uc *buffer, int n)
 {
 #ifndef STBI_NO_STDIO
 	if (s->img_file) {
-		long written;
-		written = fread(buffer, 1, n, s->img_file);
+		long read = fread(buffer, 1, n, s->img_file);
+		if (read != n)
+			e("Not read enough.", "Expected to read more of file.");
 		return;
 	}
 #endif
@@ -2326,11 +2327,11 @@ static int parse_png_file(png *z, int scan, int req_comp)
             if ((c.type & (1 << 29)) == 0) {
                #ifndef STBI_NO_FAILURE_STRINGS
                // not threadsafe
-               static char invalid_chunk[] = "XXXX chunk not known";
-               invalid_chunk[0] = (uint8) (c.type >> 24);
-               invalid_chunk[1] = (uint8) (c.type >> 16);
-               invalid_chunk[2] = (uint8) (c.type >>  8);
-               invalid_chunk[3] = (uint8) (c.type >>  0);
+//               static char invalid_chunk[] = "XXXX chunk not known";
+//               invalid_chunk[0] = (uint8) (c.type >> 24);
+//               invalid_chunk[1] = (uint8) (c.type >> 16);
+//               invalid_chunk[2] = (uint8) (c.type >>  8);
+//               invalid_chunk[3] = (uint8) (c.type >>  0);
                #endif
                return e(invalid_chunk, "PNG not supported: unknown chunk type");
             }
@@ -3009,6 +3010,8 @@ static int psd_test(stbi *s)
 int stbi_psd_test_file(FILE *f)
 {
    stbi s;
+   s.img_buffer = 0;
+   s.img_buffer_end = 0;
    int r,n = ftell(f);
    start_file(&s, f);
    r = psd_test(&s);
@@ -3557,7 +3560,7 @@ stbi_uc *stbi_hdr_load_rgbe_memory(stbi_uc *buffer, int len, int *x, int *y, int
 
 #ifndef STBI_NO_WRITE
 
-static void write8(FILE *f, int x) { uint8 z = (uint8) x; long written; written = fwrite(&z,1,1,f); }
+static void write8(FILE *f, int x) { uint8 z = (uint8) x; fwrite(&z,1,1,f); }
 
 static void writefv(FILE *f, char *fmt, va_list v)
 {
@@ -3594,12 +3597,11 @@ static void write_pixels(FILE *f, int rgb_dir, int vdir, int x, int y, int comp,
    else
       j_end =  y, j = 0;
 
-   long written;
    for (; j != j_end; j += vdir) {
       for (i=0; i < x; ++i) {
          uint8 *d = (uint8 *) data + (j*x+i)*comp;
          if (write_alpha < 0)
-            written = fwrite(&d[comp-1], 1, 1, f);
+            fwrite(&d[comp-1], 1, 1, f);
          switch (comp) {
             case 1:
             case 2: writef(f, "111", d[0],d[0],d[0]);
@@ -3617,9 +3619,9 @@ static void write_pixels(FILE *f, int rgb_dir, int vdir, int x, int y, int comp,
                break;
          }
          if (write_alpha > 0)
-            written = fwrite(&d[comp-1], 1, 1, f);
+            fwrite(&d[comp-1], 1, 1, f);
       }
-      written = fwrite(&zero,scanline_pad,1,f);
+      fwrite(&zero,scanline_pad,1,f);
    }
 }
 
