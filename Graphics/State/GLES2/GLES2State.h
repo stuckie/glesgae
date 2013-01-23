@@ -3,7 +3,7 @@
 
 #if defined(GLX)
 	#include "../../Context/Linux/GLee.h"
-#elif defined(PANDORA)
+#elif defined(PANDORA) || defined(ANDROID)
 	#if defined(GLES1)
 		#include <GLES/gl.h>
 	#elif defined(GLES2)
@@ -12,6 +12,7 @@
 #endif
 
 #include "../RenderState.h"
+#include "../../ShaderUniformUpdater.h"
 
 #include <string>
 #include <map>
@@ -24,7 +25,7 @@ namespace GLESGAE
 	class Shader;
 	class ShaderUniformUpdater;
 	class Texture;
-	class GLES2State : RenderState
+	class GLES2State : public RenderState
 	{
 		public:
 			GLES2State();

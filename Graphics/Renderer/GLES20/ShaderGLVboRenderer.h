@@ -4,7 +4,7 @@
 #if defined(GLX)
 	#include "../../Context/Linux/GLee.h"
 #elif defined(GLES2)
-	#if defined(PANDORA)
+	#if defined(PANDORA) || defined(ANDROID)
 		#include <GLES2/gl2.h>
 	#endif
 #endif

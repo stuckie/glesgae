@@ -76,6 +76,8 @@ namespace GLESGAE
 	#include "Pandora/PandoraInputSystem.h"
 #elif defined(LINUX)
 	#include "Linux/LinuxInputSystem.h"
+#elif defined(ANDROID)
+	#include "Android/AndroidInputSystem.h"
 #endif
 
 #endif

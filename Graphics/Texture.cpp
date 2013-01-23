@@ -9,10 +9,10 @@
 	#include "Context/Win32/GLee.h"
 #elif defined(AGL)
 	#include "Context/Darwin/GLee.h"
-#elif defined(PANDORA)
+#elif defined(PANDORA) || defined(ANDROID)
 	#if defined(GLES1)
 		#include <GLES/gl.h>
-	#elif defined(GLES2)
+	#elif defined(GLES2) || defined(ANDROID)
 		#include <GLES2/gl2.h>
 	#endif
 #endif

@@ -3,8 +3,6 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "../../../Utils/Logger.h"
-
 using namespace GLESGAE;
 
 X11RenderWindow::X11RenderWindow(const char* name, const unsigned int width, const unsigned int height, const unsigned int bpp, const bool fullscreen)
@@ -19,17 +17,17 @@ void X11RenderWindow::open()
 {
 	// Create the actual window and store the pointer.
 	mWindow = XCreateWindow(mDisplay						// Pointer to the Display
-							, XDefaultRootWindow(mDisplay)	// Parent Window
-							, 0								// X of top-left corner
-							, 0								// Y of top-left corner
-							, mWidth						// requested width
-							, mHeight						// requested height
-							, 0								// border width
-							, CopyFromParent				// window depth
-							, CopyFromParent				// window class - InputOutput / InputOnly / CopyFromParent
-							, CopyFromParent				// visual type
-							, 0								// value mask
-							, 0);							// attributes
+				, XDefaultRootWindow(mDisplay)				// Parent Window
+				, 0							// X of top-left corner
+				, 0							// Y of top-left corner
+				, mWidth						// requested width
+				, mHeight						// requested height
+				, 0							// border width
+				, CopyFromParent					// window depth
+				, CopyFromParent					// window class - InputOutput / InputOnly / CopyFromParent
+				, CopyFromParent					// visual type
+				, 0							// value mask
+				, 0);							// attributes
 
 	// Map the window to the display.
 	XMapWindow(mDisplay, mWindow);
@@ -83,3 +81,4 @@ void X11RenderWindow::close()
 	XDestroyWindow(mDisplay, mWindow);
 	mWindow = 0;
 }
+

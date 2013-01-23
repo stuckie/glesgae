@@ -4,11 +4,11 @@
 #if defined(GLX)
 	#include "Context/Linux/GLee.h"
 #elif defined(GLES1)
-	#if defined(PANDORA)
+	#if defined(PANDORA) || defined(ANDROID)
 		#include <GLES/gl.h>
 	#endif
 #elif defined(GLES2)
-	#if defined(PANDORA)
+	#if defined(PANDORA) || defined(ANDROID)
 		#include <GLES2/gl2.h>
 	#endif
 #endif

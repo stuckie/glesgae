@@ -2,8 +2,8 @@
 
 #include "../ScreenRenderTarget.h"
 
-#if defined(PANDORA)
-	#include <GLES2/gl.h>
+#if defined(PANDORA) || defined(ANDROID)
+	#include <GLES2/gl2.h>
 #endif
 
 using namespace GLESGAE;

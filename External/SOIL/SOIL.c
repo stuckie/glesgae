@@ -11,6 +11,8 @@
 	* Sean Barret - for the awesome stb_image
 	* Dan Venkitachalam - for finding some non-compliant DDS files, and patching some explicit casts
 	* everybody at gamedev.net
+	
+	Slightly pissed about with by Steven "Stuckie" Campbell for Android and iOS
 */
 
 #define SOIL_CHECK_FOR_GL_ERRORS 0
@@ -25,6 +27,14 @@
 	#include <OpenGL/gl.h>
 	#include <Carbon/Carbon.h>
 	#define APIENTRY
+#elif defined(ANDROID) || defined(PANDORA)
+	#if defined(GLES1)
+		#include <GLES/gl.h>
+	#elif defined(GLES2)
+		#include <GLES2/gl2.h>
+	#endif
+	#define APIENTRY
+	#define GL_CLAMP GL_CLAMP_TO_EDGE
 #else
 	#include <GL/gl.h>
 	#include <GL/glx.h>

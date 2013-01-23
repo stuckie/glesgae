@@ -62,6 +62,8 @@ namespace GLESGAE
 
 #if defined(LINUX) || defined(PANDORA)
 	#include "X11/X11EventSystem.h"
+#elif defined(ANDROID)
+	#include "Android/AndroidEventSystem.h"
 #endif
 
 #endif
