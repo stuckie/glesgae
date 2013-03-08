@@ -13,7 +13,7 @@
 
 using namespace GLESGAE;
 
-Sprite::Sprite(const Resource<Material>& material, const Vector2& size, const float u, const float v, const float s, const float t)
+Sprite::Sprite(Material* const material, const Vector2& size, const float u, const float v, const float s, const float t)
 : mMesh()
 , mTransform(new Matrix4)
 , mPosition(0.0F, 0.0F)
@@ -35,25 +35,47 @@ Sprite::Sprite(const Resource<Material>& material, const Vector2& size, const fl
 	unsigned char indexData[6] = { 0, 1, 2, 2, 3, 0 };
 	unsigned int indexSize = 6 * sizeof(unsigned char);
 
-	Resource<VertexBuffer> newVertexBuffer(new VertexBuffer(reinterpret_cast<unsigned char*>(&vertexData), vertexSize));
+	VertexBuffer* newVertexBuffer(new VertexBuffer(reinterpret_cast<unsigned char*>(&vertexData), vertexSize));
 	newVertexBuffer->addFormatIdentifier(VertexBuffer::FORMAT_POSITION_4F, 4U);
 	newVertexBuffer->addFormatIdentifier(VertexBuffer::FORMAT_TEXTURE_2F, 4U);
 	
-	Resource<IndexBuffer> newIndexBuffer(new IndexBuffer(reinterpret_cast<unsigned char*>(&indexData), indexSize, IndexBuffer::INDEX_UNSIGNED_BYTE, IndexBuffer::FORMAT_TRIANGLES));
+	IndexBuffer* newIndexBuffer(new IndexBuffer(reinterpret_cast<unsigned char*>(&indexData), indexSize, IndexBuffer::INDEX_UNSIGNED_BYTE, IndexBuffer::FORMAT_TRIANGLES));
 	
-	mMesh = Resource<Mesh>(new Mesh(newVertexBuffer, newIndexBuffer, material));
+	mMesh = new Mesh(newVertexBuffer, newIndexBuffer, material);
+}
+
+Sprite::Sprite(const Sprite& sprite)
+: mMesh(sprite.mMesh)
+, mTransform(sprite.mTransform)
+, mPosition(sprite.mPosition)
+, mRotation(sprite.mRotation)
+{
+}
+
+Sprite& Sprite::operator=(const Sprite& sprite)
+{
+	if (this != &sprite) {
+		delete mMesh;
+		delete mTransform;
+		mMesh = sprite.mMesh;
+		mTransform = sprite.mTransform;
+		mPosition = sprite.mPosition;
+		mRotation = sprite.mRotation;
+	}
+	
+	return *this;
 }
 
 Sprite::~Sprite()
 {
 }
 
-const Resource<Mesh>& Sprite::getMesh() const
+Mesh* Sprite::getMesh() const
 {
 	return mMesh;
 }
 
-const Resource<Matrix4>& Sprite::getTransform() const
+Matrix4* Sprite::getTransform() const
 {
 	return mTransform;
 }

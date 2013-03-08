@@ -1,13 +1,13 @@
 #include "GLES2State.h"
 
-
-
 #include "../../Camera.h"
 #include "../../Shader.h"
 #include "../../ShaderUniformUpdater.h"
 #include "../../Material.h"
 #include "../../Texture.h"
 #include "../../../Maths/Matrix4.h"
+
+#include <cassert>
 
 using namespace GLESGAE;
 
@@ -31,12 +31,12 @@ GLES2State::GLES2State()
 , a_custom0(GL_INVALID_VALUE)
 , a_custom1(GL_INVALID_VALUE)
 , a_custom2(GL_INVALID_VALUE)
-, mCamera()
-, mTextureMatrix()
+, mCamera(0)
+, mTextureMatrix(0)
 , mTexturing(false)
 , mAlphaBlending(false)
-, mCurrentShader()
-, mLastTexture()
+, mCurrentShader(0)
+, mLastTexture(0)
 , mLastTextureUnit(GL_INVALID_VALUE)
 , mUniformUpdaters()
 {
@@ -46,7 +46,7 @@ GLES2State::~GLES2State()
 {
 }
 
-void GLES2State::setCamera(const Resource<Camera>& camera)
+void GLES2State::setCamera(Camera* const camera)
 {
 	if (mCamera != camera) {
 //		glMatrixMode(GL_PROJECTION);
@@ -64,7 +64,7 @@ void GLES2State::setCamera(const Resource<Camera>& camera)
 	}
 }
 
-void GLES2State::setTextureMatrix(const Resource<Matrix4>& matrix)
+void GLES2State::setTextureMatrix(Matrix4* const matrix)
 {
 	if (mTextureMatrix != matrix) {
 //		glMatrixMode(GL_TEXTURE);
@@ -117,14 +117,15 @@ void GLES2State::setFullBlendingFunction(const GLenum sourceRGB, const GLenum de
 	glBlendFuncSeparate(sourceRGB, destinationRGB, sourceAlpha, destinationAlpha);
 }
 
-void GLES2State::addUniformUpdater(const HashString uniformName, const Resource<ShaderUniformUpdater>& updater)
+void GLES2State::addUniformUpdater(const HashString uniformName, ShaderUniformUpdater* const updater)
 {
 	// should probably check and assert if we already have something for this uniform name.
 	mUniformUpdaters[uniformName] = updater;
 }
 
-void GLES2State::bindShader(const Resource<Shader>& shader)
+void GLES2State::bindShader(Shader* const shader)
 {
+	assert(0 != shader);
 	if (mCurrentShader != shader) {
 		mCurrentShader = shader;
 		glUseProgram(shader->getProgramId());
@@ -176,14 +177,14 @@ void GLES2State::resetAttributes()
 		glEnableVertexAttribArray(a_custom2);
 }
 
-void GLES2State::updateUniforms(const Resource<Material>& material, const Resource<Matrix4>& transform)
+void GLES2State::updateUniforms(Material* const material, Matrix4* const transform)
 {
 	std::vector<std::pair<HashString, GLint> > uniforms(mCurrentShader->getUniformArray());
 	for (std::vector<std::pair<HashString, GLint> >::iterator itr(uniforms.begin()); itr < uniforms.end(); ++itr)
 		mUniformUpdaters[itr->first]->update(itr->second, mCamera, material, transform);
 }
 
-void GLES2State::updateTextures(const Resource<Material>& material)
+void GLES2State::updateTextures(Material* const material)
 {
 	const unsigned int textureCount(material->getTextureCount());
 
@@ -194,7 +195,7 @@ void GLES2State::updateTextures(const Resource<Material>& material)
 			mLastTextureUnit = currentTextureUnit;
 		}
 		
-		const Resource<Texture>& texture(material->getTexture(currentTexture));
+		Texture* const texture(material->getTexture(currentTexture));
 		if (mLastTexture != texture) {
 			mLastTexture = texture;
 			glBindTexture(GL_TEXTURE_2D, texture->getId());

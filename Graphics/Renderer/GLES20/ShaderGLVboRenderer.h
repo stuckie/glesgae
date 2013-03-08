@@ -23,16 +23,19 @@ namespace GLESGAE
 	{
 		public:
 			ShaderGlVboRenderer();
-			virtual ~ShaderGlVboRenderer();
+			~ShaderGlVboRenderer();
 			
 			/// Draw a Mesh using the Shader Based Pipeline
-			void drawMesh(const Resource<Mesh>& mesh, const Resource<Matrix4>& transform);
+			void drawMesh(Mesh* const mesh, Matrix4* const transform);
 			
 		private:
-			Resource<VertexBuffer> mLastVertexBuffer;
-			Resource<IndexBuffer> mLastIndexBuffer;
-			Resource<Texture> mLastTexture;
-			Resource<GLES2State> mState;
+			ShaderGlVboRenderer(const ShaderGlVboRenderer&);
+			ShaderGlVboRenderer& operator=(const ShaderGlVboRenderer&);
+			
+			VertexBuffer* mLastVertexBuffer;
+			IndexBuffer* mLastIndexBuffer;
+			Texture* mLastTexture;
+			GLES2State* mState;
 	};
 
 }

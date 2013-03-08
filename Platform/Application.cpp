@@ -1,19 +1,28 @@
 #include "Application.h"
 
+#include "Lifecycle.h"
+#include "../Events/EventSystem.h"
+#include "../Graphics/GraphicsSystem.h"
+#include "../Input/InputSystem.h"
+#include "../States/StateStack.h"
+#include "../Time/Clock.h"
+#include "../Utils/Logger.h"
+#include "../Scripting/ScriptSystem.h"
+
+
 using namespace GLESGAE;
 
 Application* Application::mInstance = 0;
 
 Application::Application()
-: mEventSystem()
-, mGraphicsSystem()
-, mInputSystem()
-, mResourceManager()
-, mLifecycle()
-, mStateStack()
-, mClock()
-, mLogger()
-, mScriptSystem()
+: mEventSystem(0)
+, mGraphicsSystem(0)
+, mInputSystem(0)
+, mLifecycle(0)
+, mStateStack(0)
+, mClock(0)
+, mLogger(0)
+, mScriptSystem(0)
 {
 }
 
@@ -29,12 +38,12 @@ Application* Application::getInstance()
 	return mInstance;
 }
 
-void Application::setLifecycle(const Resource<Lifecycle>& lifecycle)
+void Application::setLifecycle(Lifecycle* const lifecycle)
 {
 	mLifecycle = lifecycle;
 }
 
-void Application::setScriptSystem(const Resource<ScriptSystem>& scriptSystem)
+void Application::setScriptSystem(ScriptSystem* const scriptSystem)
 {
 	mScriptSystem = scriptSystem;
 }
@@ -42,19 +51,17 @@ void Application::setScriptSystem(const Resource<ScriptSystem>& scriptSystem)
 void Application::onCreate()
 {
 	if (mLogger == 0)
-		mLogger = Resource<Logger>(new Logger);
+		mLogger = new Logger;
 	if (mEventSystem == 0)
-		mEventSystem = Resource<EventSystem>(new EventSystem);
+		mEventSystem = new EventSystem;
 	if (mInputSystem == 0)
-		mInputSystem = Resource<InputSystem>(new InputSystem(mEventSystem));
-	if (mResourceManager == 0)
-		mResourceManager = Resource<ResourceManager>(new ResourceManager);
+		mInputSystem = new InputSystem(mEventSystem);
 	if (mGraphicsSystem == 0)
-		mGraphicsSystem = Resource<GraphicsSystem>(new GraphicsSystem());
+		mGraphicsSystem = new GraphicsSystem();
 	if (mStateStack == 0)
-		mStateStack = Resource<StateStack>(new StateStack);
+		mStateStack = new StateStack;
 	if (mClock == 0)
-		mClock = Resource<Clock>(new Clock);
+		mClock = new Clock;
 	if (mLifecycle != 0)
 		mLifecycle->onCreate();
 }

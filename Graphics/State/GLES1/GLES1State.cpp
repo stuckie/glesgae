@@ -4,12 +4,13 @@
 #include "../../../Maths/Matrix4.h"
 
 #include <cstdio>
+#include <cassert>
 
 using namespace GLESGAE;
 
 GLES1State::GLES1State()
-: mCamera()
-, mTextureMatrix()
+: mCamera(0)
+, mTextureMatrix(0)
 , mTexturing(false)
 , mAlphaBlending(false)
 , mVertexPositions(false)
@@ -22,8 +23,9 @@ GLES1State::~GLES1State()
 {
 }
 
-void GLES1State::setCamera(const Resource<Camera>& camera)
+void GLES1State::setCamera(Camera* const camera)
 {
+	assert(0 != camera);
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(camera->getProjectionMatrix().getData());
 	
@@ -38,8 +40,9 @@ void GLES1State::setCamera(const Resource<Camera>& camera)
 	mCamera = camera;
 }
 
-void GLES1State::setTextureMatrix(const Resource<Matrix4>& matrix)
+void GLES1State::setTextureMatrix(Matrix4* const matrix)
 {
+	assert(0 != matrix);
 	if (mTextureMatrix != matrix) {
 		glMatrixMode(GL_TEXTURE);
 		glLoadMatrixf(matrix->getData());

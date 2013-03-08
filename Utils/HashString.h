@@ -1,8 +1,6 @@
 #ifndef _HASH_STRING_H_
 #define _HASH_STRING_H_
 
-#include <string>
-
 namespace GLESGAE
 {
 	class HashString
@@ -10,7 +8,6 @@ namespace GLESGAE
 		public:			
 			explicit HashString() : mHash(0U) {}
 			explicit HashString(const char* string) : mHash(0U) { hash(string); }
-			explicit HashString(const std::string& string) : mHash(0U) { hash(string.c_str()); }
 			
 			//! Get the Hashed value.
 			inline unsigned int getValue() const { return mHash; }

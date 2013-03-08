@@ -1,6 +1,7 @@
 #include "../TextureRenderTarget.h"
 
 #include "../../../Platform/Application.h"
+#include "../../../Utils/Logger.h"
 
 #if defined(LINUX)
 #include "../../../Context/Linux/GLee.h"

@@ -1,19 +1,32 @@
 .SUFFIXES:
 
 #---------------------------------------------------------------------------------
+# the prefix on the compiler executables
+#---------------------------------------------------------------------------------
+PREFIX		:=
+
+export CC	:=	$(PREFIX)gcc
+export CXX	:=	$(PREFIX)g++
+export AS	:=	$(PREFIX)as
+export AR	:=	$(PREFIX)ar
+export OBJCOPY	:=	$(PREFIX)objcopy
+export READELF	:=	$(PREFIX)readelf
+export STRIP	:=	$(PREFIX)strip
+
+#---------------------------------------------------------------------------------
 %.o: %.cpp
 	@echo $(notdir $<)
-	$(CXX) -MMD -MP -MF $(DEPSDIR)/$*.d $(CXXFLAGS) -c $< -o $@
-	
+	@$(CXX) -MMD -MP -MF $(DEPSDIR)/$*.d $(CXXFLAGS) -c $< -o $@
+
 #---------------------------------------------------------------------------------
 %.o: %.c
 	@echo $(notdir $<)
-	$(CC) -MMD -MP -MF $(DEPSDIR)/$*.d $(CFLAGS) -c $< -o $@
+	@$(CC) -MMD -MP -MF $(DEPSDIR)/$*.d $(CFLAGS) -c $< -o $@
 
 
-%.pandora:
-	@echo linking...
-	$(LD) $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
+%.a:
+	@echo archiving...
+	@$(AR) r $@ $(OFILES)
 
 #---------------------------------------------------------------------------------
 # TARGET is the name of the output, if this ends with _mb a multiboot image is generated
@@ -22,84 +35,38 @@
 # DATA is a list of directories containing data files
 # INCLUDES is a list of directories containing header files
 #---------------------------------------------------------------------------------
-TARGET		:=	GLESGAE
-BUILD		:=	build-pandora
-SOURCES		:=	../../Graphics/Window \
-			../../Graphics/Context \
-			../../Graphics/Context/Pandora \
-			../../Graphics/Platform \
-			../../Graphics/Platform/Pandora \
-			../../Graphics/State \
-			../../Graphics/State/GLES1 \
-			../../Graphics/Renderer \
-			../../Graphics/Renderer/GLES10 \
-			../../Graphics/Renderer/GLES11 \
-			../../Graphics/Target/Buffer/GLES11 \
-			../../Graphics/Target/Screen/GLES11 \
-			../../Graphics/Target/Texture/GLES11 \
-			../../Graphics/Window \
-			../../Graphics/Window/X11 \
-			../../Graphics \
-			../../Events \
-			../../Events/X11 \
-			../../Input \
-			../../Input/Pandora \
-			../../Maths \
-			../../Resources \
-			../../Platform \
-			../../Platform/Pandora \
-			../../Scripting/JavaScript \
-			../../Scripting/JavaScript/Bindings \
-			../../States \
-			../../Time \
-			../../Time/Linux \
-			../../Factories \
-			../../Utils \
-			../../File \
-			../../File/Linux \
-			../../External/SOIL \
-			../../ \
-			.
+TARGET		:=	lib/libGLESGAEJS
+BUILD		:=	build-linux
+SOURCES		:=	JavaScriptCore JavaScriptCore/Bindings
+				
 DATA		:=
-INCLUDES	:=
+INCLUDES	:=	JavaScriptCore/include
 
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
-CFLAGS	:=	-DPANDORA\
-			-DGLES1\
-			-Os\
-			-pipe\
-			-ffast-math\
-			-fsingle-precision-constant\
-			-march=armv7-a\
-			-mcpu=cortex-a8\
-			-mtune=cortex-a8\
-			-mfpu=neon\
-			-mfloat-abi=softfp\
+CFLAGS	:=	-DGLX\
+			-DLINUX\
+			-O3\
 			-Wall\
 			-Werror\
 			-Wno-variadic-macros\
 			-Wuninitialized\
 			-Wcast-align\
-			-Wredundant-decls
+			-Wredundant-decls\
+			-fomit-frame-pointer\
+			-ffast-math
 
-CFLAGS		+=	$(INCLUDE) 
-CXXFLAGS	+=	$(CFLAGS) -pedantic -fdata-sections -ffunction-sections -Wextra -Weffc++ -fno-rtti -fno-exceptions -Wno-long-long -Wstrict-overflow -Woverloaded-virtual -Wsign-promo -Wabi -Wmissing-declarations
+CFLAGS		+=	$(INCLUDE)
+CXXFLAGS	+=	$(CFLAGS) -pedantic -fdata-sections -ffunction-sections -Wextra -Weffc++ -fno-rtti -fno-exceptions -Wno-long-long -Wold-style-cast -Wstrict-overflow -Woverloaded-virtual -Wsign-promo -Wabi -Wmissing-declarations
 
 ASFLAGS	:=
-LDFLAGS	=
-
-#---------------------------------------------------------------------------------
-# any extra libraries we wish to link with the project
-#---------------------------------------------------------------------------------
-LIBS	:=	-lX11 -lGLES_CM -lEGL -lpnd -lrt -ljavascriptcoregtk-1.0
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:=	/mnt/utmp/glesgae
+LIBDIRS	:=	/usr
 
 #---------------------------------------------------------------------------------
 # no real need to edit anything past this point unless you need to add additional
@@ -155,19 +122,14 @@ export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 #---------------------------------------------------------------------------------
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
-	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/MakefileES1.pandora
+	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makeoptlib.javascriptcore.linux
 
 all	: $(BUILD)
 
 #---------------------------------------------------------------------------------
-strip	:
-	@echo stripping...
-	@$(STRIP) $(OUTPUT).pandora
-
-#---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
-	@rm -fr $(BUILD) $(TARGET).elf $(TARGET).pandora
+	@rm -fr $(BUILD) $(TARGET).a
 
 #---------------------------------------------------------------------------------
 else
@@ -177,11 +139,7 @@ DEPENDS	:=	$(OFILES:.o=.d)
 #---------------------------------------------------------------------------------
 # main targets
 #---------------------------------------------------------------------------------
-$(OUTPUT).pandora:	$(OFILES)
-
-%.o	:	%.pcx
-	@echo $(notdir $<)
-	@$(bin2o)
+$(OUTPUT).a:	$(OFILES)
 
 -include $(DEPENDS)
 

@@ -24,10 +24,10 @@ namespace GLESGAE
 			void refresh();
 			
 			/// Create a Window.
-			Resource<RenderWindow> createWindow(const char* name, const unsigned int width, const unsigned int height, const unsigned int bpp, const bool fullscreen);
+			RenderWindow* createWindow(const char* name, const unsigned int width, const unsigned int height, const unsigned int bpp, const bool fullscreen);
 			
 			/// Create a Render Context
-			Resource<RenderContext> createContext();
+			RenderContext* createContext();
 	};
 }
 

@@ -29,7 +29,6 @@
 
 #include "../../Resources/Resource.h"
 #include "../../Resources/ResourceBank.h"
-#include "../../Resources/ResourceManager.h"
 
 #include "MVPUniformUpdater.h"
 #include "Texture0UniformUpdater.h"
@@ -40,177 +39,130 @@
 
 using namespace GLESGAE;
 
+// Good 'ol Helper Functions
+void controlCamera(Camera* const camera, Controller::KeyboardController* const keyboard);
+Mesh* makeSprite(const Resource<Shader>& shader, const Resource<Texture>& texture);
+Shader* makeSpriteShader();
+
+ResourceBank<Matrix4> transformBank;
+ResourceBank<VertexBuffer> vertexBank;
+ResourceBank<Material> materialBank;
+ResourceBank<IndexBuffer> indexBank;
+ResourceBank<Texture> textureBank;
+ResourceBank<Shader> shaderBank;
+ResourceBank<Camera> cameraBank;
+ResourceBank<Mesh> meshBank;
+
 namespace LifecycleTest
 {
-	Resources::Id TextureBank = GLESGAE::INVALID;
-	Resources::Type Texture = HashString("Texture");
-	namespace Textures
-	{
-		Resources::Group TestGroup = GLESGAE::INVALID;
-		Resources::Id MrSmileyFace = GLESGAE::INVALID;
-	}
-	
-	Resources::Id ShaderBank = GLESGAE::INVALID;
-	Resources::Type Shader = HashString("Shader");
-	namespace Shaders
-	{
-		Resources::Group TestGroup = GLESGAE::INVALID;
-		Resources::Id SpriteShader = GLESGAE::INVALID;
-	}
-	
-	Resources::Id CameraBank = GLESGAE::INVALID;
-	Resources::Type Camera = HashString("Camera");
-	namespace Cameras
-	{
-		Resources::Group TestGroup = GLESGAE::INVALID;
-		Resources::Id SceneCamera = GLESGAE::INVALID;
-	}
-	
-	Resources::Id MeshBank = GLESGAE::INVALID;
-	Resources::Type Mesh = HashString("Mesh");
-	namespace Meshes
-	{
-		Resources::Group TestGroup = GLESGAE::INVALID;
-		Resources::Id MrSmileyFace = GLESGAE::INVALID;
-	}
-	
-	Resources::Id ShaderUniformUpdaterBank = GLESGAE::INVALID;
-	Resources::Type ShaderUniformUpdater = HashString("ShaderUniformUpdater");
-	namespace ShaderUniformUpdaters
-	{
-		Resources::Group TestGroup = GLESGAE::INVALID;
-		Resources::Id MVPUpdater = GLESGAE::INVALID;
-		Resources::Id TextureUpdater = GLESGAE::INVALID;
-	}
-	
-	Resources::Id IndexBufferBank = GLESGAE::INVALID;
-	Resources::Type IndexBuffer = HashString("IndexBuffer");
-	namespace IndexBuffers
-	{
-		Resources::Group TestGroup = GLESGAE::INVALID;
-		Resources::Id SpriteIndexBuffer = GLESGAE::INVALID;
-	}
-	
-	Resources::Id VertexBufferBank = GLESGAE::INVALID;
-	Resources::Type VertexBuffer = HashString("VertexBuffer");
-	namespace VertexBuffers
-	{
-		Resources::Group TestGroup = GLESGAE::INVALID;
-		Resources::Id SpriteVertexBuffer = GLESGAE::INVALID;
-	}
-	
-	Resources::Id MaterialBank = GLESGAE::INVALID;
-	Resources::Type Material = HashString("Material");
-	namespace Materials
-	{
-		Resources::Group TestGroup = GLESGAE::INVALID;
-		Resources::Id SpriteMaterial = GLESGAE::INVALID;
-	}
-	
-	Resources::Id TransformBank = GLESGAE::INVALID;
-	Resources::Type Transform = HashString("Transform");
-	namespace Transforms
-	{
-		Resources::Group TestGroup = GLESGAE::INVALID;
-		Resources::Id SpriteTransform = GLESGAE::INVALID;
-	}
-	
-	namespace Controllers
-	{
-		Controller::Id Keyboard = 0U;
-	}
-}
+       namespace Textures
+       {
+               Resources::Id MrSmileyFace = GLESGAE::INVALID;
+       }
+       
+       namespace Shaders
+       {
+               Resources::Id SpriteShader = GLESGAE::INVALID;
+       }
+       
+       namespace Cameras
+       {
+               Resources::Id SceneCamera = GLESGAE::INVALID;
+       }
+       
+       namespace Meshes
+       {
+               Resources::Id MrSmileyFace = GLESGAE::INVALID;
+       }
 
-// Good 'ol Helper Functions
-void controlCamera(Resource<Camera>& camera, const Resource<Controller::KeyboardController>& keyboard);
-Mesh* makeSprite(Resource<Shader>& shader, Resource<Texture>& texture);
-Shader* makeSpriteShader();
+       namespace ShaderUniformUpdaters
+       {
+               Resources::Id MVPUpdater = GLESGAE::INVALID;
+               Resources::Id TextureUpdater = GLESGAE::INVALID;
+       }
+
+       namespace IndexBuffers
+       {
+               Resources::Id SpriteIndexBuffer = GLESGAE::INVALID;
+       }
+
+       namespace VertexBuffers
+       {
+               Resources::Id SpriteVertexBuffer = GLESGAE::INVALID;
+       }
+       
+       namespace Materials
+       {
+               Resources::Id SpriteMaterial = GLESGAE::INVALID;
+       }
+       
+       namespace Transforms
+       {
+               Resources::Id SpriteTransform = GLESGAE::INVALID;
+       }
+       
+       namespace Controllers
+       {
+               Controller::Id Keyboard = 0U;
+       }
+       
+       namespace Graphics
+       {
+       			RenderWindow* CurrentWindow = 0;
+       			RenderContext* CurrentContext = 0;
+       }
+}
 
 void TestLifecycle::onCreate()
 {
 	Application* application(Application::getInstance());
-	const Resource<GraphicsSystem>& graphicsSystem(application->getGraphicsSystem());
-	const Resource<EventSystem>& eventSystem(application->getEventSystem());
+	GraphicsSystem* graphicsSystem(application->getGraphicsSystem());
+	EventSystem* eventSystem(application->getEventSystem());
 	
-	if (false == graphicsSystem->initialise("GLESGAE Application Lifecycle Test", 800, 480, 16, false)) {
+	if (false == graphicsSystem->initialise()) { 
 		//TODO: OH NOES! WE'VE DIEDED!
 	}
 	
-	eventSystem->bindToWindow(graphicsSystem->getCurrentWindow());
+	LifecycleTest::Graphics::CurrentWindow = graphicsSystem->getRenderPlatform().createWindow("GLESGAE Application Lifecycle Test", 800, 480, 16, false);
+	LifecycleTest::Graphics::CurrentWindow->open();
+	eventSystem->bindToWindow(LifecycleTest::Graphics::CurrentWindow);
 	
-	Resource<RenderContext> currentContext(graphicsSystem->getCurrentContext());
-	mScreenTarget = currentContext->createRenderTarget(RenderTarget::TARGET_SCREEN, RenderTarget::OPTIONS_WITH_COLOUR);
-	currentContext->setRenderer(Resource<Renderer>(new FixedFunctionGlVARenderer));
+	LifecycleTest::Graphics::CurrentContext = graphicsSystem->getRenderPlatform().createContext();
+	LifecycleTest::Graphics::CurrentContext->bindToWindow(LifecycleTest::Graphics::CurrentWindow);
+	LifecycleTest::Graphics::CurrentContext->initialise();
+	mScreenTarget = LifecycleTest::Graphics::CurrentContext->createRenderTarget(RenderTarget::TARGET_SCREEN, RenderTarget::OPTIONS_WITH_COLOUR);
+	LifecycleTest::Graphics::CurrentContext->setRenderer(new FixedFunctionGlVARenderer);
 }
 
 void TestLifecycle::onStart()
 {
 	Application* application(Application::getInstance());
-	const Resource<ResourceManager>& resourceManager(application->getResourceManager());
-	const Resource<InputSystem>& inputSystem(application->getInputSystem());
+	InputSystem* inputSystem(application->getInputSystem());
 	
-	ResourceBank<Texture>& textureBank(resourceManager->createBank<Texture>(LifecycleTest::Texture));
-	LifecycleTest::TextureBank = textureBank.getId();
+	const Resource<Matrix4> transform(transformBank.add(new Matrix4));
+	LifecycleTest::Transforms::SpriteTransform = transform.getId();
 	
-	ResourceBank<Shader>& shaderBank(resourceManager->createBank<Shader>(LifecycleTest::Shader));
-	LifecycleTest::ShaderBank = shaderBank.getId();
-	
-	ResourceBank<Camera>& cameraBank(resourceManager->createBank<Camera>(LifecycleTest::Camera));
-	LifecycleTest::CameraBank = cameraBank.getId();
-	
-	ResourceBank<Mesh>& meshBank(resourceManager->createBank<Mesh>(LifecycleTest::Mesh));
-	LifecycleTest::MeshBank = meshBank.getId();
-	
-	ResourceBank<Material>& materialBank(resourceManager->createBank<Material>(LifecycleTest::Material));
-	LifecycleTest::MaterialBank = materialBank.getId();
-	
-	ResourceBank<VertexBuffer>& vertexBank(resourceManager->createBank<VertexBuffer>(LifecycleTest::VertexBuffer));
-	LifecycleTest::VertexBufferBank = vertexBank.getId();
-	
-	ResourceBank<IndexBuffer>& indexBank(resourceManager->createBank<IndexBuffer>(LifecycleTest::IndexBuffer));
-	LifecycleTest::IndexBufferBank = indexBank.getId();
-	
-	ResourceBank<Matrix4>& transformBank(resourceManager->createBank<Matrix4>(LifecycleTest::Transform));
-	LifecycleTest::TransformBank = transformBank.getId();
-	LifecycleTest::Transforms::TestGroup = transformBank.newGroup();
-	Resource<Matrix4>& newTransform(transformBank.add(LifecycleTest::Transforms::TestGroup, LifecycleTest::Transform, new Matrix4));
-	LifecycleTest::Transforms::SpriteTransform = newTransform.getId();
-	
-	// Create Groups for Mesh resources
-	LifecycleTest::Materials::TestGroup = materialBank.newGroup();
-	LifecycleTest::VertexBuffers::TestGroup = vertexBank.newGroup();
-	LifecycleTest::IndexBuffers::TestGroup = indexBank.newGroup();
-		
-	// Create Texture resources
-	LifecycleTest::Textures::TestGroup = textureBank.newGroup();
-	Resource<Texture>& texture(textureBank.add(LifecycleTest::Textures::TestGroup, LifecycleTest::Texture, new Texture(Resource<File>(new File("Texture.bmp")))));
-	LifecycleTest::Textures::MrSmileyFace = texture.getId();
+	const Resource<Texture> textureId(textureBank.add(new Texture(new File("Texture.bmp"))));
+	LifecycleTest::Textures::MrSmileyFace = textureId.getId();
+	Texture* texture(textureBank.get(textureId));
 	texture->load(Texture::FILTER_TRILINEAR);
 	
-	// Create Shader resources
-	LifecycleTest::Shaders::TestGroup = shaderBank.newGroup();
-	Resource<Shader>& shader(shaderBank.add(LifecycleTest::Shaders::TestGroup, LifecycleTest::Shader, makeSpriteShader()));
+	const Resource<Shader> shader(shaderBank.add(makeSpriteShader()));
 	LifecycleTest::Shaders::SpriteShader = shader.getId();
 	
-	// Create Mesh resources
-	LifecycleTest::Meshes::TestGroup = meshBank.newGroup();
-	Resource<Mesh>& mesh(meshBank.add(LifecycleTest::Meshes::TestGroup, LifecycleTest::Mesh, makeSprite(shader, texture)));
+	const Resource<Mesh> mesh(meshBank.add(makeSprite(shader, textureId)));
 	LifecycleTest::Meshes::MrSmileyFace = mesh.getId();
 	
-	// Create Camera resources
-	LifecycleTest::Cameras::TestGroup = cameraBank.newGroup();
-	Resource<Camera>& camera(cameraBank.add(LifecycleTest::Cameras::TestGroup, LifecycleTest::Camera, new Camera(Camera::CAMERA_3D)));
-	LifecycleTest::Cameras::SceneCamera = camera.getId();
-	
+	const Resource<Camera> cameraId(cameraBank.add(new Camera(Camera::CAMERA_3D)));
+	LifecycleTest::Cameras::SceneCamera = cameraId.getId();
+	Camera* camera(cameraBank.get(cameraId));
 	camera->getTransformMatrix().setPosition(Vector3(0.0F, 0.0F, -5.0F));
 
-	Resource<Controller::KeyboardController> myKeyboard(inputSystem->newKeyboard());
+	Controller::KeyboardController* myKeyboard(inputSystem->newKeyboard());
 	LifecycleTest::Controllers::Keyboard = myKeyboard->getControllerId();
 	
 	// Setup Fixed Function settings
-	const Resource<GraphicsSystem>& graphicsSystem(application->getGraphicsSystem());
-	Resource<RenderContext> currentContext(graphicsSystem->getCurrentContext());
-	Resource<GLES1State> currentState(currentContext->getRenderState().recast<GLES1State>());
+	GLES1State* currentState(reinterpret_cast<GLES1State*>(LifecycleTest::Graphics::CurrentContext->getRenderState()));
 	currentState->setTexturingEnabled(true);
 	currentState->setVertexPositionsEnabled(true);
 	currentState->setAlphaBlendingEnabled(true);
@@ -223,24 +175,14 @@ void TestLifecycle::onResume()
 bool TestLifecycle::onLoop()
 {
 	Application* application(Application::getInstance());
-	const Resource<EventSystem>& eventSystem(application->getEventSystem());
-	const Resource<InputSystem>& inputSystem(application->getInputSystem());
-	const Resource<GraphicsSystem>& graphicsSystem(application->getGraphicsSystem());
-	Resource<RenderContext> currentContext(graphicsSystem->getCurrentContext());
-	Resource<RenderState> currentState(currentContext->getRenderState());
+	EventSystem* eventSystem(application->getEventSystem());
+	InputSystem* inputSystem(application->getInputSystem());
+	RenderState* currentState(LifecycleTest::Graphics::CurrentContext->getRenderState());
 	
-	const Resource<ResourceManager>& resourceManager(application->getResourceManager());
-	
-	ResourceBank<Camera>& cameraBank(resourceManager->getBank<Camera>(LifecycleTest::CameraBank, LifecycleTest::Camera));
-	Resource<Camera>& camera(cameraBank.get(LifecycleTest::Cameras::TestGroup, LifecycleTest::Cameras::SceneCamera));
-	
-	ResourceBank<Mesh>& meshBank(resourceManager->getBank<Mesh>(LifecycleTest::MeshBank, LifecycleTest::Mesh));
-	Resource<Mesh>& mesh(meshBank.get(LifecycleTest::Meshes::TestGroup, LifecycleTest::Meshes::MrSmileyFace));
-	
-	ResourceBank<Matrix4>& transformBank(resourceManager->getBank<Matrix4>(LifecycleTest::TransformBank, LifecycleTest::Transform));
-	Resource<Matrix4>& transform(transformBank.get(LifecycleTest::Transforms::TestGroup, LifecycleTest::Transforms::SpriteTransform));
-	
-	Resource<Controller::KeyboardController> myKeyboard(inputSystem->getKeyboard(LifecycleTest::Controllers::Keyboard));
+	Camera* camera(cameraBank.get(LifecycleTest::Cameras::SceneCamera));
+	Mesh* mesh(meshBank.get(LifecycleTest::Meshes::MrSmileyFace));
+	Matrix4* transform(transformBank.get(LifecycleTest::Transforms::SpriteTransform));
+	Controller::KeyboardController* myKeyboard(inputSystem->getKeyboard(LifecycleTest::Controllers::Keyboard));
 	
 	controlCamera(camera, myKeyboard);
 
@@ -249,8 +191,8 @@ bool TestLifecycle::onLoop()
 	
 	mScreenTarget->bind();
 	currentState->setCamera(camera);
-	currentContext->drawMesh(mesh, transform);
-	currentContext->refresh();
+	LifecycleTest::Graphics::CurrentContext->drawMesh(mesh, transform);
+	LifecycleTest::Graphics::CurrentContext->refresh();
 	mScreenTarget->unbind();
 	
 	return !(myKeyboard->getKey(Controller::KEY_ESCAPE));
@@ -262,25 +204,14 @@ void TestLifecycle::onPause()
 
 void TestLifecycle::onStop()
 {
-	Application* application(Application::getInstance());
-	const Resource<ResourceManager>& resourceManager(application->getResourceManager());
-	
-	resourceManager->removeBank<Mesh>(LifecycleTest::MeshBank, LifecycleTest::Mesh);
-	resourceManager->removeBank<Texture>(LifecycleTest::TextureBank, LifecycleTest::Texture);
-	resourceManager->removeBank<Shader>(LifecycleTest::ShaderBank, LifecycleTest::Shader);
-	resourceManager->removeBank<Camera>(LifecycleTest::CameraBank, LifecycleTest::Camera);
-	
-	resourceManager->removeBank<VertexBuffer>(LifecycleTest::VertexBufferBank, LifecycleTest::VertexBuffer);
-	resourceManager->removeBank<IndexBuffer>(LifecycleTest::IndexBufferBank, LifecycleTest::IndexBuffer);
-	resourceManager->removeBank<Matrix4>(LifecycleTest::TransformBank, LifecycleTest::Transform);
-	resourceManager->removeBank<Material>(LifecycleTest::MaterialBank, LifecycleTest::Material);
+
 }
 
 void TestLifecycle::onDestroy()
 {
 }
 
-Mesh* makeSprite(Resource<Shader>& shader, Resource<Texture>& texture)
+Mesh* makeSprite(const Resource<Shader>& shader, const Resource<Texture>& texture)
 {
 	float vertexData[24] = {// Position - 16 floats
 					-1.0F, 1.0F, 0.0F, 1.0F,
@@ -299,25 +230,23 @@ Mesh* makeSprite(Resource<Shader>& shader, Resource<Texture>& texture)
 	unsigned char indexData[6] = { 0, 1, 2, 2, 3, 0 };
 	unsigned int indexSize = 6 * sizeof(unsigned char);
 
-	const Resource<ResourceManager>& resourceManager(Application::getInstance()->getResourceManager());
-	ResourceBank<Material>& materialBank(resourceManager->getBank<Material>(LifecycleTest::MaterialBank, LifecycleTest::Material));
-	ResourceBank<VertexBuffer>& vertexBank(resourceManager->getBank<VertexBuffer>(LifecycleTest::VertexBufferBank, LifecycleTest::VertexBuffer));
-	ResourceBank<IndexBuffer>& indexBank(resourceManager->getBank<IndexBuffer>(LifecycleTest::IndexBufferBank, LifecycleTest::IndexBuffer));
-
-	Resource<VertexBuffer>& newVertexBuffer(vertexBank.add(LifecycleTest::VertexBuffers::TestGroup, LifecycleTest::VertexBuffer, new VertexBuffer(reinterpret_cast<unsigned char*>(&vertexData), vertexSize)));
+	const Resource<VertexBuffer> newVertexBufferId(vertexBank.add(new VertexBuffer(reinterpret_cast<unsigned char*>(&vertexData), vertexSize)));
+	VertexBuffer* newVertexBuffer(vertexBank.get(newVertexBufferId));
 	newVertexBuffer->addFormatIdentifier(VertexBuffer::FORMAT_POSITION_4F, 4U);
 	newVertexBuffer->addFormatIdentifier(VertexBuffer::FORMAT_TEXTURE_2F, 4U);
 	
-	Resource<IndexBuffer>& newIndexBuffer(indexBank.add(LifecycleTest::IndexBuffers::TestGroup, LifecycleTest::IndexBuffer, new IndexBuffer(reinterpret_cast<unsigned char*>(&indexData), indexSize, IndexBuffer::INDEX_UNSIGNED_BYTE, IndexBuffer::FORMAT_TRIANGLES)));
+	const Resource<IndexBuffer> newIndexBufferId(indexBank.add(new IndexBuffer(reinterpret_cast<unsigned char*>(&indexData), indexSize, IndexBuffer::INDEX_UNSIGNED_BYTE, IndexBuffer::FORMAT_TRIANGLES)));
+	IndexBuffer* newIndexBuffer(indexBank.get(newIndexBufferId));
 	
-	Resource<Material>& newMaterial(materialBank.add(LifecycleTest::Materials::TestGroup, LifecycleTest::Material, new Material));
-	newMaterial->setShader(shader);
-	newMaterial->addTexture(texture);
+	const Resource<Material> newMaterialId(materialBank.add(new Material));
+	Material* newMaterial(materialBank.get(newMaterialId));
+	newMaterial->setShader(shaderBank.get(shader));
+	newMaterial->addTexture(textureBank.get(texture));
 
 	return new Mesh(newVertexBuffer, newIndexBuffer, newMaterial);
 }
 
-void controlCamera(Resource<Camera>& camera, const Resource<Controller::KeyboardController>& keyboard)
+void controlCamera(Camera* const camera, Controller::KeyboardController* const keyboard)
 {
 	Vector3 newPosition;
 	camera->getTransformMatrix().getPosition(&newPosition);

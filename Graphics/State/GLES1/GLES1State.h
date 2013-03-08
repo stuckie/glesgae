@@ -22,16 +22,10 @@ namespace GLESGAE
 			~GLES1State();
 			
 			/// Set the Camera.
-			void setCamera(const Resource<Camera>& camera);
-			
-			/// Get the Camera.
-			const Resource<Camera>& getCamera() { return mCamera; }
+			void setCamera(Camera* const camera);
 			
 			/// Sets the current texture matrix
-			void setTextureMatrix(const Resource<Matrix4>& matrix);
-			
-			/// Get the current Texture Matrix
-			const Resource<Matrix4>& getTextureMatrix() { return mTextureMatrix; }
+			void setTextureMatrix(Matrix4* const matrix);
 			
 			/// Toggle Texturing
 			void setTexturingEnabled(const bool isEnabled);
@@ -67,8 +61,12 @@ namespace GLESGAE
 			bool isVertexNormalsEnabled() const { return mVertexNormals; }
 			
 		private:
-			Resource<Camera> mCamera;
-			Resource<Matrix4> mTextureMatrix;
+			// No Copying
+			GLES1State(const GLES1State&);
+			GLES1State& operator=(const GLES1State&);
+			
+			Camera* mCamera;
+			Matrix4* mTextureMatrix;
 			bool mTexturing;
 			bool mAlphaBlending;
 			bool mVertexPositions;

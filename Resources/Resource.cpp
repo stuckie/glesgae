@@ -1,10 +1,4 @@
-#include "BaseResource.h"
-#include "BaseResourceBank.h"
-
-#include "../Platform/Application.h"
-#include "ResourceManager.h"
-
-#include <assert.h>
+#include "Resource.h"
 
 using namespace GLESGAE;
 
@@ -24,28 +18,4 @@ Resources::Type Resources::Vector2					= HashString("Vector2");
 Resources::Type Resources::Vector3					= HashString("Vector3");
 Resources::Type Resources::Vector4					= HashString("Vector4");
 Resources::Type Resources::VertexBuffer				= HashString("VertexBuffer");
-
-/// Private constructor as this is a derived class only
-BaseResource::BaseResource(const Resources::Group group, const Resources::Type type, const Resources::Id id)
-: mGroup(group)
-, mType(type)
-, mId(id)
-, mCount(new Resources::Count)
-{
-	*mCount = 0;
-}
-
-/// Overloaded Copy Constructor, so we keep track of how many instances we have.
-BaseResource::BaseResource(const BaseResource& resource)
-: mGroup(resource.mGroup)
-, mType(resource.mType)
-, mId(resource.mId)
-, mCount(resource.mCount)
-{
-
-}
-
-BaseResource::~BaseResource()
-{
-}
 

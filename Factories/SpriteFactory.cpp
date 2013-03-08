@@ -6,19 +6,19 @@
 
 using namespace GLESGAE;
 
-SpriteFactory::SpriteFactory(const Resource<Texture>& texture)
+SpriteFactory::SpriteFactory(Texture* const texture)
 : mMaterial(new Material())
 {
-	mMaterial->setShader(Resource<Shader>(makeSpriteShader()));
+	mMaterial->setShader(makeSpriteShader());
 	mMaterial->addTexture(texture);
 }
 
-void SpriteFactory::setShader(const Resource<Shader>& shader)
+void SpriteFactory::setShader(Shader* const shader)
 {
 	mMaterial->setShader(shader);
 }
 
-Resource<Sprite> SpriteFactory::create(const Vector2& size, const unsigned int u, const unsigned int v, const unsigned int s, const unsigned int t)
+Sprite* SpriteFactory::create(const Vector2& size, const unsigned int u, const unsigned int v, const unsigned int s, const unsigned int t)
 {
 	const unsigned int texWidth(mMaterial->getTexture(0U)->getWidth());
 	const unsigned int texHeight(mMaterial->getTexture(0U)->getHeight());
@@ -41,7 +41,7 @@ Resource<Sprite> SpriteFactory::create(const Vector2& size, const unsigned int u
 	if (t < texHeight)
 		texT += texelOffsetHeight;
 
-	return Resource<Sprite>(new Sprite(mMaterial, size, texU, texV, texS, texT));
+	return new Sprite(mMaterial, size, texU, texV, texS, texT);
 }
 
 /// Helper function to generate a shader if need be.

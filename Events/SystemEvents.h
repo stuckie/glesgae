@@ -66,23 +66,23 @@ namespace GLESGAE
 			class ResizedEvent : public Event
 			{
 				public:
-					ResizedEvent(const int x, const int y)
+					ResizedEvent(const unsigned int width, const unsigned int height)
 					: Event(Resized)
-					, mX(x)
-					, mY(y)
+					, mWidth(width)
+					, mHeight(height)
 					{
 						
 					}
 					
-					/// Return new X dimension
-					int getX() const { return mX; }
+					/// Return new Width
+					unsigned int getWidth() const { return mWidth; }
 					
-					/// Return new Y dimension
-					int getY() const { return mY; }
+					/// Return new Height
+					unsigned int getHeight() const { return mHeight; }
 					
 				private:
-					int mX;
-					int mY;
+					unsigned int mWidth;
+					unsigned int mHeight;
 			};
 			
 			class ClosedEvent : public Event

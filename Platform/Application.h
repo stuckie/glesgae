@@ -1,19 +1,16 @@
 #ifndef _APPLICATION_H_
 #define _APPLICATION_H_
 
-#include "Lifecycle.h"
-#include "../Resources/Resource.h"
-#include "../Events/EventSystem.h"
-#include "../Graphics/GraphicsSystem.h"
-#include "../Input/InputSystem.h"
-#include "../Resources/ResourceManager.h"
-#include "../States/StateStack.h"
-#include "../Time/Clock.h"
-#include "../Utils/Logger.h"
-#include "../Scripting/ScriptSystem.h"
-
 namespace GLESGAE
 {
+	class ScriptSystem;
+	class Logger;
+	class Clock;
+	class StateStack;
+	class InputSystem;
+	class EventSystem;
+	class GraphicsSystem;
+	class Lifecycle;
 	class Application
 	{
 		public:
@@ -23,10 +20,10 @@ namespace GLESGAE
 			static Application* getInstance();
 			
 			/// Set the user lifecycle
-			void setLifecycle(const Resource<Lifecycle>& lifecycle);
+			void setLifecycle(Lifecycle* const lifecycle);
 			
 			/// Set the Scripting System
-			void setScriptSystem(const Resource<ScriptSystem>& scriptSystem);
+			void setScriptSystem(ScriptSystem* const scriptSystem);
 			
 			// Lifecycle Bits
 			/// onCreate - Called by the platform as soon as the application is started - IE: To setup Platform specifics.
@@ -52,28 +49,25 @@ namespace GLESGAE
 			
 			// Retrieve Systems
 			/// Retrieve the Input System
-			const Resource<InputSystem>& getInputSystem() { return mInputSystem; }
+			InputSystem* getInputSystem() { return mInputSystem; }
 			
 			/// Retrieve the Event System
-			const Resource<EventSystem>& getEventSystem() { return mEventSystem; }
+			EventSystem* getEventSystem() { return mEventSystem; }
 			
 			/// Retrieve the Graphics System
-			const Resource<GraphicsSystem>& getGraphicsSystem() { return mGraphicsSystem; }
-			
-			/// Retrieve the Resource Manager
-			const Resource<ResourceManager>& getResourceManager() { return mResourceManager; }
+			GraphicsSystem* getGraphicsSystem() { return mGraphicsSystem; }
 			
 			/// Retrieve the State Stack
-			const Resource<StateStack>& getStateStack() { return mStateStack; }
+			StateStack* getStateStack() { return mStateStack; }
 			
 			/// Retrieve the System Clock
-			const Resource<Clock>& getClock() { return mClock; }
+			Clock* getClock() { return mClock; }
 			
 			/// Retrieve the Logger
-			const Resource<Logger>& getLogger() { return mLogger; }
+			Logger* getLogger() { return mLogger; }
 			
 			/// Retrieve the Script System
-			const Resource<ScriptSystem>& getScriptSystem() { return mScriptSystem; }
+			ScriptSystem* getScriptSystem() { return mScriptSystem; }
 			
 		private:
 			/// Private constructor as this can only be created and managed through it's singleton.
@@ -85,15 +79,14 @@ namespace GLESGAE
 			
 			static Application* mInstance;
 			
-			Resource<EventSystem> mEventSystem;
-			Resource<GraphicsSystem> mGraphicsSystem;
-			Resource<InputSystem> mInputSystem;
-			Resource<ResourceManager> mResourceManager;
-			Resource<Lifecycle> mLifecycle;
-			Resource<StateStack> mStateStack;
-			Resource<Clock> mClock;
-			Resource<Logger> mLogger;
-			Resource<ScriptSystem> mScriptSystem;
+			EventSystem* mEventSystem;
+			GraphicsSystem* mGraphicsSystem;
+			InputSystem* mInputSystem;
+			Lifecycle* mLifecycle;
+			StateStack* mStateStack;
+			Clock* mClock;
+			Logger* mLogger;
+			ScriptSystem* mScriptSystem;
 	};
 }
 

@@ -39,9 +39,9 @@ EventSystem::~EventSystem()
 
 }
 
-void EventSystem::bindToWindow(const Resource<RenderWindow>& window)
+void EventSystem::bindToWindow(RenderWindow* const window)
 {
-	mWindow = window.recast<X11RenderWindow>();
+	mWindow = reinterpret_cast<X11RenderWindow*>(window);
 }
 
 
@@ -62,8 +62,11 @@ void EventSystem::update()
 									, &rootReturn, &childReturn
 									, &rootXReturn, &rootYReturn
 									, &pointerX, &pointerY, &maskReturn)) {
-		if ((pointerX != pointerXCurrent) && (pointerY != pointerYCurrent))
-			sendEvent(X11Events::Input::Mouse::Moved, Resource<Event>(new X11Events::Input::Mouse::MovedEvent(pointerX, pointerY)));
+		if ((pointerX != pointerXCurrent) && (pointerY != pointerYCurrent)) {
+			Event* pointerEvent(new X11Events::Input::Mouse::MovedEvent(pointerX, pointerY));
+			sendEvent(X11Events::Input::Mouse::Moved, pointerEvent);
+			delete pointerEvent;
+		}
 		pointerXCurrent = pointerX;
 		pointerYCurrent = pointerY;
 	}
@@ -77,31 +80,50 @@ void EventSystem::update()
 			case Expose:
 				if (event.xexpose.count != 0)
 					break;
-				break;
-			case ConfigureNotify:
-				sendEvent(SystemEvents::Window::Resized, Resource<Event>(new SystemEvents::Window::ResizedEvent(event.xconfigure.width, event.xconfigure.height)));
-				break;
+			break;
+			case ConfigureNotify: {
+				Event* resizedEvent(new SystemEvents::Window::ResizedEvent(event.xconfigure.width, event.xconfigure.height));
+				sendEvent(SystemEvents::Window::Resized, resizedEvent);
+				delete resizedEvent;
+				}
+			break;
 
-			case KeyPress:
-				sendEvent(X11Events::Input::Keyboard::KeyDown, Resource<Event>(new X11Events::Input::Keyboard::KeyDownEvent(XLookupKeysym(&event.xkey, 0))));
-				break;
+			case KeyPress: {
+				Event* keydownEvent(new X11Events::Input::Keyboard::KeyDownEvent(XLookupKeysym(&event.xkey, 0)));
+				sendEvent(X11Events::Input::Keyboard::KeyDown, keydownEvent);
+				delete keydownEvent;
+				}
+			break;
 
-			case KeyRelease:
-				sendEvent(X11Events::Input::Keyboard::KeyUp, Resource<Event>(new X11Events::Input::Keyboard::KeyUpEvent(XLookupKeysym(&event.xkey, 0))));
-				break;
+			case KeyRelease: {
+				Event* keyupEvent(new X11Events::Input::Keyboard::KeyUpEvent(XLookupKeysym(&event.xkey, 0)));
+				sendEvent(X11Events::Input::Keyboard::KeyUp, keyupEvent);
+				delete keyupEvent;
+				}
+			break;
 
-			case ButtonRelease:
-				sendEvent(X11Events::Input::Mouse::ButtonUp, Resource<Event>(new X11Events::Input::Mouse::ButtonUpEvent(event.xbutton.button)));
-				break;
+			case ButtonRelease: {
+				Event* buttonupEvent(new X11Events::Input::Mouse::ButtonUpEvent(event.xbutton.button));
+				sendEvent(X11Events::Input::Mouse::ButtonUp, buttonupEvent);
+				delete buttonupEvent;
+				}
+			break;
 
-			case ButtonPress:
-				sendEvent(X11Events::Input::Mouse::ButtonDown, Resource<Event>(new X11Events::Input::Mouse::ButtonDownEvent(event.xbutton.button)));
-				break;
+			case ButtonPress: {
+				Event* buttondownEvent(new X11Events::Input::Mouse::ButtonDownEvent(event.xbutton.button));
+				sendEvent(X11Events::Input::Mouse::ButtonDown, buttondownEvent);
+				delete buttondownEvent;
+				}
+			break;
 
 			case ClientMessage:
 				if (static_cast<Atom>(event.xclient.data.l[0]) == mWindow->getDeleteMessage()) {
-					sendEvent(SystemEvents::Window::Closed, Resource<Event>(new SystemEvents::Window::ClosedEvent));
-					sendEvent(SystemEvents::App::Destroyed, Resource<Event>(new SystemEvents::App::DestroyedEvent));
+					Event* windowClosedEvent(new SystemEvents::Window::ClosedEvent);
+					Event* appDestroyedEvent(new SystemEvents::App::DestroyedEvent);
+					sendEvent(SystemEvents::Window::Closed, windowClosedEvent);
+					sendEvent(SystemEvents::App::Destroyed, appDestroyedEvent);
+					delete windowClosedEvent;
+					delete appDestroyedEvent;
 				}
 
 				break;

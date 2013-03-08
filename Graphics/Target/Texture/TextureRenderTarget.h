@@ -3,7 +3,6 @@
 
 #include "../RenderTarget.h"
 #include "../../Texture.h"
-#include "../../../Resources/Resource.h"
 
 namespace GLESGAE
 {
@@ -14,7 +13,7 @@ namespace GLESGAE
 			~TextureRenderTarget();
 			
 			/// Set the Texture this Target is bound to.
-			void setTexture(const Resource<Texture>& texture);
+			void setTexture(Texture* const texture);
 			
 			/// Bind the Render Target for drawing to.
 			void bind();
@@ -22,7 +21,10 @@ namespace GLESGAE
 			/// Unbind the Render Target as the current drawing surface.
 			void unbind();
 		private:
-			Resource<Texture> mTexture;
+			TextureRenderTarget(const TextureRenderTarget&);
+			TextureRenderTarget& operator=(const TextureRenderTarget&);
+			
+			Texture* mTexture;
 			unsigned int mFB;
 			unsigned int mRB;
 	};

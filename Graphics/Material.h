@@ -2,7 +2,6 @@
 #define _MATERIAL_H_
 
 #include <vector>
-#include "../Resources/Resource.h"
 #include "Shader.h"
 #include "Texture.h"
 
@@ -16,22 +15,38 @@ namespace GLESGAE
 			, mTextures()
 			{
 			}
+			
+			Material(const Material& material)
+			: mShader(material.mShader)
+			, mTextures(material.mTextures)
+			{
+			}
+			
+			Material& operator=(const Material& material)
+			{
+				if (this != &material) {
+					mShader = material.mShader;
+					mTextures = material.mTextures;
+				}
+				
+				return *this;
+			}
 
 			/// Grab the Shader that's linked to this Material
-			const Resource<Shader>& getShader() const { return mShader; }
+			Shader* getShader() const { return mShader; }
 
 			/// Set a new Shader on this Material
-			void setShader(const Resource<Shader>& shader) { mShader = shader; }
+			void setShader(Shader* const shader) { mShader = shader; }
 			
 			/// Add a Texture
-			void addTexture(const Resource<Texture>& texture) { mTextures.push_back(texture); }
+			void addTexture(Texture* const texture) { mTextures.push_back(texture); }
 
 			/// Grab a Texture
-			Resource<Texture> getTexture(unsigned int index) const
+			Texture* getTexture(unsigned int index) const
 			{ 
 				if (true == mTextures.empty()) 
-					return Resource<Texture>(0); 
-				else 
+					return 0; 
+				else
 					return mTextures[index]; 
 			}
 			
@@ -39,9 +54,10 @@ namespace GLESGAE
 			unsigned int getTextureCount() const { return mTextures.size(); }
 
 		private:
-			Resource<Shader> mShader;
-			std::vector<Resource<Texture> > mTextures;
+			Shader* mShader;
+			std::vector<Texture*> mTextures;
 	};
 }
 
 #endif
+

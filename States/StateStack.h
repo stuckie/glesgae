@@ -1,7 +1,6 @@
 #ifndef _STATE_STACK_H_
 #define _STATE_STACK_H_
 
-#include "../Resources/Resource.h"
 #include "State.h"
 
 #include <vector>
@@ -12,6 +11,8 @@ namespace GLESGAE
 	{
 		public:
 			StateStack();
+			StateStack(const StateStack& stateStack);
+			StateStack& operator=(const StateStack& stateStack);
 			
 			/// Push a new State onto the Stack - keeping the other ones in place beneath.
 			template <typename T_State> void push();
@@ -23,20 +24,20 @@ namespace GLESGAE
 			void pop();
 			
 			/// Retrieves the current State.
-			Resource<State> get();
+			State* get();
 			
 			/// Update the current State.
 			bool update(const float delta);
 			
 		private:
-			Resource<State> mLastState;
-			std::vector<Resource<State> > mStack;
+			State* mLastState;
+			std::vector<State*> mStack;
 	};
 	
 	template <typename T_State>
 	void StateStack::push()
 	{
-		mStack.push_back(Resource<State>(new T_State));
+		mStack.push_back(new T_State);
 	}
 
 	template <typename T_State>

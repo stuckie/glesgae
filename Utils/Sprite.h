@@ -1,7 +1,6 @@
 #ifndef _SPRITE_H_
 #define _SPRITE_H_
 
-#include "../Resources/Resource.h"
 #include "../Maths/Vector2.h"
 
 namespace GLESGAE
@@ -12,11 +11,13 @@ namespace GLESGAE
 	class Sprite
 	{
 		public:
-			Sprite(const Resource<Material>& material, const Vector2& size, const float u, const float v, const float w, const float h);
+			Sprite(Material* const material, const Vector2& size, const float u, const float v, const float w, const float h);
+			Sprite(const Sprite& sprite);
+			Sprite& operator=(const Sprite& sprite);
 			~Sprite();
 			
 			//! Get the Mesh of this Sprite.
-			const Resource<Mesh>& getMesh() const;
+			Mesh* getMesh() const;
 			
 			//! Get the Position of this Sprite.
 			const Vector2& getPosition() const;
@@ -25,7 +26,7 @@ namespace GLESGAE
 			float getRotation() const;
 			
 			//! Get the Transform of this Sprite.
-			const Resource<Matrix4>& getTransform() const;
+			Matrix4* getTransform() const;
 			
 			//! Set the Position of this Sprite.
 			void setPosition(const Vector2& position);
@@ -34,8 +35,8 @@ namespace GLESGAE
 			void setRotation(const float rotation);
 			
 		private:
-			Resource<Mesh> mMesh;
-			Resource<Matrix4> mTransform;
+			Mesh* mMesh;
+			Matrix4* mTransform;
 			Vector2 mPosition;
 			float mRotation;
 	};

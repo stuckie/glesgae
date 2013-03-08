@@ -7,7 +7,6 @@
 
 #include <map>
 #include <vector>
-#include "../Resources/Resource.h"
 
 namespace GLESGAE
 {
@@ -30,7 +29,7 @@ namespace GLESGAE
 			virtual void update() = 0;
 
 			/// Bind to specified Window.
-			virtual void bindToWindow(const Resource<RenderWindow>& window) = 0;
+			virtual void bindToWindow(RenderWindow* const window) = 0;
 
 			/// Register an Event Type.
 			void registerEventType(const EventType& eventType);
@@ -48,8 +47,7 @@ namespace GLESGAE
 			void deregisterTrigger(const EventType& eventType, EventTrigger* const trigger);
 
 			/// Send an Event to all Observers of this type.
-			/// If you want to retain this event beyond it being in the receiving scope, you'll have to copy it.
-			void sendEvent(const EventType& eventType, const Resource<Event>& event);
+			void sendEvent(const EventType& eventType, Event* const event);
 
 		protected:
 			/// Update all the Triggers to send Events if necessary.

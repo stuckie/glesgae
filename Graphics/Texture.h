@@ -1,7 +1,6 @@
 #ifndef _TEXTURE_H_
 #define _TEXTURE_H_
 
-#include "../Resources/Resource.h"
 #include "../File/File.h"
 
 namespace GLESGAE
@@ -28,15 +27,17 @@ namespace GLESGAE
 			,	FILTER_TRILINEAR
 			};
 			
-			Texture(const Resource<File>& image);
-			Texture(const Resource<File>& buffer, const unsigned int width, const unsigned int height);
+			Texture(File* const image);
+			Texture(File* const buffer, const unsigned int width, const unsigned int height);
+			Texture(const Texture& texture);
+			Texture& operator=(const Texture& texture);
 			~Texture();
-			
-			/// Get the File this Texture represents.
-			const Resource<File>& getFile() const { return mFile; }
 			
 			/// Load the texture with the desired filter mode , and with options to retain data and specify DXT format.
 			bool load(const TextureFilter filter, const bool retainData = false, const TextureFormat format = FORMAT_RGB);
+			
+			/// Retrieve the file buffer.
+			File* getFile();
 			
 			/// Delete this Texture.
 			void kill();
@@ -54,7 +55,7 @@ namespace GLESGAE
 			unsigned int getHeight() const { return mHeight; }
 			
 		private:
-			Resource<File> mFile;
+			File* mFile;
 			unsigned int mId;
 			unsigned int mWidth;
 			unsigned int mHeight;
@@ -64,3 +65,4 @@ namespace GLESGAE
 }
 
 #endif
+

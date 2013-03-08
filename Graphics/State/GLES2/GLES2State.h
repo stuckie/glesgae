@@ -32,16 +32,10 @@ namespace GLESGAE
 			~GLES2State();
 			
 			/// Set the Camera.
-			void setCamera(const Resource<Camera>& camera);
-			
-			/// Get the Camera.
-			const Resource<Camera>& getCamera() { return mCamera; }
+			void setCamera(Camera* const camera);
 			
 			/// Sets the current texture matrix
-			void setTextureMatrix(const Resource<Matrix4>& matrix);
-			
-			/// Get the current Texture Matrix
-			const Resource<Matrix4>& getTextureMatrix() { return mTextureMatrix; }
+			void setTextureMatrix(Matrix4* const matrix);
 			
 			/// Toggle Texturing
 			void setTexturingEnabled(const bool isEnabled);
@@ -63,19 +57,19 @@ namespace GLESGAE
 			bool isAlphaBlendingEnabled() const { return mAlphaBlending; }
 			
 			/// Add a uniform updater
-			void addUniformUpdater(const HashString uniformName, const Resource<ShaderUniformUpdater>& updater);
+			void addUniformUpdater(const HashString uniformName, ShaderUniformUpdater* const updater);
 			
 			/// Clear uniform updaters
 			void clearUniformUpdaters() { mUniformUpdaters.clear(); }
 			
 			/// Update all uniforms
-			void updateUniforms(const Resource<Material>& material, const Resource<Matrix4>& transform);
+			void updateUniforms(Material* const material, Matrix4* const transform);
 			
 			/// Update Textures
-			void updateTextures(const Resource<Material>& material);
+			void updateTextures(Material* const material);
 			
 			/// Bind a shader
-			void bindShader(const Resource<Shader>& shader);
+			void bindShader(Shader* const shader);
 			
 			// Access to all the shader attribs
 			GLuint a_position;
@@ -92,17 +86,21 @@ namespace GLESGAE
 			void resetAttributes();
 			
 		private:
-			Resource<Camera> mCamera;
-			Resource<Matrix4> mTextureMatrix;
+			// No Copying
+			GLES2State(const GLES2State&);
+			GLES2State& operator=(const GLES2State&);
+			
+			Camera* mCamera;
+			Matrix4* mTextureMatrix;
 			bool mTexturing;
 			bool mAlphaBlending;
 			
-			Resource<Shader> mCurrentShader;
+			Shader* mCurrentShader;
 			
-			Resource<Texture> mLastTexture;
+			Texture* mLastTexture;
 			GLenum mLastTextureUnit;
 			
-			std::map<HashString, Resource<ShaderUniformUpdater> > mUniformUpdaters;
+			std::map<HashString, ShaderUniformUpdater*> mUniformUpdaters;
 	};
 }
 

@@ -37,10 +37,10 @@ export STRIP	:=	$(PREFIX)strip
 #---------------------------------------------------------------------------------
 TARGET		:=	lib/libGLESGAEJS
 BUILD		:=	build-linux
-SOURCES		:=	JavaScript JavaScript/Bindings
+SOURCES		:=	SpiderMonkey SpiderMonkey/Bindings
 				
 DATA		:=
-INCLUDES	:= 	JavaScript/include
+INCLUDES	:= 	SpiderMonkey/include SpiderMonkey/spidermonkey/linux/x86_64/include
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -119,7 +119,7 @@ export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 #---------------------------------------------------------------------------------
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
-	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makelib.javascript.linux
+	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makelib.spidermonkey.linux64
 
 all	: $(BUILD)
 

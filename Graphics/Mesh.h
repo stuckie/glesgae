@@ -1,8 +1,6 @@
 #ifndef _MESH_H_
 #define _MESH_H_
 
-#include "../Resources/Resource.h"
-
 namespace GLESGAE
 {
 	class VertexBuffer;
@@ -11,37 +9,55 @@ namespace GLESGAE
 	class Mesh
 	{
 		public:
-			Mesh(const Resource<VertexBuffer>& vertexBuffer
-			,	const Resource<IndexBuffer>& indexBuffer
-			,	const Resource<Material>& material)
+			Mesh(VertexBuffer* const vertexBuffer
+			,	IndexBuffer* const indexBuffer
+			,	Material* const material)
 			: mVertexBuffer(vertexBuffer)
 			, mIndexBuffer(indexBuffer)
 			, mMaterial(material)
 			{
 			}
 			
+			Mesh(const Mesh& mesh)
+			: mVertexBuffer(mesh.mVertexBuffer)
+			, mIndexBuffer(mesh.mIndexBuffer)
+			, mMaterial(mesh.mMaterial)
+			{
+			}
+			
+			Mesh& operator=(const Mesh& mesh)
+			{
+				if (this != &mesh) {
+					mVertexBuffer = mesh.mVertexBuffer;
+					mIndexBuffer = mesh.mIndexBuffer;
+					mMaterial = mesh.mMaterial;
+				}
+				
+				return *this;
+			}
+			
 			/// Grab the current Vertex Buffer - read-only
-			const Resource<VertexBuffer>& getVertexBuffer() const { return mVertexBuffer; }
+			VertexBuffer* getVertexBuffer() const { return mVertexBuffer; }
 			
 			/// Grab the current Index Buffer - read-only
-			const Resource<IndexBuffer>& getIndexBuffer() const { return mIndexBuffer; }
+			IndexBuffer* getIndexBuffer() const { return mIndexBuffer; }
 			
 			/// Grab the current Material - read-only
-			const Resource<Material>& getMaterial() const { return mMaterial; }
+			Material* getMaterial() const { return mMaterial; }
 			
 			/// Grab an Editable Vertex Buffer
-			Resource<VertexBuffer>& editVertexBuffer() { return mVertexBuffer; }
+			VertexBuffer* editVertexBuffer() { return mVertexBuffer; }
 			
 			/// Grab an Editable Index Buffer
-			Resource<IndexBuffer>& editIndexBuffer() { return mIndexBuffer; }
+			IndexBuffer* editIndexBuffer() { return mIndexBuffer; }
 			
 			/// Grab an Editable Material
-			Resource<Material>& editMaterial() { return mMaterial; }
+			Material* editMaterial() { return mMaterial; }
 			
 		private:
-			Resource<VertexBuffer> mVertexBuffer;
-			Resource<IndexBuffer> mIndexBuffer;
-			Resource<Material> mMaterial;
+			VertexBuffer* mVertexBuffer;
+			IndexBuffer* mIndexBuffer;
+			Material* mMaterial;
 	};
 }
 

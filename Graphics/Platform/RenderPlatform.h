@@ -19,11 +19,12 @@ namespace GLESGAE
 			virtual void shutdown() = 0;
 			
 			/// Create a Window.
-			virtual Resource<RenderWindow> createWindow(const char* name, const unsigned int width, const unsigned int height, const unsigned int bpp, const bool fullscreen) = 0;
+			virtual RenderWindow* createWindow(const char* name, const unsigned int width, const unsigned int height, const unsigned int bpp, const bool fullscreen) = 0;
 			
 			/// Create a Render Context
-			virtual Resource<RenderContext> createContext() = 0;
+			virtual RenderContext* createContext() = 0;
 	};
 }
 
 #endif
+

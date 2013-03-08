@@ -25,14 +25,14 @@ ShaderGlVboRenderer::~ShaderGlVboRenderer()
 {
 }
 
-void ShaderGlVboRenderer::drawMesh(const Resource<Mesh>& mesh, const Resource<Matrix4>& transform)
+void ShaderGlVboRenderer::drawMesh(Mesh* const mesh, Matrix4* const transform)
 {
 	if (mState == 0)
 		return;
 		
-	const Resource<IndexBuffer>& indexBuffer(mesh->getIndexBuffer());
-	const Resource<VertexBuffer>& vertexBuffer(mesh->getVertexBuffer());
-	const Resource<Material>& material(mesh->getMaterial());
+	IndexBuffer* const indexBuffer(mesh->getIndexBuffer());
+	VertexBuffer* const vertexBuffer(mesh->getVertexBuffer());
+	Material* const material(mesh->getMaterial());
 
 	mState->bindShader(material->getShader());
 	mState->updateUniforms(material, transform);
@@ -139,3 +139,4 @@ void ShaderGlVboRenderer::drawMesh(const Resource<Mesh>& mesh, const Resource<Ma
 }
 
 #endif // not ES1
+

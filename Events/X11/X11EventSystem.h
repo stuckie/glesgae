@@ -16,7 +16,7 @@ namespace GLESGAE
 			void update();
 
 			/// Bind to the Window
-			void bindToWindow(const Resource<RenderWindow>& window);
+			void bindToWindow(RenderWindow* const window);
 
 		private:
 			// No Copying
@@ -24,7 +24,7 @@ namespace GLESGAE
 			EventSystem& operator=(const EventSystem&);
 			
 			bool mActive;
-			Resource<X11RenderWindow> mWindow;
+			X11RenderWindow* mWindow;
 	};
 }
 

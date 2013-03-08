@@ -22,20 +22,14 @@ namespace GLESGAE
 			GraphicsSystem(const RenderPipeline renderPipeline = PLATFORM_DEFAULT);
 			~GraphicsSystem();
 			
-			/// Initialise with the following Window Dimensions.
-			bool initialise(const std::string& windowName, const unsigned int width, const unsigned int height, const unsigned int bpp, const bool fullscreen);
+			/// Initialise the Render Platform
+			bool initialise();
 			
 			/// Grab The Render Platform.
 			template <typename T_RenderPlatform> T_RenderPlatform& getRenderPlatform();
 			
 			/// Grab standard Render Platform.
 			RenderPlatform& getRenderPlatform() { return *mRenderPlatform; }
-			
-			/// Get Current Context.
-			Resource<RenderContext> getCurrentContext() { return mCurrentRenderContext; }
-			
-			/// Get Current Window.
-			Resource<RenderWindow> getCurrentWindow() { return mCurrentRenderWindow; }
 			
 			/// Shutdown the Graphics System.
 			void shutdown();
@@ -47,8 +41,6 @@ namespace GLESGAE
 			
 			RenderPipeline mRenderPipeline;
 			RenderPlatform* mRenderPlatform;
-			Resource<RenderContext> mCurrentRenderContext;
-			Resource<RenderWindow> mCurrentRenderWindow;
 	};
 	
 	template <typename T_RenderPlatform> T_RenderPlatform& GraphicsSystem::getRenderPlatform()

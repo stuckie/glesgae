@@ -12,7 +12,7 @@ Timer::Timer()
 {
 }
 
-void Timer::update(const Resource<Clock>& clock)
+void Timer::update(Clock* const clock)
 {
 	const float clockTime(clock->getTime() * mScale);
 	if (false == mPaused)

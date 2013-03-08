@@ -2,6 +2,7 @@
 
 #include "../External/SOIL/SOIL.h"
 #include "../Platform/Application.h"
+#include "../Utils/Logger.h"
 
 #if defined(GLX)
 	#include "Context/Linux/GLee.h"
@@ -19,7 +20,7 @@
 
 using namespace GLESGAE;
 
-Texture::Texture(const Resource<File>& image)
+Texture::Texture(File* const image)
 : mFile(image)
 , mId(GL_INVALID_VALUE)
 , mWidth()
@@ -29,7 +30,7 @@ Texture::Texture(const Resource<File>& image)
 {
 }
 
-Texture::Texture(const Resource<File>& buffer, const unsigned int width, const unsigned int height)
+Texture::Texture(File* const buffer, const unsigned int width, const unsigned int height)
 : mFile(buffer)
 , mId(GL_INVALID_VALUE)
 , mWidth(width)
@@ -37,6 +38,30 @@ Texture::Texture(const Resource<File>& buffer, const unsigned int width, const u
 , mFormat(FORMAT_INVALID)
 , mType(TYPE_BUFFER)
 {
+}
+
+Texture::Texture(const Texture& texture)
+: mFile(texture.mFile)
+, mId(texture.mId)
+, mWidth(texture.mWidth)
+, mHeight(texture.mHeight)
+, mFormat(texture.mFormat)
+, mType(texture.mType)
+{
+}
+
+Texture& Texture::operator=(const Texture& texture)
+{
+	if (this != &texture) {
+		mFile = texture.mFile;
+		mId = texture.mId;
+		mWidth = texture.mWidth;
+		mHeight = texture.mHeight;
+		mFormat = texture.mFormat;
+		mType = texture.mType;
+	}
+	
+	return *this;
 }
 
 Texture::~Texture()
@@ -197,3 +222,4 @@ bool Texture::save()
 {
 	return false;
 }
+

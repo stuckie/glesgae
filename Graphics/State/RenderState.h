@@ -12,10 +12,7 @@ namespace GLESGAE
 			virtual ~RenderState() {}
 			
 			/// Set the Camera
-			virtual void setCamera(const Resource<Camera>& camera) = 0;
-			
-			/// Get the current Camera
-			virtual const Resource<Camera>& getCamera() = 0;
+			virtual void setCamera(Camera* const camera) = 0;
 			
 			/// Set Texturing Enabled
 			virtual void setTexturingEnabled(const bool isEnabled) = 0;

@@ -106,44 +106,45 @@ void PandoraRenderContext::refresh()
 	glEnable(GL_SCISSOR_TEST);
 }
 
-void PandoraRenderContext::drawMesh(const Resource<Mesh>& mesh, const Resource<Matrix4>& transform)
+void PandoraRenderContext::drawMesh(Mesh* const mesh, Matrix4* const transform)
 {
 	if (mRenderer != 0)
 		mRenderer->drawMesh(mesh, transform);
 }
 
-Resource<RenderTarget> PandoraRenderContext::createRenderTarget(const RenderTarget::Type type, const RenderTarget::Options options)
+RenderTarget* PandoraRenderContext::createRenderTarget(const RenderTarget::Type type, const RenderTarget::Options options)
 {
 	switch (type) {
 		case RenderTarget::TARGET_SCREEN:
-			return Resource<RenderTarget>(new ScreenRenderTarget);
+			return new ScreenRenderTarget;
 		break;
 		case RenderTarget::TARGET_BUFFER:
-			return Resource<RenderTarget>(new BufferRenderTarget(options));
+			return new BufferRenderTarget(options);
 		break;
 		case RenderTarget::TARGET_TEXTURE:
-			//return Resource<RenderTarget>(new TextureRenderTarget(options));
+			return Resource<RenderTarget>(new TextureRenderTarget(options));
 		break;
 		default:
+			return 0;
 		break;
 	}
 	
 	return Resource<RenderTarget>();
 }
 
-Resource<RenderState> PandoraRenderContext::getRenderState()
+RenderState* PandoraRenderContext::getRenderState()
 {
 	return mRenderState;
 }
 
-void PandoraRenderContext::setRenderer(const Resource<Renderer>& renderer)
+void PandoraRenderContext::setRenderer(Renderer* const renderer)
 {
 	mRenderer = renderer;
 }
 
-void PandoraRenderContext::bindToWindow(const Resource<RenderWindow>& window)
+void PandoraRenderContext::bindToWindow(RenderWindow* const window)
 {
 	// Rememeber the Window we're bound to
-	mWindow = window.recast<X11RenderWindow>();
+	mWindow = reinterpret_cast<X11RenderWindow*>(window);
 }
 

@@ -1,16 +1,15 @@
 #ifndef _RENDER_CONTEXT_H_
 #define _RENDER_CONTEXT_H_
 
-#include "../../Resources/Resource.h"
-#include "../Renderer/Renderer.h"
-#include "../State/RenderState.h"
 #include "../Target/RenderTarget.h"
-#include "../Window/RenderWindow.h"
 
 namespace GLESGAE
 {
 	class Matrix4;
 	class Mesh;
+	class Renderer;
+	class RenderState;
+	class RenderWindow;
 	class RenderContext
 	{
 		public:
@@ -26,19 +25,19 @@ namespace GLESGAE
 			virtual void shutdown() = 0;
 			
 			/// Set the Renderer
-			virtual void setRenderer(const Resource<Renderer>& renderer) = 0;
+			virtual void setRenderer(Renderer* const renderer) = 0;
 			
 			/// Draw a Mesh Object with the specified Transform.
-			virtual void drawMesh(const Resource<Mesh>& mesh, const Resource<Matrix4>& transform) = 0;
+			virtual void drawMesh(Mesh* const mesh, Matrix4* const transform) = 0;
 			
 			/// Retrieve the State Object.
-			virtual Resource<RenderState> getRenderState() = 0;
+			virtual RenderState* getRenderState() = 0;
 			
 			/// Create a new Render Target.
-			virtual Resource<RenderTarget> createRenderTarget(const RenderTarget::Type type, const RenderTarget::Options options) = 0;
+			virtual RenderTarget* createRenderTarget(const RenderTarget::Type type, const RenderTarget::Options options) = 0;
 			
 			/// Bind to this Window.
-			virtual void bindToWindow(const Resource<RenderWindow>& window) = 0;
+			virtual void bindToWindow(RenderWindow* const window) = 0;
 	};
 
 }

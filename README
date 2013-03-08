@@ -1,9 +1,5 @@
 GLESGAE - GL ES Game Application Engine
 
-This is effectively an experimental engine by Steven "Stuckie" Campbell.
-It's main aim is education of the various GL platforms, and providing a quick framework for throwing prototypes together.
-It's not it's aim to provide a fully fledged engine environment ala Unity, Source or UDK.
+The primary purpose of GLESGAE is that of educational pursuit on the part of the author.
+Secondary goals include providing an optimized environment for JavaScript games to run in - utilizing Canvas and WebGL technologies - direct to GLES as appropriate, without a full DOM overhead.
 
-Main platforms are Linux 32bit and 64bit.
-Secondary platforms are Win32, Pandora, Android and iOS.
-Tertiary platforms are OSX, GP2XWiz and Caanoo.

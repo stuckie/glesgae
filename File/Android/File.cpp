@@ -1,6 +1,7 @@
 #include "../File.h"
 
 #include "../../Platform/Application.h"
+#include "../../Utils/Logger.h"
 #include <cstring> // memcpy
 
 using namespace GLESGAE;

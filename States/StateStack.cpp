@@ -8,6 +8,24 @@ StateStack::StateStack()
 {
 }
 
+StateStack::StateStack(const StateStack& stateStack)
+: mLastState(stateStack.mLastState)
+, mStack(stateStack.mStack)
+{
+}
+
+StateStack& StateStack::operator=(const StateStack& stateStack)
+{
+	if (this != &stateStack) {
+		mLastState = stateStack.mLastState;
+		for (std::vector<State*>::iterator itr(mStack.begin()); itr < mStack.end(); ++itr)
+			delete *itr;
+		mStack = stateStack.mStack;
+	}
+	
+	return *this;
+}
+
 void StateStack::pop()
 {
 	if (false == mStack.empty()) {
@@ -16,12 +34,12 @@ void StateStack::pop()
 	}
 }
 
-Resource<State> StateStack::get()
+State* StateStack::get()
 {
 	if (false == mStack.empty())
 		return mStack[mStack.size() - 1U];
 	else
-		return Resource<State>();
+		return 0;
 }
 
 bool StateStack::update(const float delta)
@@ -31,8 +49,10 @@ bool StateStack::update(const float delta)
 	if (false == mStack.empty())
 		status = mStack[mStack.size() - 1U]->update(delta);
 	
-	if (mLastState != 0)
-		mLastState = Resource<State>();
+	if (mLastState != 0) {
+		delete mLastState;
+		mLastState = 0;
+	}
 	
 	return status;
 }

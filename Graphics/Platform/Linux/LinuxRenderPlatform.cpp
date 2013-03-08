@@ -25,12 +25,12 @@ void LinuxRenderPlatform::shutdown()
 {
 }
 
-Resource<RenderWindow> LinuxRenderPlatform::createWindow(const char* name, const unsigned int width, const unsigned int height, const unsigned int bpp, const bool fullscreen)
+RenderWindow* LinuxRenderPlatform::createWindow(const char* name, const unsigned int width, const unsigned int height, const unsigned int bpp, const bool fullscreen)
 {
-	return Resource<RenderWindow>(new X11RenderWindow(name, width, height, bpp, fullscreen));
+	return new X11RenderWindow(name, width, height, bpp, fullscreen);
 }
 
-Resource<RenderContext> LinuxRenderPlatform::createContext()
+RenderContext* LinuxRenderPlatform::createContext()
 {
-	return Resource<RenderContext>(new GLXRenderContext);
+	return new GLXRenderContext;
 }

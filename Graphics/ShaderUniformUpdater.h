@@ -11,8 +11,6 @@
 	#endif
 #endif
 
-#include "../Resources/Resource.h"
-
 namespace GLESGAE
 {
 	class Camera;
@@ -24,7 +22,7 @@ namespace GLESGAE
 			virtual ~ShaderUniformUpdater() {}
 			
 			/// Pure virtual to ensure you overload the update function!
-			virtual void update(const GLint uniformId, const Resource<Camera>& camera, const Resource<Material>& material, const Resource<Matrix4>& transform) = 0;
+			virtual void update(const GLint uniformId, Camera* const camera, Material* const material, Matrix4* const transform) = 0;
 			
 		protected:
 			/// Protected constructor to ensure you derive from this, and don't create empty updaters.

@@ -64,7 +64,7 @@ void CommonEventSystem::deregisterTrigger(const EventType& eventType, EventTrigg
 	printf("EventSystem: tried to deregister an event trigger which was not registered.\n");
 }
 
-void CommonEventSystem::sendEvent(const EventType& eventType, const Resource<Event>& event)
+void CommonEventSystem::sendEvent(const EventType& eventType, Event* const event)
 {
 	// Quick Sanity Check
 	if (eventType != event->getEventType()) {
@@ -84,7 +84,7 @@ void CommonEventSystem::updateAllTriggers()
 	for (std::map<EventType, std::vector<EventTrigger*> >::iterator eventType(mEventTriggers.begin()); eventType != mEventTriggers.end(); ++eventType) {
 		std::vector<EventTrigger*>& eventArray(eventType->second);
 		for (std::vector<EventTrigger*>::iterator itr(eventArray.begin()); itr < eventArray.end(); ++itr) {
-			const Resource<Event>& event((*itr)->hasEvent());
+			Event* const event((*itr)->hasEvent());
 			if (event != 0)
 				sendEvent(eventType->first, event);
 		}

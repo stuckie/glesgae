@@ -2,7 +2,6 @@
 #define _TEST_LIFECYCLE_H_
 
 #include "../../Platform/Lifecycle.h"
-#include "../../Resources/Resource.h"
 #include "../../Graphics/Target/RenderTarget.h"
 
 class TestLifecycle : public GLESGAE::Lifecycle
@@ -33,7 +32,9 @@ class TestLifecycle : public GLESGAE::Lifecycle
 		void onDestroy();
 		
 	private:
-		GLESGAE::Resource<GLESGAE::RenderTarget> mScreenTarget;
+		TestLifecycle(const TestLifecycle&);
+		TestLifecycle* operator=(const TestLifecycle&);
+		GLESGAE::RenderTarget* mScreenTarget;
 };
 
 #endif

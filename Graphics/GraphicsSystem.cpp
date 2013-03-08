@@ -19,8 +19,6 @@ using namespace GLESGAE;
 GraphicsSystem::GraphicsSystem(const RenderPipeline renderPipeline)
 : mRenderPipeline(renderPipeline)
 , mRenderPlatform(0)
-, mCurrentRenderContext()
-, mCurrentRenderWindow()
 {
 }
 
@@ -29,7 +27,7 @@ GraphicsSystem::~GraphicsSystem()
 	shutdown();
 }
 
-bool GraphicsSystem::initialise(const std::string& windowName, const unsigned int width, const unsigned int height, const unsigned int bpp, const bool fullscreen)
+bool GraphicsSystem::initialise()
 {
 	if (0 == mRenderPlatform) {
 		#if defined(LINUX)
@@ -48,13 +46,14 @@ bool GraphicsSystem::initialise(const std::string& windowName, const unsigned in
 	}
 	
 	mRenderPlatform->initialise();
+/*
 	mCurrentRenderContext = mRenderPlatform->createContext();
 	mCurrentRenderWindow = mRenderPlatform->createWindow(windowName.c_str(), width, height, bpp, fullscreen);
 	mCurrentRenderWindow->open();
 	mCurrentRenderContext->bindToWindow(mCurrentRenderWindow);
 	mCurrentRenderContext->initialise();
-	
-	return (mRenderPlatform != 0);
+*/
+	return (0 != mRenderPlatform);
 }
 
 void GraphicsSystem::shutdown()
@@ -77,3 +76,4 @@ void GraphicsSystem::shutdown()
 		mRenderPlatform = 0;
 	}
 }
+

@@ -1,4 +1,5 @@
 #include "GLXRenderContext.h"
+#include "../../Renderer/Renderer.h"
 #include "../../Window/X11/X11RenderWindow.h"
 #include "../../Target/Screen/ScreenRenderTarget.h"
 #include "../../Target/Buffer/BufferRenderTarget.h"
@@ -12,10 +13,10 @@ using namespace GLESGAE;
 
 GLXRenderContext::GLXRenderContext()
 : RenderContext()
-, mWindow()
+, mWindow(0)
 , mRenderState(new GLES1State)
-, mRenderer()
-, mContext()
+, mRenderer(0)
+, mContext(0)
 {
 }
 
@@ -89,49 +90,48 @@ void GLXRenderContext::refresh()
 	glEnable(GL_SCISSOR_TEST);
 }
 
-void GLXRenderContext::drawMesh(const Resource<Mesh>& mesh, const Resource<Matrix4>& transform)
+void GLXRenderContext::drawMesh(Mesh* const mesh, Matrix4* const transform)
 {
 	if (mRenderer != 0)
 		mRenderer->drawMesh(mesh, transform);
 }
 
-Resource<RenderTarget> GLXRenderContext::createRenderTarget(const RenderTarget::Type type, const RenderTarget::Options options)
+RenderTarget* GLXRenderContext::createRenderTarget(const RenderTarget::Type type, const RenderTarget::Options options)
 {
 	switch (type) {
 		case RenderTarget::TARGET_SCREEN:
-			return Resource<RenderTarget>(new ScreenRenderTarget);
+			return new ScreenRenderTarget;
 		break;
 		case RenderTarget::TARGET_BUFFER:
-			return Resource<RenderTarget>(new BufferRenderTarget(options));
+			return new BufferRenderTarget(options);
 		break;
 		case RenderTarget::TARGET_TEXTURE:
-			return Resource<RenderTarget>(new TextureRenderTarget(options));
+			return new TextureRenderTarget(options);
 		break;
 		default:
+			return 0;
 		break;
 	}
-	
-	return Resource<RenderTarget>();
 }
 
-Resource<RenderState> GLXRenderContext::getRenderState()
+RenderState* GLXRenderContext::getRenderState()
 {
 	return mRenderState;
 }
 
-void GLXRenderContext::setRenderState(const Resource<RenderState>& state)
+void GLXRenderContext::setRenderState(RenderState* const state)
 {
 	mRenderState = state;
 }
 
-void GLXRenderContext::setRenderer(const Resource<Renderer>& renderer)
+void GLXRenderContext::setRenderer(Renderer* const renderer)
 {
 	mRenderer = renderer;
 }
 
-void GLXRenderContext::bindToWindow(const Resource<RenderWindow>& window)
+void GLXRenderContext::bindToWindow(RenderWindow* const window)
 {
 	// Rememeber the Window we're bound to
-	mWindow = window.recast<X11RenderWindow>();
+	mWindow = reinterpret_cast<X11RenderWindow*>(window);
 }
 

@@ -10,7 +10,6 @@
 #endif
 
 #include "../Renderer.h"
-#include "../../../Resources/Resource.h"
 
 namespace GLESGAE
 {
@@ -41,21 +40,24 @@ namespace GLESGAE
 			~FixedFunctionGlVboRenderer();
 			
 			/// Draw a Mesh
-			void drawMesh(const Resource<Mesh>& mesh, const Resource<Matrix4>& transform);
+			void drawMesh(Mesh* const mesh, Matrix4* const transform);
 			
 		protected:
 			/// Setup texturing - check if the requested texture unit is on and bind a texture from the material.
-			void setupTexturing(unsigned int* textureUnit, const Resource<Material>& material);
+			void setupTexturing(unsigned int* textureUnit, Material* const material);
 			
 			/// Disable Texture Units
 			void disableTexturing(const unsigned int currentTextureUnit);
 			
 		private:
+			FixedFunctionGlVboRenderer(const FixedFunctionGlVboRenderer&);
+			FixedFunctionGlVboRenderer& operator=(const FixedFunctionGlVboRenderer&);
+			
 			bool mFixedFunctionTexUnits[8]; 			// 8 Texture Units sounds like they'd be enough to me!
 			unsigned int mFixedFunctionLastTexUnit;		// Last Texture Unit we were working on, in case it's the same.
-			Resource<VertexBuffer> mLastVertexBuffer;
-			Resource<IndexBuffer> mLastIndexBuffer;
-			Resource<Texture> mLastTexture;
+			VertexBuffer* mLastVertexBuffer;
+			IndexBuffer* mLastIndexBuffer;
+			Texture* mLastTexture;
 	};
 
 }

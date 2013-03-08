@@ -33,15 +33,15 @@ void InputSystem::update()
 	// Use X11 to deal with Joystick/Pad madness.. Keyboard and Pointer come through as Events.
 }
 
-void InputSystem::receiveEvent(const Resource<Event>& event)
+void InputSystem::receiveEvent(Event* const event)
 {
 	if (event->getEventType() == AndroidEvents::Input::Keyboard::KeyDown)
-		mKeyboard->setKey(convertKey(event.recast<AndroidEvents::Input::Keyboard::KeyDownEvent>()->getKey()), true);
+		mKeyboard->setKey(convertKey(reinterpret_cast<AndroidEvents::Input::Keyboard::KeyDownEvent*>(event)->getKey()), true);
 	else if (event->getEventType() == AndroidEvents::Input::Keyboard::KeyUp)
-		mKeyboard->setKey(convertKey(event.recast<AndroidEvents::Input::Keyboard::KeyUpEvent>()->getKey()), false);
+		mKeyboard->setKey(convertKey(reinterpret_cast<AndroidEvents::Input::Keyboard::KeyUpEvent*>(event)->getKey()), false);
 	else if (event->getEventType() == AndroidEvents::Input::Touch::Moved) {
-		mPointer->setAxis(Controller::Axis::X, event.recast<AndroidEvents::Input::Touch::MovedEvent>()->getX());
-		mPointer->setAxis(Controller::Axis::Y, event.recast<AndroidEvents::Input::Touch::MovedEvent>()->getY());
+		mPointer->setAxis(Controller::Axis::X, reinterpret_cast<AndroidEvents::Input::Touch::MovedEvent*>(event)->getX());
+		mPointer->setAxis(Controller::Axis::Y, reinterpret_cast<AndroidEvents::Input::Touch::MovedEvent*>(event)->getY());
 	}
 	else if (event->getEventType() == AndroidEvents::Input::Touch::TouchDown) {
 		mPointer->setButton(0, 1.0F);
@@ -70,35 +70,35 @@ unsigned int InputSystem::getNumberOfPointers() const
 	return 1U;
 }
 
-Resource<Controller::KeyboardController> InputSystem::newKeyboard()
+Controller::KeyboardController* InputSystem::newKeyboard()
 {
 	if (mKeyboard == 0) {
-		mKeyboard = Resource<Controller::KeyboardController>(new Controller::KeyboardController(0U));
+		mKeyboard = new Controller::KeyboardController(0U);
 		mEventSystem->registerObserver(AndroidEvents::Input::Keyboard::KeyDown, this);
 		mEventSystem->registerObserver(AndroidEvents::Input::Keyboard::KeyUp, this);
 
 		return mKeyboard;
 	}
 
-	return Resource<Controller::KeyboardController>();
+	return 0;
 }
 
-Resource<Controller::JoystickController> InputSystem::newJoystick()
+Controller::JoystickController* InputSystem::newJoystick()
 {
 	// TODO: support joysticks - including pads with analog sticks
-	return Resource<Controller::JoystickController>();
+	return 0;
 }
 
-Resource<Controller::PadController> InputSystem::newPad()
+Controller::PadController* InputSystem::newPad()
 {
 	// TODO: support pads - purely digital pads without joysticks
-	return Resource<Controller::PadController>();
+	return 0;
 }
 
-Resource<Controller::PointerController> InputSystem::newPointer()
+Controller::PointerController* InputSystem::newPointer()
 {
 	if (mPointer == 0) {
-		mPointer = Resource<Controller::PointerController>(new Controller::PointerController(0U, 5U));
+		mPointer = new Controller::PointerController(0U, 5U);
 		mEventSystem->registerObserver(AndroidEvents::Input::Touch::TouchDown, this);
 		mEventSystem->registerObserver(AndroidEvents::Input::Touch::TouchUp, this);
 		mEventSystem->registerObserver(AndroidEvents::Input::Touch::Moved, this);
@@ -106,69 +106,67 @@ Resource<Controller::PointerController> InputSystem::newPointer()
 		return mPointer;
 	}
 
-	return Resource<Controller::PointerController>();
+	return 0;
 }
 
-Resource<Controller::KeyboardController> InputSystem::getKeyboard(const Controller::Id id)
+Controller::KeyboardController* InputSystem::getKeyboard(const Controller::Id id)
 {
 	if (0 == id)
 		return mKeyboard;
 	else
-		return Resource<Controller::KeyboardController>();
+		return 0;
 }
 
-Resource<Controller::JoystickController> InputSystem::getJoystick(const Controller::Id /*joystickId*/)
+Controller::JoystickController* InputSystem::getJoystick(const Controller::Id /*joystickId*/)
 {
 	// TODO: support joysticks
-	return Resource<Controller::JoystickController>();
+	return 0;
 }
 
-Resource<Controller::PointerController> InputSystem::getPointer(const Controller::Id id)
+Controller::PointerController* InputSystem::getPointer(const Controller::Id id)
 {
 	if (0 == id)
 		return mPointer;
 	else
-		return Resource<Controller::PointerController>();
+		return 0;
 }
 
-Resource<Controller::PadController> InputSystem::getPad(const Controller::Id /*padId*/)
+Controller::PadController* InputSystem::getPad(const Controller::Id /*padId*/)
 {
 	// TODO: support pads
-	return Resource<Controller::PadController>();
+	return 0;
 }
 
-void InputSystem::destroyKeyboard(const Resource<Controller::KeyboardController>& keyboard)
+void InputSystem::destroyKeyboard(Controller::KeyboardController* const keyboard)
 {
 	if (mKeyboard == keyboard) {
 		mEventSystem->deregisterObserver(AndroidEvents::Input::Keyboard::KeyDown, this);
 		mEventSystem->deregisterObserver(AndroidEvents::Input::Keyboard::KeyUp, this);
-		mKeyboard = Resource<Controller::KeyboardController>(0);
-
-		return;
+		delete mKeyboard;
+		mKeyboard = 0;
 	}
 
 	// Should error here.. somehow we've gotten a keyboard controller that doesn't belong to us!
 }
 
-void InputSystem::destroyJoystick(const Resource<Controller::JoystickController>& /*joystickController*/)
+void InputSystem::destroyJoystick(Controller::JoystickController* const /*joystickController*/)
 {
 	// Run through list and check we actually own this Joystick, then delete.
 }
 
-void InputSystem::destroyPad(const Resource<Controller::PadController>& /*padController*/)
+void InputSystem::destroyPad(Controller::PadController* const /*padController*/)
 {
 	// Run through list and check we actually own this Pad, then delete.
 }
 
-void InputSystem::destroyPointer(const Resource<Controller::PointerController>& pointer)
+void InputSystem::destroyPointer(Controller::PointerController* const pointer)
 {
 	if (mPointer == pointer) {
 		mEventSystem->deregisterObserver(AndroidEvents::Input::Touch::TouchDown, this);
 		mEventSystem->deregisterObserver(AndroidEvents::Input::Touch::TouchUp, this);
 		mEventSystem->deregisterObserver(AndroidEvents::Input::Touch::Moved, this);
-		mPointer = Resource<Controller::PointerController>(0);
-
-		return;
+		delete mPointer;
+		mPointer = 0;
 	}
 
 	// Should error here.. somehow we've gotten a pointer controller that doesn't belong to us!
@@ -224,3 +222,4 @@ Controller::KeyType InputSystem::convertKey(int androidKey)
 			return Controller::KEY_SPACE;
 	}
 }
+

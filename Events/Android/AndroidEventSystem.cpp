@@ -37,9 +37,9 @@ EventSystem::~EventSystem()
 
 }
 
-void EventSystem::bindToWindow(const Resource<RenderWindow>& window)
+void EventSystem::bindToWindow(RenderWindow* const window)
 {
-	mWindow = window.recast<AndroidRenderWindow>();
+	mWindow = reinterpret_cast<AndroidRenderWindow*>(window);
 }
 
 

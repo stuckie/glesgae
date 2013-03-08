@@ -7,6 +7,8 @@
 #include "../../Texture.h"
 #include "../../../Maths/Matrix4.h"
 
+#include <cassert>
+
 using namespace GLESGAE;
 
 const HashString aPositionHS("a_position");
@@ -19,11 +21,11 @@ const HashString aCustom1HS("a_custom1");
 const HashString aCustom2HS("a_custom2");
 
 OGLState::OGLState()
-: mCamera()
-, mTextureMatrix()
+: mCamera(0)
+, mTextureMatrix(0)
 , mTexturing(false)
 , mAlphaBlending(false)
-, mCurrentShader()
+, mCurrentShader(0)
 , a_position(GL_INVALID_VALUE)
 , a_colour(GL_INVALID_VALUE)
 , a_normal(GL_INVALID_VALUE)
@@ -32,7 +34,7 @@ OGLState::OGLState()
 , a_custom0(GL_INVALID_VALUE)
 , a_custom1(GL_INVALID_VALUE)
 , a_custom2(GL_INVALID_VALUE)
-, mLastTexture()
+, mLastTexture(0)
 , mLastTextureUnit(GL_INVALID_VALUE)
 , mUniformUpdaters()
 {
@@ -42,7 +44,7 @@ OGLState::~OGLState()
 {
 }
 
-void OGLState::setCamera(const Resource<Camera>& camera)
+void OGLState::setCamera(Camera* const camera)
 {
 	if (mCamera != camera) {
 		glMatrixMode(GL_PROJECTION);
@@ -60,7 +62,7 @@ void OGLState::setCamera(const Resource<Camera>& camera)
 	}
 }
 
-void OGLState::setTextureMatrix(const Resource<Matrix4>& matrix)
+void OGLState::setTextureMatrix(Matrix4* const matrix)
 {
 	if (mTextureMatrix != matrix) {
 		glMatrixMode(GL_TEXTURE);
@@ -113,13 +115,13 @@ void OGLState::setFullBlendingFunction(const GLenum sourceRGB, const GLenum dest
 	glBlendFuncSeparate(sourceRGB, destinationRGB, sourceAlpha, destinationAlpha);
 }
 
-void OGLState::addUniformUpdater(const HashString uniformName, const Resource<ShaderUniformUpdater>& updater)
+void OGLState::addUniformUpdater(const HashString uniformName, ShaderUniformUpdater* const updater)
 {
 	// should probably check and assert if we already have something for this uniform name.
 	mUniformUpdaters[uniformName] = updater;
 }
 
-void OGLState::bindShader(const Resource<Shader>& shader)
+void OGLState::bindShader(Shader* const shader)
 {
 	if (mCurrentShader != shader) {
 		mCurrentShader = shader;
@@ -172,14 +174,14 @@ void OGLState::resetAttributes()
 		glEnableVertexAttribArray(a_custom2);
 }
 
-void OGLState::updateUniforms(const Resource<Material>& material, const Resource<Matrix4>& transform)
+void OGLState::updateUniforms(Material* const material, Matrix4* const transform)
 {
 	std::vector<std::pair<HashString, GLint> > uniforms(mCurrentShader->getUniformArray());
 	for (std::vector<std::pair<HashString, GLint> >::iterator itr(uniforms.begin()); itr < uniforms.end(); ++itr)
 		mUniformUpdaters[itr->first]->update(itr->second, mCamera, material, transform);
 }
 
-void OGLState::updateTextures(const Resource<Material>& material)
+void OGLState::updateTextures(Material* const material)
 {
 	const unsigned int textureCount(material->getTextureCount());
 
@@ -190,10 +192,11 @@ void OGLState::updateTextures(const Resource<Material>& material)
 			mLastTextureUnit = currentTextureUnit;
 		}
 		
-		const Resource<Texture>& texture(material->getTexture(currentTexture));
+		Texture* const texture(material->getTexture(currentTexture));
 		if (mLastTexture != texture) {
 			mLastTexture = texture;
 			glBindTexture(GL_TEXTURE_2D, texture->getId());
 		}
 	}
 }
+

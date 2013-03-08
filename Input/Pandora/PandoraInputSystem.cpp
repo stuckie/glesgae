@@ -38,7 +38,7 @@ Controller::Id Controller::Pandora::RightNub		= 1U;
 
 Controller::Id Controller::Pandora::Buttons		= 0U;
 
-InputSystem::InputSystem(const Resource<EventSystem>& eventSystem)
+InputSystem::InputSystem(EventSystem* const eventSystem)
 : CommonInputSystem()
 , mKeyboard(0)
 , mPointer(0)
@@ -46,10 +46,10 @@ InputSystem::InputSystem(const Resource<EventSystem>& eventSystem)
 , mPads()
 , mEventSystem(eventSystem)
 {
-	mJoysticks.push_back(Resource<Controller::JoystickController>(new Controller::JoystickController(Controller::Pandora::LeftNub, 2U, 0U))); // ID, 2 Axes, 0 Buttons
-	mJoysticks.push_back(Resource<Controller::JoystickController>(new Controller::JoystickController(Controller::Pandora::RightNub, 2U, 0U))); // ID, 2 Axes, 0 Buttons
+	mJoysticks.push_back(new Controller::JoystickController(Controller::Pandora::LeftNub, 2U, 0U)); // ID, 2 Axes, 0 Buttons
+	mJoysticks.push_back(new Controller::JoystickController(Controller::Pandora::RightNub, 2U, 0U)); // ID, 2 Axes, 0 Buttons
 
-	mPads.push_back(Resource<Controller::PadController>(new Controller::PadController(Controller::Pandora::Buttons, 15U))); // 15 Buttons - Up/Down/Left/Right - Start/Select/Pandora - Y/B/X/A - L1/R1/L2/R2 ( L2/R2 being optional, of course )
+	mPads.push_back(new Controller::PadController(Controller::Pandora::Buttons, 15U)); // 15 Buttons - Up/Down/Left/Right - Start/Select/Pandora - Y/B/X/A - L1/R1/L2/R2 ( L2/R2 being optional, of course )
 
 	pnd_evdev_open(pnd_evdev_dpads);
 	pnd_evdev_open(pnd_evdev_nub1);
@@ -58,6 +58,10 @@ InputSystem::InputSystem(const Resource<EventSystem>& eventSystem)
 
 InputSystem::~InputSystem()
 {
+	delete mJoysticks[0];
+	delete mJoysticks[1];
+	delete mPads[0];
+	
 	mJoysticks.clear();
 	mPads.clear();
 
@@ -105,17 +109,17 @@ void InputSystem::update()
 void InputSystem::receiveEvent(const Resource<Event>& event)
 {
 	if (event->getEventType() == X11Events::Input::Keyboard::KeyDown)
-		mKeyboard->setKey(convertKey(event.recast<X11Events::Input::Keyboard::KeyDownEvent>()->getKey()), true);
+		mKeyboard->setKey(convertKey(reinterpret_cast<X11Events::Input::Keyboard::KeyDownEvent*>(event)->getKey()), true);
 	else if (event->getEventType() == X11Events::Input::Keyboard::KeyUp)
-		mKeyboard->setKey(convertKey(event.recast<X11Events::Input::Keyboard::KeyUpEvent>()->getKey()), false);
+		mKeyboard->setKey(convertKey(reinterpret_cast<X11Events::Input::Keyboard::KeyUpEvent*>(event)->getKey()), false);
 	else if (event->getEventType() == X11Events::Input::Mouse::Moved) {
-		mPointer->setAxis(Controller::Axis::X, event.recast<X11Events::Input::Mouse::MovedEvent>()->getX());
-		mPointer->setAxis(Controller::Axis::Y, event.recast<X11Events::Input::Mouse::MovedEvent>()->getY());
+		mPointer->setAxis(Controller::Axis::X, reinterpret_cast<X11Events::Input::Mouse::MovedEvent*>(event)->getX());
+		mPointer->setAxis(Controller::Axis::Y, reinterpret_cast<X11Events::Input::Mouse::MovedEvent*>(event)->getY());
 	}
 	else if (event->getEventType() == X11Events::Input::Mouse::ButtonDown)
-		mPointer->setButton(event.recast<X11Events::Input::Mouse::ButtonDownEvent>()->getButton(), 1.0F);
+		mPointer->setButton(reinterpret_cast<X11Events::Input::Mouse::ButtonDownEvent*>(event)->getButton(), 1.0F);
 	else if (event->getEventType() == X11Events::Input::Mouse::ButtonUp)
-		mPointer->setButton(event.recast<X11Events::Input::Mouse::ButtonUpEvent>()->getButton(), 0.0F);
+		mPointer->setButton(reinterpret_cast<X11Events::Input::Mouse::ButtonUpEvent*>(event)->getButton(), 0.0F);
 }
 
 unsigned int InputSystem::getNumberOfKeyboards() const
@@ -138,35 +142,35 @@ unsigned int InputSystem::getNumberOfPointers() const
 	return 1U;
 }
 
-Resource<Controller::KeyboardController> InputSystem::newKeyboard()
+Controller::KeyboardController* InputSystem::newKeyboard()
 {
 	if (mKeyboard == 0) {
-		mKeyboard = Resource<Controller::KeyboardController>(new Controller::KeyboardController(0U));
+		mKeyboard = new Controller::KeyboardController(0U);
 		mEventSystem->registerObserver(X11Events::Input::Keyboard::KeyDown, this);
 		mEventSystem->registerObserver(X11Events::Input::Keyboard::KeyUp, this);
 
 		return mKeyboard;
 	}
 
-	return Resource<Controller::KeyboardController>(0);
+	return 0;
 }
 
-Resource<Controller::JoystickController> InputSystem::newJoystick()
+Controller::JoystickController* InputSystem::newJoystick()
 {
 	// TODO: support joysticks - including pads with analog sticks
-	return Resource<Controller::JoystickController>(0);
+	return 0;
 }
 
-Resource<Controller::PadController> InputSystem::newPad()
+Controller::PadController* InputSystem::newPad()
 {
 	// TODO: support pads - purely digital pads without joysticks
-	return Resource<Controller::PadController>(0);
+	return 0;
 }
 
-Resource<Controller::PointerController> InputSystem::newPointer()
+Controller::PointerController* InputSystem::newPointer()
 {
 	if (mPointer == 0) {
-		mPointer = Resource<Controller::PointerController>(new Controller::PointerController(0U, 5U)); // 5 buttons, left, middle, right, scroll up, scroll down
+		mPointer = new Controller::PointerController(0U, 5U); // 5 buttons, left, middle, right, scroll up, scroll down
 		mEventSystem->registerObserver(X11Events::Input::Mouse::ButtonDown, this);
 		mEventSystem->registerObserver(X11Events::Input::Mouse::ButtonUp, this);
 		mEventSystem->registerObserver(X11Events::Input::Mouse::Moved, this);
@@ -174,75 +178,74 @@ Resource<Controller::PointerController> InputSystem::newPointer()
 		return mPointer;
 	}
 
-	return Resource<Controller::PointerController>(0);
+	return 0;
 }
 
-Resource<Controller::KeyboardController> InputSystem::getKeyboard(const Controller::Id id)
+Controller::KeyboardController* InputSystem::getKeyboard(const Controller::Id id)
 {
 	if (0 == id)
 		return mKeyboard;
 	else
-		return Resource<Controller::KeyboardController>(0);
+		return 0;
 }
 
-Resource<Controller::JoystickController> InputSystem::getJoystick(const Controller::Id id)
+Controller::JoystickController* InputSystem::getJoystick(const Controller::Id id)
 {
 	// TODO: support joysticks
 	if (id < Controller::Pandora::RightNub + 1U) // hacky check
 		return mJoysticks[id];
 	else
-		return Resource<Controller::JoystickController>(0);
+		return 0;
 }
 
-Resource<Controller::PointerController> InputSystem::getPointer(const Controller::Id id)
+Controller::PointerController* InputSystem::getPointer(const Controller::Id id)
 {
 	if (0 == id)
 		return mPointer;
 	else
-		return Resource<Controller::PointerController>(0);
+		return 0;
 }
 
-Resource<Controller::PadController> InputSystem::getPad(const Controller::Id id)
+Controller::PadController* InputSystem::getPad(const Controller::Id id)
 {
 	// TODO: support pads
 	if (id < Controller::Pandora::Buttons + 1U) // hacky check
 		return mPads[id];
 	else
-		return Resource<Controller::PadController>(0);
+		return 0;
 }
 
-void InputSystem::destroyKeyboard(const Resource<Controller::KeyboardController>& keyboard)
+void InputSystem::destroyKeyboard(Controller::KeyboardController* const keyboard)
 {
 	if (mKeyboard == keyboard) {
 		mEventSystem->deregisterObserver(X11Events::Input::Keyboard::KeyDown, this);
 		mEventSystem->deregisterObserver(X11Events::Input::Keyboard::KeyUp, this);
-		mKeyboard = Resource<Controller::KeyboardController>(0);
-
-		return;
+		delete mKeyboard;
+		mKeyboard = 0;
 	}
 
 	// Should error here.. somehow we've gotten a keyboard controller that doesn't belong to us!
 }
 
-void InputSystem::destroyJoystick(const Resource<Controller::JoystickController>& /*joystick*/)
+void InputSystem::destroyJoystick(Controller::JoystickController* const /*joystick*/)
 {
 	// Run through list and check we actually own this Joystick, then delete.
 }
 
-void InputSystem::destroyPad(const Resource<Controller::PadController>& /*pad*/)
+void InputSystem::destroyPad(Controller::PadController* const /*pad*/)
 {
 	// Run through list and check we actually own this Pad, then delete.
 }
 
-void InputSystem::destroyPointer(const Resource<Controller::PointerController>& pointer)
+void InputSystem::destroyPointer(Controller::PointerController* const pointer)
 {
 	if (mPointer == pointer) {
 		mEventSystem->deregisterObserver(X11Events::Input::Mouse::ButtonDown, this);
 		mEventSystem->deregisterObserver(X11Events::Input::Mouse::ButtonUp, this);
 		mEventSystem->deregisterObserver(X11Events::Input::Mouse::Moved, this);
-		mPointer = Resource<Controller::PointerController>(0);
+		delete mPointer;
+		mPointer = 0;
 
-		return;
 	}
 
 	// Should error here.. somehow we've gotten a pointer controller that doesn't belong to us!

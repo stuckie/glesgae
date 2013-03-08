@@ -1,8 +1,6 @@
 #ifndef _ANDROID_EVENT_SYSTEM_H_
 #define _ANDROID_EVENT_SYSTEM_H_
 
-#include "../../Resources/Resource.h"
-
 namespace GLESGAE
 {
 	class AndroidRenderWindow;
@@ -16,7 +14,7 @@ namespace GLESGAE
 			void update();
 
 			/// Bind to the Window
-			void bindToWindow(const Resource<RenderWindow>& window);
+			void bindToWindow(RenderWindow* const window);
 
 		private:
 			// No Copying
@@ -24,7 +22,7 @@ namespace GLESGAE
 			EventSystem& operator=(const EventSystem&);
 			
 			bool mActive;
-			Resource<AndroidRenderWindow> mWindow;
+			AndroidRenderWindow* mWindow;
 	};
 }
 

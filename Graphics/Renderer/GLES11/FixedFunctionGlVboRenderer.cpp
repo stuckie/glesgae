@@ -13,7 +13,6 @@
 #include "../../Texture.h"
 #include "../../VertexBuffer.h"
 #include "../../../Maths/Matrix4.h"
-#include "../../../Resources/Resource.h"
 
 using namespace GLESGAE;
 
@@ -33,11 +32,11 @@ FixedFunctionGlVboRenderer::~FixedFunctionGlVboRenderer()
 {
 }
 
-void FixedFunctionGlVboRenderer::drawMesh(const Resource<Mesh>& mesh, const Resource<Matrix4>& transform)
+void FixedFunctionGlVboRenderer::drawMesh(Mesh* const mesh, Matrix4* const transform)
 {
-	const Resource<IndexBuffer>& indexBuffer(mesh->getIndexBuffer());
-	const Resource<VertexBuffer>& vertexBuffer(mesh->getVertexBuffer());
-	const Resource<Material>& material(mesh->getMaterial());
+	IndexBuffer* const indexBuffer(mesh->getIndexBuffer());
+	VertexBuffer* const vertexBuffer(mesh->getVertexBuffer());
+	Material* const material(mesh->getMaterial());
 	unsigned int currentTextureUnit(0U);
 
 	const bool newBuffer(!(mLastVertexBuffer == vertexBuffer));
@@ -218,7 +217,7 @@ void FixedFunctionGlVboRenderer::drawMesh(const Resource<Mesh>& mesh, const Reso
 	glPopMatrix();
 }
 
-void FixedFunctionGlVboRenderer::setupTexturing(unsigned int* textureUnit, const Resource<Material>& material)
+void FixedFunctionGlVboRenderer::setupTexturing(unsigned int* textureUnit, Material* const material)
 {
 	if (false == mFixedFunctionTexUnits[*textureUnit]) { // This texture unit isn't currently enabled
 		mFixedFunctionTexUnits[*textureUnit] = true;
@@ -229,7 +228,7 @@ void FixedFunctionGlVboRenderer::setupTexturing(unsigned int* textureUnit, const
 			glActiveTexture(GL_TEXTURE0 + *textureUnit);
 	}
 
-	const Resource<Texture>& texture(material->getTexture(*textureUnit));
+	Texture* const texture(material->getTexture(*textureUnit));
 	if (mLastTexture != texture) {
 		mLastTexture = texture;
 		glBindTexture(GL_TEXTURE_2D, texture->getId());
@@ -248,3 +247,4 @@ void FixedFunctionGlVboRenderer::disableTexturing(const unsigned int currentText
 		--delta;
 	}
 }
+
