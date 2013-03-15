@@ -1,13 +1,16 @@
 #include "AndroidRenderContext.h"
+#include "../../Renderer/Renderer.h"
 #include "../../Window/Android/AndroidRenderWindow.h"
 #include "../../Target/Screen/ScreenRenderTarget.h"
 #include "../../Target/Buffer/BufferRenderTarget.h"
+#include "../../Target/Texture/TextureRenderTarget.h"
 #if defined(GLES1)
 	#include "../../State/GLES1/GLES1State.h"
 #elif defined(GLES2)
 	#include "../../State/GLES2/GLES2State.h"
 #endif
 #include "../../../Platform/Application.h"
+#include "../../../Utils/Logger.h"
 
 using namespace GLESGAE;
 
@@ -106,44 +109,43 @@ void AndroidRenderContext::refresh()
 	glEnable(GL_SCISSOR_TEST);
 }
 
-void AndroidRenderContext::drawMesh(const Resource<Mesh>& mesh, const Resource<Matrix4>& transform)
+void AndroidRenderContext::drawMesh(Mesh* const mesh, Matrix4* const transform)
 {
 	if (mRenderer != 0)
 		mRenderer->drawMesh(mesh, transform);
 }
 
-Resource<RenderTarget> AndroidRenderContext::createRenderTarget(const RenderTarget::Type type, const RenderTarget::Options options)
+RenderTarget* AndroidRenderContext::createRenderTarget(const RenderTarget::Type type, const RenderTarget::Options options)
 {
 	switch (type) {
 		case RenderTarget::TARGET_SCREEN:
-			return Resource<RenderTarget>(new ScreenRenderTarget);
+			return new ScreenRenderTarget;
 		break;
 		case RenderTarget::TARGET_BUFFER:
-			return Resource<RenderTarget>(new BufferRenderTarget(options));
+			return new BufferRenderTarget(options);
 		break;
 		case RenderTarget::TARGET_TEXTURE:
-			//return Resource<RenderTarget>(new TextureRenderTarget(options));
+			return new TextureRenderTarget(options);
 		break;
 		default:
+			return 0;
 		break;
 	}
-	
-	return Resource<RenderTarget>();
 }
 
-Resource<RenderState> AndroidRenderContext::getRenderState()
+RenderState* AndroidRenderContext::getRenderState()
 {
 	return mRenderState;
 }
 
-void AndroidRenderContext::setRenderer(const Resource<Renderer>& renderer)
+void AndroidRenderContext::setRenderer(Renderer* const renderer)
 {
 	mRenderer = renderer;
 }
 
-void AndroidRenderContext::bindToWindow(const Resource<RenderWindow>& window)
+void AndroidRenderContext::bindToWindow(RenderWindow* const window)
 {
 	// Rememeber the Window we're bound to
-	mWindow = window.recast<AndroidRenderWindow>();
+	mWindow = reinterpret_cast<AndroidRenderWindow*>(window);
 }
 

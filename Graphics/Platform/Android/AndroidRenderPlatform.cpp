@@ -25,12 +25,13 @@ void AndroidRenderPlatform::shutdown()
 {
 }
 
-Resource<RenderWindow> AndroidRenderPlatform::createWindow(const char* name, const unsigned int width, const unsigned int height, const unsigned int bpp, const bool fullscreen)
+RenderWindow* AndroidRenderPlatform::createWindow(const char* name, const unsigned int width, const unsigned int height, const unsigned int bpp, const bool fullscreen)
 {
-	return Resource<RenderWindow>(new AndroidRenderWindow(name, width, height, bpp, fullscreen));
+	return new AndroidRenderWindow(name, width, height, bpp, fullscreen);
 }
 
-Resource<RenderContext> AndroidRenderPlatform::createContext()
+RenderContext* AndroidRenderPlatform::createContext()
 {
-	return Resource<RenderContext>(new AndroidRenderContext);
+	return new AndroidRenderContext;
 }
+

@@ -38,7 +38,7 @@ export STRIP	:=	$(PREFIX)strip
 TARGET		:=	lib/libGLESGAE
 BUILD		:=	build-linux
 SOURCES		:=	.\
-				Graphics/Window \
+				Graphics \
 				Graphics/Context \
 				Graphics/Context/Linux \
 				Graphics/Platform \
@@ -54,9 +54,9 @@ SOURCES		:=	.\
 				Graphics/Renderer/OGL \
 				Graphics/Target/Screen/OGL \
 				Graphics/Target/Buffer/OGL \
+				Graphics/Target/Texture/OGL \
 				Graphics/Window \
 				Graphics/Window/X11 \
-				Graphics \
 				Events \
 				Events/X11 \
 				Input \

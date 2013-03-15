@@ -4,7 +4,6 @@
 #include <EGL/egl.h>
 
 #include "../RenderContext.h"
-#include "../../../Resources/Resource.h"
 
 namespace GLESGAE
 {
@@ -28,31 +27,31 @@ namespace GLESGAE
 			void shutdown();
 			
 			/// Set the Renderer
-			void setRenderer(const Resource<Renderer>& renderer);
+			void setRenderer(Renderer* const renderer);
 			
 			/// Draw a Mesh Object with the specified Transform.
-			void drawMesh(const Resource<Mesh>& mesh, const Resource<Matrix4>& transform);
+			void drawMesh(Mesh* const mesh, Matrix4* const transform);
 			
 			/// Create a new Render Target.
-			Resource<RenderTarget> createRenderTarget(const RenderTarget::Type type, const RenderTarget::Options options);
+			RenderTarget* createRenderTarget(const RenderTarget::Type type, const RenderTarget::Options options);
 			
 			/// Get the Render State.
-			Resource<RenderState> getRenderState();
+			RenderState* getRenderState();
 			
 			/// Bind us to a Window.
-			void bindToWindow(const Resource<RenderWindow>& window);
+			void bindToWindow(RenderWindow* const window);
 			
 		private:
 			// No Copying
 			AndroidRenderContext(const AndroidRenderContext&);
 			AndroidRenderContext& operator=(const AndroidRenderContext&);
 			
-			Resource<AndroidRenderWindow> mWindow;
-			Resource<RenderState> mRenderState;
-			Resource<Renderer> mRenderer;
-			EGLDisplay  mDisplay;
-			EGLContext  mContext;
-			EGLSurface  mSurface;
+			AndroidRenderWindow* 	mWindow;
+			RenderState* 			mRenderState;
+			Renderer* 				mRenderer;
+			EGLDisplay  			mDisplay;
+			EGLContext  			mContext;
+			EGLSurface  			mSurface;
 	};
 }
 

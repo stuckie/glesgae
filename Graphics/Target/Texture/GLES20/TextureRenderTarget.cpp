@@ -1,10 +1,11 @@
+#if defined(GLES2)
 #include "../TextureRenderTarget.h"
 
 #include "../../../../Platform/Application.h"
 #include "../../../../Utils/Logger.h"
 
-#if defined(LINUX)
-#include "../../../Context/Linux/GLee.h"
+#if defined(PANDORA) || defined(ANDROID)
+	#include <GLES2/gl2.h>
 #endif
 
 using namespace GLESGAE;
@@ -53,3 +54,6 @@ void TextureRenderTarget::unbind()
 	glBindFramebuffer(GL_FRAMEBUFFER, GL_INVALID_VALUE);
 	glBindRenderbuffer(GL_RENDERBUFFER, GL_INVALID_VALUE);
 }
+
+#endif
+

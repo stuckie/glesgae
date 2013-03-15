@@ -4,7 +4,6 @@
 #include "../RenderPlatform.h"
 #include "../../Context/Android/AndroidRenderContext.h"
 #include "../../Window/RenderWindow.h"
-#include "../../../Resources/Resource.h"
 
 namespace GLESGAE
 {
@@ -24,10 +23,10 @@ namespace GLESGAE
 			void refresh();
 			
 			/// Create a Window.
-			Resource<RenderWindow> createWindow(const char* name, const unsigned int width, const unsigned int height, const unsigned int bpp, const bool fullscreen);
+			RenderWindow* createWindow(const char* name, const unsigned int width, const unsigned int height, const unsigned int bpp, const bool fullscreen);
 			
 			/// Create a Render Context
-			Resource<RenderContext> createContext();
+			RenderContext* createContext();
 	};
 }
 
