@@ -1,13 +1,13 @@
 #include "AndroidRenderWindow.h"
-#include <cstdlib>
-#include <cstring>
+#include "../../../Platform/Application.h"
+#include "../../../Platform/Platform.h"
+
+#include <cassert>
 
 using namespace GLESGAE;
 
 AndroidRenderWindow::AndroidRenderWindow(const char* name, const unsigned int width, const unsigned int height, const unsigned int bpp, const bool fullscreen)
 : RenderWindow(name, width, height, bpp, fullscreen)
-, mDisplay(0)
-, mWindow(0)
 {
 }
 
@@ -18,15 +18,14 @@ void AndroidRenderWindow::open()
 
 AndroidRenderWindow::~AndroidRenderWindow()
 {
-	if (0 != mWindow)
-		close();
-	
-	if (0 != mDisplay)
-		mDisplay = 0;
 }
 
 void AndroidRenderWindow::close()
 {
-	mWindow = 0;
 }
 
+ANativeWindow* AndroidRenderWindow::getWindow() const
+{
+	Platform* platform(Application::getInstance()->getPlatform());
+	return platform->getApp()->window;
+}

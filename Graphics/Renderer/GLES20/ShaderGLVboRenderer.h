@@ -28,6 +28,9 @@ namespace GLESGAE
 			/// Draw a Mesh using the Shader Based Pipeline
 			void drawMesh(Mesh* const mesh, Matrix4* const transform);
 			
+			/// Set the GLES2 State
+			void setState(GLES2State* const state) { mState = state; }
+			
 		private:
 			ShaderGlVboRenderer(const ShaderGlVboRenderer&);
 			ShaderGlVboRenderer& operator=(const ShaderGlVboRenderer&);

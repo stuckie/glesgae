@@ -5,7 +5,7 @@ namespace GLESGAE
 {
 	class HashString
 	{
-		public:			
+		public:
 			explicit HashString() : mHash(0U) {}
 			explicit HashString(const char* string) : mHash(0U) { hash(string); }
 			

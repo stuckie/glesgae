@@ -98,7 +98,7 @@ Controller::PadController* InputSystem::newPad()
 Controller::PointerController* InputSystem::newPointer()
 {
 	if (mPointer == 0) {
-		mPointer = new Controller::PointerController(0U, 5U);
+		mPointer = new Controller::PointerController(0U, 1U);
 		mEventSystem->registerObserver(AndroidEvents::Input::Touch::TouchDown, this);
 		mEventSystem->registerObserver(AndroidEvents::Input::Touch::TouchUp, this);
 		mEventSystem->registerObserver(AndroidEvents::Input::Touch::Moved, this);

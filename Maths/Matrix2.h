@@ -27,16 +27,16 @@ namespace GLESGAE
 
 			/// Set to Zero
 			void setToZero();
-						
+			
 			// Standard Mathy Functions
 			bool operator==(const Matrix2& rhs) const;
 			bool operator!=(const Matrix2& rhs) const;
 			
-			const Matrix2 operator+(const Matrix2& rhs) const;
-			const Matrix2 operator-(const Matrix2& rhs) const;
-			const Matrix2 operator*(const Matrix2& rhs) const;
-			const Matrix2 operator*(const float scalar) const;
-			const Matrix2 operator/(const float scalar) const;
+			Matrix2 operator+(const Matrix2& rhs) const;
+			Matrix2 operator-(const Matrix2& rhs) const;
+			Matrix2 operator*(const Matrix2& rhs) const;
+			Matrix2 operator*(const float scalar) const;
+			Matrix2 operator/(const float scalar) const;
 			
 			const Matrix2& operator+=(const Matrix2& rhs);
 			const Matrix2& operator-=(const Matrix2& rhs);

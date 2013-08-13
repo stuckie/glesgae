@@ -12,7 +12,7 @@
 using namespace GLESGAE;
 
 const HashString aPositionHS("a_position");
-const HashString aColourHS("a_colour");
+const HashString aColourHS("a_color");
 const HashString aNormalHS("a_normal");
 const HashString aTexCoord0HS("a_texCoord0");
 const HashString aTexCoord1HS("a_texCoord1");

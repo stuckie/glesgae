@@ -54,35 +54,35 @@ bool Matrix2::operator!=(const Matrix2& rhs) const
 	return !(*this == rhs);
 }
 
-const Matrix2 Matrix2::operator+(const Matrix2& rhs) const
+Matrix2 Matrix2::operator+(const Matrix2& rhs) const
 {
 	Matrix2 result(*this);
 	result += rhs;
 	return result;
 }
 
-const Matrix2 Matrix2::operator-(const Matrix2& rhs) const
+Matrix2 Matrix2::operator-(const Matrix2& rhs) const
 {
 	Matrix2 result(*this);
 	result -= rhs;
 	return result;
 }
 
-const Matrix2 Matrix2::operator*(const Matrix2& rhs) const
+Matrix2 Matrix2::operator*(const Matrix2& rhs) const
 {
 	Matrix2 result(*this);
 	result *= rhs;
 	return result;
 }
 
-const Matrix2 Matrix2::operator*(const float scalar) const
+Matrix2 Matrix2::operator*(const float scalar) const
 {
 	Matrix2 result(*this);
 	result *= scalar;
 	return result;
 }
 
-const Matrix2 Matrix2::operator/(const float scalar) const
+Matrix2 Matrix2::operator/(const float scalar) const
 {
 	Matrix2 result(*this);
 	result /= scalar;

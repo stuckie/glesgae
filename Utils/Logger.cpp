@@ -5,6 +5,14 @@
 #include <iostream>
 #include <ctime>
 
+#if defined(ANDROID)
+	#include <android/log.h>
+	#define ANDROID_INFO(...) ((void)__android_log_print(ANDROID_LOG_INFO, "[INFO] ", __VA_ARGS__))
+	#define ANDROID_DEBUG(...) ((void)__android_log_print(ANDROID_LOG_DEBUG, "[DEBUG] ", __VA_ARGS__))
+	#define ANDROID_ERROR(...) ((void)__android_log_print(ANDROID_LOG_ERROR, "[ERROR] ", __VA_ARGS__))
+	#define ANDROID_VERBATIM(...) ((void)__android_log_print(ANDROID_LOG_INFO, "", __VA_ARGS__))
+#endif
+
 using namespace GLESGAE;
 
 Logger::Logger()
@@ -72,6 +80,7 @@ void Logger::log(const std::string& text, const Type type, const Output output)
 			break;
 		case LOG_TYPE_INFO:
 		case LOG_TYPE_ERROR:
+		case LOG_TYPE_VERBATIM:
 			outputText = true;
 			break;
 		default:
@@ -106,13 +115,32 @@ void Logger::logToTerm(const std::string& text, const Type& type)
 	
 	switch (type) {
 		case LOG_TYPE_DEBUG:
-			std::cout << "[DEBUG]" << timeString << "[DEBUG]" << text;
+			#if defined(ANDROID)
+				ANDROID_DEBUG(text.c_str());
+			#else
+				std::cout << "[DEBUG]" << timeString << "[DEBUG]" << text;
+			#endif
 			break;
 		case LOG_TYPE_INFO:
-			std::cout << "[INFO]" << timeString << "[INFO]" << text;
+			#if defined(ANDROID)
+				ANDROID_INFO(text.c_str());
+			#else
+				std::cout << "[INFO]" << timeString << "[INFO]" << text;
+			#endif
 			break;
 		case LOG_TYPE_ERROR:
-			std::cerr << "[ERROR]" << timeString << "[ERROR]" << text;
+			#if defined(ANDROID)
+				ANDROID_ERROR(text.c_str());
+			#else
+				std::cerr << "[ERROR]" << timeString << "[ERROR]" << text;
+			#endif
+			break;
+		case LOG_TYPE_VERBATIM:
+			#if defined(ANDROID)
+				ANDROID_VERBATIM(text.c_str());
+			#else
+				std::cout << text;
+			#endif
 			break;
 		default:
 			break; // Should not get here.. so just ignore...

@@ -22,22 +22,22 @@ namespace GLESGAE
 			bool operator!=(const Vector3& rhs) const;
 			
 			/// Negate operator
-			const Vector3 operator-() const;
+			Vector3 operator-() const;
 			
 			// Standard Mathy Functions
-			const Vector3 operator-(const Vector3& rhs) const;
-			const Vector3 operator+(const Vector3& rhs) const;
-			const Vector3 operator*(const Vector3& rhs) const;
-			const Vector3 operator/(const Vector3& rhs) const;
+			Vector3 operator-(const Vector3& rhs) const;
+			Vector3 operator+(const Vector3& rhs) const;
+			Vector3 operator*(const Vector3& rhs) const;
+			Vector3 operator/(const Vector3& rhs) const;
 			const Vector3& operator-=(const Vector3& rhs);
 			const Vector3& operator+=(const Vector3& rhs);
 			const Vector3& operator*=(const Vector3& rhs);
 			const Vector3& operator/=(const Vector3& rhs);
 			
-			const Vector3 operator-(const float scaler) const;
-			const Vector3 operator+(const float scaler) const;
-			const Vector3 operator*(const float scaler) const;
-			const Vector3 operator/(const float scaler) const;
+			Vector3 operator-(const float scaler) const;
+			Vector3 operator+(const float scaler) const;
+			Vector3 operator*(const float scaler) const;
+			Vector3 operator/(const float scaler) const;
 			const Vector3& operator-=(const float scaler);
 			const Vector3& operator+=(const float scaler);
 			const Vector3& operator*=(const float scaler);
@@ -89,7 +89,7 @@ namespace GLESGAE
 			float dot(const Vector3& rhs) const;
 			
 			/// Get the cross product between this vector and another vector
-			const Vector3 cross(const Vector3& rhs) const;
+			Vector3 cross(const Vector3& rhs) const;
 			
 			/// Normalise this vector
 			void normalise();

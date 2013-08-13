@@ -133,35 +133,35 @@ bool Matrix4::operator!=(const Matrix4& rhs) const
 	return !(*this == rhs);
 }
 
-const Matrix4 Matrix4::operator+(const Matrix4& rhs) const
+Matrix4 Matrix4::operator+(const Matrix4& rhs) const
 {
 	Matrix4 result(*this);
 	result += rhs;
 	return result;
 }
 
-const Matrix4 Matrix4::operator-(const Matrix4& rhs) const
+Matrix4 Matrix4::operator-(const Matrix4& rhs) const
 {
 	Matrix4 result(*this);
 	result -= rhs;
 	return result;
 }
 
-const Matrix4 Matrix4::operator*(const Matrix4& rhs) const
+Matrix4 Matrix4::operator*(const Matrix4& rhs) const
 {
 	Matrix4 result(*this);
 	result *= rhs;
 	return result;
 }
 
-const Matrix4 Matrix4::operator*(const float scalar) const
+Matrix4 Matrix4::operator*(const float scalar) const
 {
 	Matrix4 result(*this);
 	result *= scalar;
 	return result;
 }
 
-const Matrix4 Matrix4::operator/(const float scalar) const
+Matrix4 Matrix4::operator/(const float scalar) const
 {
 	Matrix4 result(*this);
 	result /= scalar;

@@ -1,5 +1,13 @@
 #include "GLES1State.h"
 
+#if defined(LINUX)
+	#include "../../Context/Linux/GLee.h"
+#elif defined(PANDORA) || defined(ANDROID)
+	#include <GLES/gl.h>
+#endif
+
+#if !defined(GLES2)
+
 #include "../../Camera.h"
 #include "../../../Maths/Matrix4.h"
 
@@ -133,3 +141,4 @@ void GLES1State::setBlendingFunction(const GLenum source, const GLenum destinati
 	glBlendFunc(source, destination);
 }
 
+#endif // !defined GLES2

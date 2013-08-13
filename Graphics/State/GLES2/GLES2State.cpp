@@ -14,7 +14,7 @@ using namespace GLESGAE;
 #if !defined(GLES1)
 
 const HashString aPositionHS("a_position");
-const HashString aColourHS("a_colour");
+const HashString aColourHS("a_color");
 const HashString aNormalHS("a_normal");
 const HashString aTexCoord0HS("a_texCoord0");
 const HashString aTexCoord1HS("a_texCoord1");
@@ -49,31 +49,14 @@ GLES2State::~GLES2State()
 void GLES2State::setCamera(Camera* const camera)
 {
 	if (mCamera != camera) {
-//		glMatrixMode(GL_PROJECTION);
-//		glLoadMatrixf(camera->getProjectionMatrix().getData());
-		
-//		glMatrixMode(GL_MODELVIEW);
-		Matrix4& viewMatrix(camera->getViewMatrix());
-		viewMatrix(0U, 2U) = -viewMatrix(0U, 2U);
-		viewMatrix(1U, 2U) = -viewMatrix(1U, 2U);
-		viewMatrix(2U, 2U) = -viewMatrix(2U, 2U);
-		viewMatrix(3U, 2U) = -viewMatrix(3U, 2U);
-//		glLoadMatrixf(viewMatrix.getData());
-		
 		mCamera = camera;
 	}
 }
 
 void GLES2State::setTextureMatrix(Matrix4* const matrix)
 {
-	if (mTextureMatrix != matrix) {
-//		glMatrixMode(GL_TEXTURE);
-//		glLoadMatrixf(matrix->getData());
-		
-//		glMatrixMode(GL_MODELVIEW);
-		
+	if (mTextureMatrix != matrix)
 		mTextureMatrix = matrix;
-	}
 }
 
 void GLES2State::setTexturingEnabled(const bool isEnabled)
@@ -131,9 +114,9 @@ void GLES2State::bindShader(Shader* const shader)
 		glUseProgram(shader->getProgramId());
 		resetAttributes();
 		
-		const std::vector<std::pair<HashString, GLint> >& attributes(shader->getAttributeArray());
-		for (std::vector<std::pair<HashString, GLint> >::const_iterator itr(attributes.begin()); itr < attributes.end(); ++itr)
-			glEnableVertexAttribArray(itr->second);
+//		const std::vector<std::pair<HashString, GLint> >& attributes(shader->getAttributeArray());
+//		for (std::vector<std::pair<HashString, GLint> >::const_iterator itr(attributes.begin()); itr < attributes.end(); ++itr)
+//			glEnableVertexAttribArray(itr->second);
 	}
 }
 
@@ -204,4 +187,3 @@ void GLES2State::updateTextures(Material* const material)
 }
 
 #endif // not ES 1
-

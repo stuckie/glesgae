@@ -1,5 +1,5 @@
 GLESGAE - GL ES Game Application Engine
 
-The primary purpose of GLESGAE is that of educational pursuit on the part of the author.
-Secondary goals include providing an optimized environment for JavaScript games to run in - utilizing Canvas and WebGL technologies - direct to GLES as appropriate, without a full DOM overhead.
-
+GLESGAE is a minimalistic framework engine, designed to be as multi-platform as possible.
+It's goal is more of an educational pursuit for the author, however it may be useful for others.
+It will probably be in a constant state of flux for quite a while, so you're recommended to fork it at a particular point if you're wanting to use it.

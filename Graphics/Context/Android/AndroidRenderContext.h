@@ -41,17 +41,20 @@ namespace GLESGAE
 			/// Bind us to a Window.
 			void bindToWindow(RenderWindow* const window);
 			
+			// Get Bound Window
+			RenderWindow* getWindow() const;
+			
 		private:
 			// No Copying
 			AndroidRenderContext(const AndroidRenderContext&);
 			AndroidRenderContext& operator=(const AndroidRenderContext&);
 			
 			AndroidRenderWindow* 	mWindow;
-			RenderState* 			mRenderState;
-			Renderer* 				mRenderer;
-			EGLDisplay  			mDisplay;
-			EGLContext  			mContext;
-			EGLSurface  			mSurface;
+			RenderState* 		mRenderState;
+			Renderer* 		mRenderer;
+			EGLDisplay  		mDisplay;
+			EGLContext  		mContext;
+			EGLSurface  		mSurface;
 	};
 }
 

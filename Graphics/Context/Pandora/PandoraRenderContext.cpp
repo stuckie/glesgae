@@ -39,12 +39,12 @@ void PandoraRenderContext::initialise()
 		Application::getInstance()->getLogger()->log("Failed to get egl display..\n", Logger::LOG_TYPE_ERROR);
 
 	// Initialise the EGL Display
-	if (0 == eglInitialize(mDisplay, NULL, NULL))
+	if (EGL_FALSE == eglInitialize(mDisplay, NULL, NULL))
 		Application::getInstance()->getLogger()->log("Failed to init egl..\n", Logger::LOG_TYPE_ERROR);
 
 	// Now we want to find an EGL Surface that will work for us...
 	EGLint eglAttribs[] = {
-		EGL_BUFFER_SIZE, 16	// 16bit Colour Buffer
+		EGL_BUFFER_SIZE, mWindow->getBPP()	// Colour Buffer
 #if defined(GLES2)
 	,	EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT	// We want an ES2 config
 #endif
@@ -148,3 +148,7 @@ void PandoraRenderContext::bindToWindow(RenderWindow* const window)
 	mWindow = reinterpret_cast<X11RenderWindow*>(window);
 }
 
+RenderWindow* PandoraRenderContext::getWindow() const
+{
+	return mWindow;
+}

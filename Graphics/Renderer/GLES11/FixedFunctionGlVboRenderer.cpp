@@ -6,6 +6,8 @@
 	#include <GLES/gl.h>
 #endif
 
+#if !defined(GLES2)
+
 #include "../../Camera.h"
 #include "../../IndexBuffer.h"
 #include "../../Material.h"
@@ -202,13 +204,13 @@ void FixedFunctionGlVboRenderer::drawMesh(Mesh* const mesh, Matrix4* const trans
 	disableTexturing(currentTextureUnit);	// Disable any excess texture units
 	switch (indexBuffer->getType()) {
 		case IndexBuffer::INDEX_FLOAT:
-			glDrawElements(GL_TRIANGLES, indexBuffer->getSize(), GL_FLOAT, 0);
+			glDrawElements(GL_TRIANGLES, indexBuffer->getCount(), GL_FLOAT, 0);
 			break;
 		case IndexBuffer::INDEX_UNSIGNED_BYTE:
-			glDrawElements(GL_TRIANGLES, indexBuffer->getSize(), GL_UNSIGNED_BYTE, 0);
+			glDrawElements(GL_TRIANGLES, indexBuffer->getCount(), GL_UNSIGNED_BYTE, 0);
 			break;
 		case IndexBuffer::INDEX_UNSIGNED_SHORT:
-			glDrawElements(GL_TRIANGLES, indexBuffer->getSize(), GL_UNSIGNED_SHORT, 0);
+			glDrawElements(GL_TRIANGLES, indexBuffer->getCount(), GL_UNSIGNED_SHORT, 0);
 			break;
 		default:
 			break;
@@ -248,3 +250,4 @@ void FixedFunctionGlVboRenderer::disableTexturing(const unsigned int currentText
 	}
 }
 
+#endif // !defined GLES2

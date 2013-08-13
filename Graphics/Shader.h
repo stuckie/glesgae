@@ -43,6 +43,9 @@ namespace GLESGAE
 
 			/// Gain access to the uniform array
 			const std::vector<std::pair<HashString, GLint> >& getUniformArray() const { return mUniforms; }
+			
+			/// Check if this shader is ok and ready to use
+			bool isOk() const { return mIsShaderOk; }
 
 		protected:
 			/// Actually load and compile the shader source
@@ -57,6 +60,7 @@ namespace GLESGAE
 			GLuint mVertexShader;
 			GLuint mFragmentShader;
 			GLuint mShaderProgram;
+			bool mIsShaderOk;
 	};
 }
 

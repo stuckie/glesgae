@@ -1,8 +1,6 @@
 #ifndef _RENDER_PLATFORM_H_
 #define _RENDER_PLATFORM_H_
 
-#include "../../Resources/Resource.h"
-
 namespace GLESGAE
 {
 	class RenderContext;

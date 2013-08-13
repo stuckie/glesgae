@@ -197,9 +197,6 @@ bool Texture::load(const TextureFilter filter, const bool retainData, const Text
 		}
 	}
 	
-	GLint oldId(GL_INVALID_VALUE);
-	glGetIntegerv(GL_ACTIVE_TEXTURE, &oldId);
-	glActiveTexture(mId);
 	switch (filter) {
 		case FILTER_NONE:
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -214,7 +211,10 @@ bool Texture::load(const TextureFilter filter, const bool retainData, const Text
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			break;
 	}
-	glActiveTexture(oldId);
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	
 	return true;
 }
 

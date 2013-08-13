@@ -4,9 +4,7 @@
 #if defined(GLX)
 	#include "../../Context/Linux/GLee.h"
 #elif defined(PANDORA) || defined(ANDROID)
-	#if defined(GLES1)
-		#include <GLES/gl.h>
-	#endif
+	#include <GLES/gl.h>
 #endif
 
 #include "../RenderState.h"

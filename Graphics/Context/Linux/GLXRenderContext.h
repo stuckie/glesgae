@@ -44,6 +44,9 @@ namespace GLESGAE
 			/// Bind us to a Window.
 			void bindToWindow(RenderWindow* const window);
 			
+			/// Get bound window.
+			RenderWindow* getWindow() const;
+			
 		private:
 			// No Copying
 			GLXRenderContext(const GLXRenderContext&);

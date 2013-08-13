@@ -12,6 +12,8 @@
 #include "../../../Platform/Application.h"
 #include "../../../Utils/Logger.h"
 
+#include <android_native_app_glue.h>
+
 using namespace GLESGAE;
 
 AndroidRenderContext::AndroidRenderContext()
@@ -37,30 +39,43 @@ AndroidRenderContext::~AndroidRenderContext()
 void AndroidRenderContext::initialise()
 {
 	// Get the EGL Display..
-	mDisplay = eglGetDisplay( (reinterpret_cast<EGLNativeDisplayType>(mWindow->getDisplay())) );
+	mDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 	if (EGL_NO_DISPLAY == mDisplay) 
 		Application::getInstance()->getLogger()->log("Failed to get egl display..\n", Logger::LOG_TYPE_ERROR);
 
 	// Initialise the EGL Display
-	if (0 == eglInitialize(mDisplay, NULL, NULL))
+	if (EGL_FALSE == eglInitialize(mDisplay, NULL, NULL))
 		Application::getInstance()->getLogger()->log("Failed to init egl..\n", Logger::LOG_TYPE_ERROR);
 
 	// Now we want to find an EGL Surface that will work for us...
 	EGLint eglAttribs[] = {
-		EGL_BUFFER_SIZE, 16	// 16bit Colour Buffer
+		EGL_SURFACE_TYPE, EGL_WINDOW_BIT
+	,	EGL_BUFFER_SIZE, mWindow->getBPP()	// Colour Buffer
 #if defined(GLES2)
 	,	EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT	// We want an ES2 config
 #endif
 	,	EGL_NONE
 	};
 
-	EGLConfig  eglConfig;
-	EGLint     numConfig;
-	if (0 == eglChooseConfig(mDisplay, eglAttribs, &eglConfig, 1, &numConfig))
+	EGLConfig	eglConfig;
+	EGLint		numConfig;
+	EGLint		eglFormat;
+	// This may cause some trouble on some Android devices, as we're only picking the first config that comes back....
+	if (EGL_FALSE == eglChooseConfig(mDisplay, eglAttribs, &eglConfig, 1, &numConfig))
 		Application::getInstance()->getLogger()->log("Failed to get context..\n", Logger::LOG_TYPE_ERROR);
 
+	// Grab the visual ID so we can pass it back to Android
+	eglGetConfigAttrib(mDisplay, eglConfig, EGL_NATIVE_VISUAL_ID, &eglFormat);
+	
+	// Tell Android to create us a Window
+	ANativeWindow_setBuffersGeometry(mWindow->getWindow(), mWindow->getWidth(), mWindow->getHeight(), eglFormat);
+	
 	// Create the actual surface based upon the list of configs we've just gotten...
-	mSurface = eglCreateWindowSurface(mDisplay, eglConfig, reinterpret_cast<EGLNativeWindowType>(mWindow->getWindow()), NULL);
+	EGLint windowAttribs[] = {
+		EGL_RENDER_BUFFER,	EGL_BACK_BUFFER
+	,	EGL_NONE
+	};
+	mSurface = eglCreateWindowSurface(mDisplay, eglConfig, mWindow->getWindow(), windowAttribs);
 	if (EGL_NO_SURFACE == mSurface)
 		Application::getInstance()->getLogger()->log("Failed to get surface..\n", Logger::LOG_TYPE_ERROR);
 
@@ -75,7 +90,7 @@ void AndroidRenderContext::initialise()
 	};
 
 	// Create our Context
-	mContext = eglCreateContext (mDisplay, eglConfig, EGL_NO_CONTEXT, contextAttribs);
+	mContext = eglCreateContext(mDisplay, eglConfig, EGL_NO_CONTEXT, contextAttribs);
 	if (EGL_NO_CONTEXT == mContext)
 		Application::getInstance()->getLogger()->log("Failed to get context...\n", Logger::LOG_TYPE_ERROR);
 
@@ -84,13 +99,15 @@ void AndroidRenderContext::initialise()
 
 	// Set up our viewport
 	glViewport(0, 0, mWindow->getWidth(), mWindow->getHeight());
+	glScissor(0, 0, mWindow->getWidth(), mWindow->getHeight());
 
 	// Set a non-black clear colour
-	glClearColor(0.4F, 0.4F, 0.4F, 1.0F);
+	glClearColor(0.4F, 1.4F, 0.4F, 1.0F);
 }
 
 void AndroidRenderContext::shutdown()
 {
+	eglMakeCurrent(mDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 	eglDestroyContext(mDisplay, mContext);
 	eglDestroySurface(mDisplay, mSurface);
 	eglTerminate(mDisplay);
@@ -149,3 +166,7 @@ void AndroidRenderContext::bindToWindow(RenderWindow* const window)
 	mWindow = reinterpret_cast<AndroidRenderWindow*>(window);
 }
 
+RenderWindow* AndroidRenderContext::getWindow() const
+{
+	return mWindow;
+}

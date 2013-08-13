@@ -10,7 +10,7 @@ namespace GLESGAE
 	{
 		public:
 			Matrix4();
-
+			
 			/// Retrieve a pointer to the matrix
 			float* getData() { return mMatrix; }
 			const float* getData() const { return mMatrix; }
@@ -26,13 +26,13 @@ namespace GLESGAE
 			
 			/// Grab a reference value via Matrix[index]
 			float& operator[](const unsigned int index);
-
+			
 			/// Set a new matrix. This copies the matrix being passed in.
 			void setMatrix(const float matrix[16U]);
-
+			
 			/// Set to Identity
 			void setToIdentity();
-
+			
 			/// Set to Zero
 			void setToZero();
 			
@@ -64,11 +64,11 @@ namespace GLESGAE
 			bool operator==(const Matrix4& rhs) const;
 			bool operator!=(const Matrix4& rhs) const;
 			
-			const Matrix4 operator+(const Matrix4& rhs) const;
-			const Matrix4 operator-(const Matrix4& rhs) const;
-			const Matrix4 operator*(const Matrix4& rhs) const;
-			const Matrix4 operator*(const float scalar) const;
-			const Matrix4 operator/(const float scalar) const;
+			Matrix4 operator+(const Matrix4& rhs) const;
+			Matrix4 operator-(const Matrix4& rhs) const;
+			Matrix4 operator*(const Matrix4& rhs) const;
+			Matrix4 operator*(const float scalar) const;
+			Matrix4 operator/(const float scalar) const;
 			
 			const Matrix4& operator+=(const Matrix4& rhs);
 			const Matrix4& operator-=(const Matrix4& rhs);
@@ -76,7 +76,7 @@ namespace GLESGAE
 			
 			const Matrix4& operator*=(const float scalar);
 			const Matrix4& operator/=(const float scalar);
-
+		
 		private:
 			float mMatrix[16U];
 	};

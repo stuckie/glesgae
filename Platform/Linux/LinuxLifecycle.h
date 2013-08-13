@@ -11,6 +11,9 @@ namespace GLESGAE
 			/// onCreate - Called by the platform as soon as the application is started - IE: To setup Platform specifics.
 			virtual void onCreate() = 0;
 			
+			/// onWindowCreate - Called by the platform as soon as the application has a window to be used.
+			virtual void onWindowCreate() = 0;
+			
 			/// onStart - Called by the platform once it's initialized - IE: Platform specifics have been setup.
 			virtual void onStart() = 0;
 			

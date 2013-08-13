@@ -2,6 +2,7 @@
 #define _FILE_H_
 
 #include <cstdio>
+#include <android/asset_manager.h>
 
 namespace GLESGAE
 {
@@ -43,6 +44,7 @@ class File : public BaseFile
 		File& operator=(const File& rhs);
 		
 		FILE* mFile;
+		AAsset* mAAsset;
 };
 
 }

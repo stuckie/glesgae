@@ -46,13 +46,7 @@ bool GraphicsSystem::initialise()
 	}
 	
 	mRenderPlatform->initialise();
-/*
-	mCurrentRenderContext = mRenderPlatform->createContext();
-	mCurrentRenderWindow = mRenderPlatform->createWindow(windowName.c_str(), width, height, bpp, fullscreen);
-	mCurrentRenderWindow->open();
-	mCurrentRenderContext->bindToWindow(mCurrentRenderWindow);
-	mCurrentRenderContext->initialise();
-*/
+
 	return (0 != mRenderPlatform);
 }
 

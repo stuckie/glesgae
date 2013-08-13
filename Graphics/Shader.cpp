@@ -1,6 +1,9 @@
 #include "Shader.h"
 #include "../File/File.h"
 
+#include "../Platform/Application.h"
+#include "../Utils/Logger.h"
+
 using namespace GLESGAE;
 
 Shader::Shader()
@@ -9,6 +12,7 @@ Shader::Shader()
 , mVertexShader(GL_INVALID_VALUE)
 , mFragmentShader(GL_INVALID_VALUE)
 , mShaderProgram(GL_INVALID_VALUE)
+, mIsShaderOk(false)
 {
 
 }
@@ -61,7 +65,7 @@ void Shader::createFromSource(const std::string& vertex, const std::string& frag
 		if (infoLen > 1) {
 			char* infoLog(new char[infoLen]);
 			glGetShaderInfoLog(mShaderProgram, infoLen, NULL, infoLog);
-			// TODO: something bad happened.. print the infolog and die.
+			Application::getInstance()->getLogger()->log(toString(infoLog) + "\n", Logger::LOG_TYPE_ERROR);
 			delete [] infoLog;
 		}
 
@@ -117,6 +121,8 @@ void Shader::createFromSource(const std::string& vertex, const std::string& frag
 
 		delete [] attributeName;
 	}
+	
+	mIsShaderOk = true;
 }
 
 GLuint Shader::loadShader(const std::string& shader, const GLenum type)
@@ -135,7 +141,7 @@ GLuint Shader::loadShader(const std::string& shader, const GLenum type)
 		if (infoLen > 1) {
 			char* infoLog(new char[infoLen]);
 			glGetShaderInfoLog(newShader, infoLen, NULL, infoLog);
-			//TODO: Something bad happened.. probably want to print this!
+			Application::getInstance()->getLogger()->log(toString(infoLog) + "\n", Logger::LOG_TYPE_ERROR);
 			delete [] infoLog;
 		}
 
@@ -188,6 +194,7 @@ void Shader::resetShader()
 	mVertexShader = GL_INVALID_VALUE;
 	mFragmentShader = GL_INVALID_VALUE;
 	mShaderProgram = GL_INVALID_VALUE;
+	mIsShaderOk = false;
 }
 
 #endif

@@ -34,6 +34,7 @@ class Logger
 			LOG_TYPE_INFO
 		,	LOG_TYPE_DEBUG
 		,	LOG_TYPE_ERROR
+		,	LOG_TYPE_VERBATIM
 		,	LOG_TYPE_DEFAULT
 		};
 

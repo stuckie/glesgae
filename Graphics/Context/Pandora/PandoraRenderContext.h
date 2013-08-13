@@ -41,6 +41,9 @@ namespace GLESGAE
 			/// Bind us to a Window.
 			void bindToWindow(RenderWindow* const window);
 			
+			/// Get Bound Window
+			RenderWindow* getWindow() const;
+			
 		private:
 			// No Copying
 			PandoraRenderContext(const PandoraRenderContext&);

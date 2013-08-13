@@ -38,6 +38,9 @@ namespace GLESGAE
 			
 			/// Bind to this Window.
 			virtual void bindToWindow(RenderWindow* const window) = 0;
+			
+			/// Get which Window this is bound to.
+			virtual RenderWindow* getWindow() const = 0;
 	};
 
 }

@@ -50,11 +50,11 @@ namespace GLESGAE
 			bool operator==(const Matrix3& rhs) const;
 			bool operator!=(const Matrix3& rhs) const;
 			
-			const Matrix3 operator+(const Matrix3& rhs) const;
-			const Matrix3 operator-(const Matrix3& rhs) const;
-			const Matrix3 operator*(const Matrix3& rhs) const;
-			const Matrix3 operator*(const float scalar) const;
-			const Matrix3 operator/(const float scalar) const;
+			Matrix3 operator+(const Matrix3& rhs) const;
+			Matrix3 operator-(const Matrix3& rhs) const;
+			Matrix3 operator*(const Matrix3& rhs) const;
+			Matrix3 operator*(const float scalar) const;
+			Matrix3 operator/(const float scalar) const;
 			
 			const Matrix3& operator+=(const Matrix3& rhs);
 			const Matrix3& operator-=(const Matrix3& rhs);

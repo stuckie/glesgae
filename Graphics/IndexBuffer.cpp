@@ -15,22 +15,42 @@
 
 using namespace GLESGAE;
 
-IndexBuffer::IndexBuffer(unsigned char* const data, const unsigned int size, const IndexType type, const FormatType format)
-: mSize(size)
-, mData(new unsigned char[size])
+IndexBuffer::IndexBuffer(unsigned char* const data, const unsigned int count, const IndexType type, const FormatType format, const DrawType drawType)
+: mCount(count)
+, mSize(count)
+, mData(0)
 , mVboId(0)
 , mFormat(format)
 , mType(type)
+, mDrawType(drawType)
+, mUpdateData(0)
 {
-	std::memcpy(mData, data, size);
+	switch (type) {
+		case INDEX_FLOAT:
+			mSize = count * sizeof(float);
+			break;
+		case INDEX_UNSIGNED_BYTE:
+			mSize = count * sizeof(unsigned char);
+			break;
+		case INDEX_UNSIGNED_SHORT:
+			mSize = count * sizeof(unsigned short);
+			break;
+		default:
+			break;
+	};
+	mData = new unsigned char[mSize];
+	std::memcpy(mData, data, mSize);
 }
 
 IndexBuffer::IndexBuffer(const IndexBuffer& indexBuffer)
-: mSize(indexBuffer.mSize)
+: mCount(indexBuffer.mCount)
+, mSize(indexBuffer.mSize)
 , mData(indexBuffer.mData)
 , mVboId(indexBuffer.mVboId)
 , mFormat(indexBuffer.mFormat)
 , mType(indexBuffer.mType)
+, mDrawType(indexBuffer.mDrawType)
+, mUpdateData(0)
 {
 }
 
@@ -42,6 +62,8 @@ IndexBuffer& IndexBuffer::operator=(const IndexBuffer& indexBuffer)
 		mVboId = indexBuffer.mVboId;
 		mFormat = indexBuffer.mFormat;
 		mType = indexBuffer.mType;
+		mDrawType = indexBuffer.mDrawType;
+		mUpdateData = indexBuffer.mUpdateData;
 	}
 	
 	return *this;
@@ -56,6 +78,10 @@ IndexBuffer::~IndexBuffer()
 	if (0 != mVboId) {
 		glDeleteBuffers(1, mVboId);
 		mVboId = 0;
+	}
+	if (0 != mUpdateData) {
+		delete mUpdateData->data;
+		delete mUpdateData;
 	}
 }
 

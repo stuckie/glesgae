@@ -2,6 +2,7 @@
 #define _ANDROID_RENDER_WINDOW_H_
 
 #include "../RenderWindow.h"
+#include <android_native_app_glue.h>
 
 namespace GLESGAE
 {
@@ -20,19 +21,13 @@ namespace GLESGAE
 			/// Close this window
 			void close();
 
-			/// Returns the Display for platform specific bits
-			void* getDisplay() const { return mDisplay; }
-
 			/// Returns the Window for platform specific bits
-			void* getWindow() const { return mWindow; }
+			ANativeWindow* getWindow() const;
 
 		private:
 			// No Copying
 			AndroidRenderWindow(const AndroidRenderWindow&);
 			AndroidRenderWindow& operator=(const AndroidRenderWindow&);
-			
-			void* mDisplay;
-			void* mWindow;
 	};
 
 }

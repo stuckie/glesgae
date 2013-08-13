@@ -4,7 +4,7 @@
 #include "../../Target/Screen/ScreenRenderTarget.h"
 #include "../../Target/Buffer/BufferRenderTarget.h"
 #include "../../Target/Texture/TextureRenderTarget.h"
-#include "../../State/GLES1/GLES1State.h"
+#include "../../State/GLES2/GLES2State.h"
 #include "../../../Utils/Logger.h"
 
 #include <cstdlib>
@@ -14,7 +14,7 @@ using namespace GLESGAE;
 GLXRenderContext::GLXRenderContext()
 : RenderContext()
 , mWindow(0)
-, mRenderState(new GLES1State)
+, mRenderState(new GLES2State)
 , mRenderer(0)
 , mContext(0)
 {
@@ -33,10 +33,10 @@ void GLXRenderContext::initialise()
 		// Need to handle this...
 	}
 	
-	// Grab us a double buffered display, with RGBA colour specs and whatever the Window wants for BPP.
+	// Grab us a double buffered display, with RGBA colour specs and 16bit depth buffer
 	int visualArgs[]  = {
 		GLX_RGBA
-	,	GLX_DEPTH_SIZE, mWindow->getBPP()
+	,	GLX_DEPTH_SIZE, 16
 	,	GLX_DOUBLEBUFFER
 	,	None
 	};
@@ -135,3 +135,7 @@ void GLXRenderContext::bindToWindow(RenderWindow* const window)
 	mWindow = reinterpret_cast<X11RenderWindow*>(window);
 }
 
+RenderWindow* GLXRenderContext::getWindow() const
+{
+	return mWindow;
+}

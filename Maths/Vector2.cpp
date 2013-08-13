@@ -28,27 +28,27 @@ bool Vector2::operator!=(const Vector2& rhs) const
 	return !(*this == rhs);
 }
 
-const Vector2 Vector2::operator-() const
+Vector2 Vector2::operator-() const
 {
 	return Vector2(((*this)(0U) * -1.0F), ((*this)(1U) * -1.0F));
 }
 
-const Vector2 Vector2::operator-(const Vector2& rhs) const
+Vector2 Vector2::operator-(const Vector2& rhs) const
 {
 	return Vector2(((*this)(0U) - rhs(0U)), ((*this)(1U) - rhs(1U)));
 }
 
-const Vector2 Vector2::operator+(const Vector2& rhs) const
+Vector2 Vector2::operator+(const Vector2& rhs) const
 {
 	return Vector2(((*this)(0U) + rhs(0U)), ((*this)(1U) + rhs(1U)));
 }
 
-const Vector2 Vector2::operator*(const Vector2& rhs) const
+Vector2 Vector2::operator*(const Vector2& rhs) const
 {
 	return Vector2(((*this)(0U) * rhs(0U)), ((*this)(1U) * rhs(1U)));
 }
 
-const Vector2 Vector2::operator/(const Vector2& rhs) const
+Vector2 Vector2::operator/(const Vector2& rhs) const
 {
 	return Vector2(((*this)(0U) / rhs(0U)), ((*this)(1U) / rhs(1U)));
 }
@@ -85,22 +85,22 @@ const Vector2& Vector2::operator/=(const Vector2& rhs)
 	return *this;
 }
 
-const Vector2 Vector2::operator-(const float scaler) const
+Vector2 Vector2::operator-(const float scaler) const
 {
 	return Vector2(((*this)(0U) - scaler), ((*this)(1U) - scaler));
 }
 
-const Vector2 Vector2::operator+(const float scaler) const
+Vector2 Vector2::operator+(const float scaler) const
 {
 	return Vector2(((*this)(0U) + scaler), ((*this)(1U) + scaler));
 }
 
-const Vector2 Vector2::operator*(const float scaler) const
+Vector2 Vector2::operator*(const float scaler) const
 {
 	return Vector2(((*this)(0U) * scaler), ((*this)(1U) * scaler));
 }
 
-const Vector2 Vector2::operator/(const float scaler) const
+Vector2 Vector2::operator/(const float scaler) const
 {
 	return Vector2(((*this)(0U) / scaler), ((*this)(1U) / scaler));
 }
@@ -201,12 +201,6 @@ float Vector2::dot(const Vector2& rhs) const
 		sum += ((*this)(index) * rhs(index));
 
 	return sum;
-}
-
-const Vector2 Vector2::cross(const Vector2& rhs) const
-{
-	return Vector2(((*this)(1U) * rhs(2U) - (*this)(2U) * rhs(1U)),		// x
-					((*this)(2U) * rhs(0U) - (*this)(0U) * rhs(2U)));	// y
 }
 
 void Vector2::normalise()

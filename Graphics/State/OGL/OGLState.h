@@ -11,6 +11,7 @@
 
 #include "../RenderState.h"
 #include "../../ShaderUniformUpdater.h"
+#include "../../../Utils/HashString.h"
 
 #include <string>
 #include <map>

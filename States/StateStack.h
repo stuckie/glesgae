@@ -18,7 +18,7 @@ namespace GLESGAE
 			template <typename T_State> void push();
 			
 			/// Replaces the current State with this State.
-			template <typename T_State>	void replace();
+			template <typename T_State> void replace();
 			
 			/// Pops the current State off the stack, and resumes the one below.
 			void pop();

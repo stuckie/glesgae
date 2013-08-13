@@ -1,9 +1,13 @@
 #ifndef _APPLICATION_H_
 #define _APPLICATION_H_
 
+#include "../Utils/HashString.h"
+#include <vector>
+
 namespace GLESGAE
 {
-	class ScriptSystem;
+	class Platform;
+	class PluginSystem;
 	class Logger;
 	class Clock;
 	class StateStack;
@@ -22,12 +26,18 @@ namespace GLESGAE
 			/// Set the user lifecycle
 			void setLifecycle(Lifecycle* const lifecycle);
 			
-			/// Set the Scripting System
-			void setScriptSystem(ScriptSystem* const scriptSystem);
+			/// Add a Plugin System
+			void addPluginSystem(PluginSystem* const system);
+			
+			/// Set the Platform class
+			void setPlatform(Platform* const platform);
 			
 			// Lifecycle Bits
 			/// onCreate - Called by the platform as soon as the application is started - IE: To setup Platform specifics.
 			void onCreate();
+			
+			/// onWindowCreate - Called by the platform as soon as a Window is created - so no Render contexts can be made until this point.
+			void onWindowCreate();
 			
 			/// onStart - Called by the platform once it's initialized - IE: Platform specifics have been setup.
 			void onStart();
@@ -48,6 +58,9 @@ namespace GLESGAE
 			void onDestroy();
 			
 			// Retrieve Systems
+			/// Retrieve any specialised Platform interface
+			Platform* getPlatform() { return mPlatform; }
+			
 			/// Retrieve the Input System
 			InputSystem* getInputSystem() { return mInputSystem; }
 			
@@ -66,8 +79,8 @@ namespace GLESGAE
 			/// Retrieve the Logger
 			Logger* getLogger() { return mLogger; }
 			
-			/// Retrieve the Script System
-			ScriptSystem* getScriptSystem() { return mScriptSystem; }
+			/// Retrieve a Plugin System
+			PluginSystem* getPluginSystem(const HashString& system);
 			
 		private:
 			/// Private constructor as this can only be created and managed through it's singleton.
@@ -86,9 +99,9 @@ namespace GLESGAE
 			StateStack* mStateStack;
 			Clock* mClock;
 			Logger* mLogger;
-			ScriptSystem* mScriptSystem;
+			std::vector<PluginSystem*> mPlugins;
+			Platform* mPlatform;
 	};
 }
 
 #endif
-

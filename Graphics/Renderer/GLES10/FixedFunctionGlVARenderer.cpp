@@ -3,10 +3,10 @@
 #if defined(LINUX)
 	#include "../../Context/Linux/GLee.h"
 #elif defined(PANDORA) || defined(ANDROID)
-	#if defined(GLES1)
-		#include <GLES/gl.h>
-	#endif
+	#include <GLES/gl.h>
 #endif
+
+#if !defined(GLES2)
 
 #include "../../Camera.h"
 #include "../../IndexBuffer.h"
@@ -148,13 +148,13 @@ void FixedFunctionGlVARenderer::drawMesh(Mesh* const mesh, Matrix4* const transf
 
 	switch (indexBuffer->getType()) {
 		case IndexBuffer::INDEX_FLOAT:
-			glDrawElements(GL_TRIANGLES, indexBuffer->getSize(), GL_FLOAT, indexBuffer->getData());
+			glDrawElements(GL_TRIANGLES, indexBuffer->getCount(), GL_FLOAT, indexBuffer->getData());
 			break;
 		case IndexBuffer::INDEX_UNSIGNED_BYTE:
-			glDrawElements(GL_TRIANGLES, indexBuffer->getSize(), GL_UNSIGNED_BYTE, indexBuffer->getData());
+			glDrawElements(GL_TRIANGLES, indexBuffer->getCount(), GL_UNSIGNED_BYTE, indexBuffer->getData());
 			break;
 		case IndexBuffer::INDEX_UNSIGNED_SHORT:
-			glDrawElements(GL_TRIANGLES, indexBuffer->getSize(), GL_UNSIGNED_SHORT, indexBuffer->getData());
+			glDrawElements(GL_TRIANGLES, indexBuffer->getCount(), GL_UNSIGNED_SHORT, indexBuffer->getData());
 			break;
 		default:
 			break;
@@ -194,3 +194,5 @@ void FixedFunctionGlVARenderer::disableTexturing(const unsigned int currentTextu
 		--delta;
 	}
 }
+
+#endif // !defined GLES2

@@ -1,14 +1,9 @@
 #ifndef _GRAPHICS_SYSTEM_H_
 #define _GRAPHICS_SYSTEM_H_
 
-#include <string>
-#include "../Resources/Resource.h"
-#include "Context/RenderContext.h"
-#include "Platform/RenderPlatform.h"
-#include "Window/RenderWindow.h"
-
 namespace GLESGAE
 {
+	class RenderPlatform;
 	class GraphicsSystem
 	{
 		public:
@@ -26,10 +21,10 @@ namespace GLESGAE
 			bool initialise();
 			
 			/// Grab The Render Platform.
-			template <typename T_RenderPlatform> T_RenderPlatform& getRenderPlatform();
+			template <typename T_RenderPlatform> T_RenderPlatform* getRenderPlatform();
 			
 			/// Grab standard Render Platform.
-			RenderPlatform& getRenderPlatform() { return *mRenderPlatform; }
+			RenderPlatform* getRenderPlatform() { return mRenderPlatform; }
 			
 			/// Shutdown the Graphics System.
 			void shutdown();
@@ -43,9 +38,9 @@ namespace GLESGAE
 			RenderPlatform* mRenderPlatform;
 	};
 	
-	template <typename T_RenderPlatform> T_RenderPlatform& GraphicsSystem::getRenderPlatform()
+	template <typename T_RenderPlatform> T_RenderPlatform* GraphicsSystem::getRenderPlatform()
 	{
-		return (*reinterpret_cast<T_RenderPlatform*>(mRenderPlatform));
+		return reinterpret_cast<T_RenderPlatform*>(mRenderPlatform);
 	}
 }
 

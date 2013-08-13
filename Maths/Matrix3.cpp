@@ -109,35 +109,35 @@ bool Matrix3::operator!=(const Matrix3& rhs) const
 	return !(*this == rhs);
 }
 
-const Matrix3 Matrix3::operator+(const Matrix3& rhs) const
+Matrix3 Matrix3::operator+(const Matrix3& rhs) const
 {
 	Matrix3 result(*this);
 	result += rhs;
 	return result;
 }
 
-const Matrix3 Matrix3::operator-(const Matrix3& rhs) const
+Matrix3 Matrix3::operator-(const Matrix3& rhs) const
 {
 	Matrix3 result(*this);
 	result -= rhs;
 	return result;
 }
 
-const Matrix3 Matrix3::operator*(const Matrix3& rhs) const
+Matrix3 Matrix3::operator*(const Matrix3& rhs) const
 {
 	Matrix3 result(*this);
 	result *= rhs;
 	return result;
 }
 
-const Matrix3 Matrix3::operator*(const float scalar) const
+Matrix3 Matrix3::operator*(const float scalar) const
 {
 	Matrix3 result(*this);
 	result *= scalar;
 	return result;
 }
 
-const Matrix3 Matrix3::operator/(const float scalar) const
+Matrix3 Matrix3::operator/(const float scalar) const
 {
 	Matrix3 result(*this);
 	result /= scalar;

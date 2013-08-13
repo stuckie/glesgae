@@ -67,75 +67,57 @@ void Camera::update(const Vector3& target)
 	};
 }
 
-Matrix4 Camera::createViewMatrix(const Vector3& eye, const Vector3& centre, const Vector3& up)
+Matrix4 Camera::createViewMatrix(const Vector3& eye, const Vector3& target, const Vector3& up)
 {
-	Vector3 forwardVector(centre - eye);
-	forwardVector.normalise();
-
-	Vector3 rightVector(forwardVector.cross(up));
-	rightVector.normalise();
-
-	// We recompute the Up vector to make sure that everything is exactly perpendicular to one another.
- 	// Otherwise, there can be rounding errors and things go a bit mad!
-	// We can also do this to assert and check that our up vector actually matches up properly.
-	Vector3 upVector(rightVector.cross(forwardVector));
-
-	Matrix4 viewMatrix;
-	viewMatrix(0, 0) = -rightVector.x();
-	viewMatrix(0, 1) = upVector.x();
-	viewMatrix(0, 2) = forwardVector.x();
-	viewMatrix(0, 3) = 0.0F;
-	
-	viewMatrix(1, 0) = -rightVector.y();
-	viewMatrix(1, 1) = upVector.y();
-	viewMatrix(1, 2) = forwardVector.y();
-	viewMatrix(1, 3) = 0.0F;
-	
-	viewMatrix(2, 0) = -rightVector.z();
-	viewMatrix(2, 1) = upVector.z();
-	viewMatrix(2, 2) = forwardVector.z();
-	viewMatrix(2, 3) = 0.0F;
-	
-	viewMatrix(3, 0) = 0.0F;
-	viewMatrix(3, 1) = 0.0F;
-	viewMatrix(3, 2) = 0.0F;
-	viewMatrix(3, 3) = 1.0F;
-
-	// We then need to translate our eye back to the origin, and use this as effectively the View's position.
-	// An eye does have a position in space, after all! As does a Window.
-	viewMatrix(3, 0) = (viewMatrix(0, 0) * -eye.x() + viewMatrix(1, 0) * -eye.y() + viewMatrix(2, 0) * -eye.z());
-	viewMatrix(3, 1) = (viewMatrix(0, 1) * -eye.x() + viewMatrix(1, 1) * -eye.y() + viewMatrix(2, 1) * -eye.z());
-	viewMatrix(3, 2) = (viewMatrix(0, 2) * -eye.x() + viewMatrix(1, 2) * -eye.y() + viewMatrix(2, 2) * -eye.z());
-
-	return viewMatrix;
+	Vector3 zaxis(target - eye);    // The "look-at" vector.
+	zaxis.normalise();
+	Vector3 xaxis(zaxis.cross(up));// The "right" vector.
+	xaxis.normalise();
+	Vector3 yaxis(xaxis.cross(zaxis));     // The "up" vector.
+ 
+	// Create a 4x4 orientation matrix from the right, up, and at vectors
+	Matrix4 orientation;
+	orientation[0] = xaxis.x();	orientation[1] = yaxis.x();	orientation[2] = zaxis.x();	orientation[3] = 0;
+	orientation[4] = xaxis.y();	orientation[5] = yaxis.y();	orientation[6] = zaxis.y();	orientation[7] = 0;
+	orientation[8] = xaxis.z();	orientation[9] = yaxis.z();	orientation[10] = zaxis.z();	orientation[11] = 0;
+	orientation[12] = 0;		orientation[13] = 0;		orientation[14] = 0;		orientation[15] = 1;
+     
+	// Create a 4x4 translation matrix by negating the eye position.
+	Matrix4 translation;
+	translation[0] = 1;		translation[1] = 0;		translation[2] = 0;		translation[3] = 0;
+	translation[4] = 0;		translation[5] = 1;		translation[6] = 0;		translation[7] = 0;
+	translation[8] = 0;		translation[9] = 0;		translation[10] = 1;		translation[11] = 0;
+	translation[12] = -eye.x();	translation[13] = -eye.y();	translation[14] = -eye.z();	translation[15] = 1;
+ 
+	// Combine the orientation and translation to compute the view matrix
+	return ( translation * orientation );
 }
 
 Matrix4 Camera::create3dProjectionMatrix(const float nearClip, const float farClip, const float fov, const float aspectRatio)
 {
- 	const float radians = fov / 2.0F * 3.14F / 180.0F;
-	const float zDelta = farClip - nearClip;
-	const float sine = sin(radians);
-	const float cotangent = cos(radians) / sine;
+	const float radians = fov / ((2.0F * 3.14F) / 180.0F);
+	const float size = nearClip * tanf(radians); 
+	float left = -size, right = size, bottom = -size / aspectRatio, top = size / aspectRatio;
 
 	Matrix4 projectionMatrix;
-	projectionMatrix(0, 0) = cotangent / aspectRatio;
+	projectionMatrix(0, 0) = 2 * nearClip / (right - left);
 	projectionMatrix(0, 1) = 0.0F;
 	projectionMatrix(0, 2) = 0.0F;
 	projectionMatrix(0, 3) = 0.0F;
 
 	projectionMatrix(1, 0) = 0.0F;
-	projectionMatrix(1, 1) = cotangent;
+	projectionMatrix(1, 1) = 2 * nearClip / (top - bottom);
 	projectionMatrix(1, 2) = 0.0F;
 	projectionMatrix(1, 3) = 0.0F;
  
-	projectionMatrix(2, 0) = 0.0F;
-	projectionMatrix(2, 1) = 0.0F;
-	projectionMatrix(2, 2) = -(farClip + nearClip) / zDelta;
+	projectionMatrix(2, 0) = (right + left) / (right - left);
+	projectionMatrix(2, 1) = (top + bottom) / (top - bottom);
+	projectionMatrix(2, 2) = (farClip + nearClip) / (farClip - nearClip);
 	projectionMatrix(2, 3) = -1.0F;
 
 	projectionMatrix(3, 0) = 0.0F;
 	projectionMatrix(3, 1) = 0.0F;
-	projectionMatrix(3, 2) = -2.0F * nearClip * farClip / zDelta;
+	projectionMatrix(3, 2) = (2 * farClip * nearClip) / (farClip - nearClip);
 	projectionMatrix(3, 3) = 0.0F;
 
 	return projectionMatrix;
@@ -143,7 +125,7 @@ Matrix4 Camera::create3dProjectionMatrix(const float nearClip, const float farCl
 
 Matrix4 Camera::create2dProjectionMatrix(const float left, const float bottom, const float right, const float top, const float nearClip, const float farClip)
 {
-	const float xScale = 2.0F / (right - left);
+	const float xScale = -2.0F / (right - left);
 	const float yScale = 2.0F / (top - bottom);
 	const float zScale = -2.0F / (farClip - nearClip);
 
@@ -174,4 +156,3 @@ Matrix4 Camera::create2dProjectionMatrix(const float left, const float bottom, c
 
 	return projectionMatrix;
 }
-

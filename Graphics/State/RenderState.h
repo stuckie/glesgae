@@ -1,8 +1,6 @@
 #ifndef _RENDER_STATE_H_
 #define _RENDER_STATE_H_
 
-#include "../../Resources/Resource.h"
-
 namespace GLESGAE
 {
 	class Camera;

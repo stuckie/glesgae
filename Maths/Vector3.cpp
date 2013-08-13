@@ -30,27 +30,27 @@ bool Vector3::operator!=(const Vector3& rhs) const
 	return !(*this == rhs);
 }
 
-const Vector3 Vector3::operator-() const
+Vector3 Vector3::operator-() const
 {
 	return Vector3(((*this)(0U) * -1.0F), ((*this)(1U) * -1.0F), ((*this)(2U) * -1.0F));
 }
 
-const Vector3 Vector3::operator-(const Vector3& rhs) const
+Vector3 Vector3::operator-(const Vector3& rhs) const
 {
 	return Vector3(((*this)(0U) - rhs(0U)), ((*this)(1U) - rhs(1U)), ((*this)(2U) - rhs(2U)));
 }
 
-const Vector3 Vector3::operator+(const Vector3& rhs) const
+Vector3 Vector3::operator+(const Vector3& rhs) const
 {
 	return Vector3(((*this)(0U) + rhs(0U)), ((*this)(1U) + rhs(1U)), ((*this)(2U) + rhs(2U)));
 }
 
-const Vector3 Vector3::operator*(const Vector3& rhs) const
+Vector3 Vector3::operator*(const Vector3& rhs) const
 {
 	return Vector3(((*this)(0U) * rhs(0U)), ((*this)(1U) * rhs(1U)), ((*this)(2U) * rhs(2U)));
 }
 
-const Vector3 Vector3::operator/(const Vector3& rhs) const
+Vector3 Vector3::operator/(const Vector3& rhs) const
 {
 	return Vector3(((*this)(0U) / rhs(0U)), ((*this)(1U) / rhs(1U)), ((*this)(2U) / rhs(2U)));
 }
@@ -91,22 +91,22 @@ const Vector3& Vector3::operator/=(const Vector3& rhs)
 	return *this;
 }
 
-const Vector3 Vector3::operator-(const float scaler) const
+Vector3 Vector3::operator-(const float scaler) const
 {
 	return Vector3(((*this)(0U) - scaler), ((*this)(1U) - scaler), ((*this)(2U) - scaler));
 }
 
-const Vector3 Vector3::operator+(const float scaler) const
+Vector3 Vector3::operator+(const float scaler) const
 {
 	return Vector3(((*this)(0U) + scaler), ((*this)(1U) + scaler), ((*this)(2U) + scaler));
 }
 
-const Vector3 Vector3::operator*(const float scaler) const
+Vector3 Vector3::operator*(const float scaler) const
 {
 	return Vector3(((*this)(0U) * scaler), ((*this)(1U) * scaler), ((*this)(2U) * scaler));
 }
 
-const Vector3 Vector3::operator/(const float scaler) const
+Vector3 Vector3::operator/(const float scaler) const
 {
 	return Vector3(((*this)(0U) / scaler), ((*this)(1U) / scaler), ((*this)(2U) / scaler));
 }
@@ -220,11 +220,11 @@ float Vector3::dot(const Vector3& rhs) const
 	return sum;
 }
 
-const Vector3 Vector3::cross(const Vector3& rhs) const
+Vector3 Vector3::cross(const Vector3& rhs) const
 {
-	return Vector3(((*this)(1U) * rhs(2U) - (*this)(2U) * rhs(1U)),		// x
-					((*this)(2U) * rhs(0U) - (*this)(0U) * rhs(2U)),		// y
-					((*this)(0U) * rhs(1U) - (*this)(1U) * rhs(0U)) );	// z
+	return Vector3(((*this)(1U) * rhs(2U) - (*this)(2U) * rhs(1U))		// x
+				,	((*this)(2U) * rhs(0U) - (*this)(0U) * rhs(2U))		// y
+				,	((*this)(0U) * rhs(1U) - (*this)(1U) * rhs(0U)) );	// z
 }
 
 void Vector3::normalise()

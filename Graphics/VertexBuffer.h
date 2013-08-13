@@ -8,6 +8,16 @@ namespace GLESGAE
 		public:
 			const static unsigned int FORMAT_SIZE = 8U;
 			
+			struct UpdateData
+			{
+				bool retain;
+				unsigned int offset;
+				unsigned int size;
+				unsigned char* data;
+				
+				UpdateData() : retain(false), offset(0), size(0), data(0) {}
+			};
+			
 			enum BufferType
 			{
 				FORMAT_STATIC
@@ -154,12 +164,18 @@ namespace GLESGAE
 
 			/// Retrieve data
 			unsigned char* getData() const { return mData; }
+			
+			/// Retrieve writable data - use with care.
+			unsigned char* getWriteableData();
 
 			/// Retrieve size
 			unsigned int getSize() const { return mSize; }
 
 			/// Retrieve stride
 			unsigned int getStride() const { return mStride; }
+			
+			/// Set to interleaved format
+			void isInterleaved();
 			
 			/// Retrieve the Buffer Type
 			BufferType getType() const { return mType; }
@@ -172,14 +188,22 @@ namespace GLESGAE
 
 			/// Add a Format Identifier
 			void addFormatIdentifier(const FormatType formatType, const unsigned int amount);
+			
+			/// Add update data
+			void setUpdateData(UpdateData* const updateData) { mUpdateData = updateData; }
+			
+			/// Retrieve update data
+			UpdateData* getUpdateData() { return mUpdateData; }
 
 		private:
 			unsigned int mSize;
 			unsigned char* mData;
 			unsigned int mStride;
+			unsigned int mOffset;
 			BufferType mType;
 			unsigned int* mVboId;			// using unsigned int rather than GLuint to keep GL dependency away from the header.
 			Format mFormat[FORMAT_SIZE];
+			UpdateData* mUpdateData;
 	};
 }
 

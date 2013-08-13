@@ -1,5 +1,6 @@
 #include "../File.h"
 
+#include "../../Platform/Platform.h"
 #include "../../Platform/Application.h"
 #include "../../Utils/Logger.h"
 #include <cstring> // memcpy
@@ -9,6 +10,7 @@ using namespace GLESGAE;
 File::File(const std::string& filepath)
 : BaseFile(filepath)
 , mFile(0)
+, mAAsset(0)
 {
 }
 
@@ -18,16 +20,21 @@ File::~File()
 		fclose(mFile);
 		mFile = 0;
 	}
+	
+	if (0 != mAAsset) {
+		AAsset_close(mAAsset);
+		mAAsset = 0;
+	}
 }
 
 FILEIO::FILE_STATUS File::open(const FILEIO::OPEN_MODE openMode, const FILEIO::FILE_MODE fileMode)
-{
+{  
 	if (mFileStatus != FILEIO::FILE_CLOSED) {
 		Application::getInstance()->getLogger()->log("File: File already open\n", Logger::LOG_TYPE_ERROR);
 		return FILEIO::FILE_ERROR;
 	}
 	
-	if (0 != mFile) {
+	if ((0 != mFile) || (0 != mAAsset)) {
 		Application::getInstance()->getLogger()->log("File: File handle open\n", Logger::LOG_TYPE_ERROR);
 		return FILEIO::FILE_ERROR;
 	}
@@ -64,9 +71,14 @@ FILEIO::FILE_STATUS File::open(const FILEIO::OPEN_MODE openMode, const FILEIO::F
 	};
 	
 	const std::string options(openString + fileString);
+	// Check the sdcard first...
 	mFile = fopen(mFilePath.c_str(), options.c_str());
+	if (0 == mFile) { // try the android apk
+		Platform* platform(Application::getInstance()->getPlatform());
+		mAAsset = AAssetManager_open(platform->getApp()->activity->assetManager, mFilePath.c_str(), AASSET_MODE_UNKNOWN);
+	}
 	
-	if (0 == mFile) {
+	if ((0 == mFile) && (0 == mAAsset)) {
 		Application::getInstance()->getLogger()->log("File: File not found: " + mFilePath + "\n", Logger::LOG_TYPE_ERROR);
 		mFileStatus = FILEIO::FILE_NOT_FOUND;
 		return mFileStatus;
@@ -75,9 +87,13 @@ FILEIO::FILE_STATUS File::open(const FILEIO::OPEN_MODE openMode, const FILEIO::F
 	mFileStatus = FILEIO::FILE_OPEN;
 	mOpenMode = openMode;
 	
-	fseek(mFile, 0, SEEK_END);
-	mFileSize = ftell(mFile);
-	rewind(mFile);
+	if (0 != mFile) {
+		fseek(mFile, 0, SEEK_END);
+		mFileSize = ftell(mFile);
+		rewind(mFile);
+	}
+	else
+		mFileSize = AAsset_getLength(mAAsset);
 	
 	return mFileStatus;
 }
@@ -89,13 +105,20 @@ FILEIO::FILE_STATUS File::close(const FILEIO::CLOSE_MODE mode)
 		return FILEIO::FILE_ERROR;
 	}
 	
-	if (0 == mFile) {
+	if ((0 == mFile) && (0 == mAAsset)){
 		Application::getInstance()->getLogger()->log("File: File handle already closed\n", Logger::LOG_TYPE_ERROR);
 		return FILEIO::FILE_ERROR;
 	}
 	
-	fclose(mFile);
-	mFile = 0;
+	if (0 != mFile) {
+		fclose(mFile);
+		mFile = 0;
+	}
+	
+	if (0 != mAAsset) {
+		AAsset_close(mAAsset);
+		mAAsset = 0;
+	}
 	
 	mFileStatus = FILEIO::FILE_CLOSED;
 	
@@ -136,7 +159,7 @@ FILEIO::READ_STATUS File::read(const unsigned long amount)
 		return FILEIO::READ_ERROR;
 	}
 	
-	if (0 == mFile) {
+	if ((0 == mFile) && (0 == mAAsset)) {
 		Application::getInstance()->getLogger()->log("File: File handle not open\n", Logger::LOG_TYPE_ERROR);
 		return FILEIO::READ_ERROR;
 	}
@@ -165,14 +188,24 @@ FILEIO::READ_STATUS File::read(const unsigned long amount)
 	}
 	
 	mBufferOwned = true;
-	const long read(fread(mBuffer, 1, mBufferSize, mFile));
+	long read(0);
+
+	if (0 != mFile)
+		read = fread(mBuffer, 1, mBufferSize, mFile);
+	if (0 != mAAsset)
+		read = AAsset_read(mAAsset, mBuffer, mBufferSize);
+
 	mReadPosition += static_cast<unsigned long>(read);
 	
 	if (static_cast<unsigned long>(read) == readAmount)
 		return FILEIO::READ_OK;
-	else if (feof(mFile))
-		return FILEIO::READ_EOF;
 	else {
+		if (0 != mFile) {
+			if (feof(mFile))
+				return FILEIO::READ_EOF;
+		}
+		
+		// TODO: Need to keep a pointer as to where we are in the file to check if we've gone past EOF on Android's scheme
 		Application::getInstance()->getLogger()->log("File: Read Error - read:" + toString(read) + ", expected: " + toString(readAmount) + "\n", Logger::LOG_TYPE_ERROR);
 		return FILEIO::READ_ERROR;
 	}
@@ -187,6 +220,11 @@ FILEIO::WRITE_STATUS File::write()
 	
 	if (mFileStatus != FILEIO::FILE_OPEN) {
 		Application::getInstance()->getLogger()->log("File: File not open\n", Logger::LOG_TYPE_ERROR);
+		return FILEIO::WRITE_ERROR;
+	}
+	
+	if (0 != mAAsset) {
+		Application::getInstance()->getLogger()->log("File: Cannot write using an Android Asset\n", Logger::LOG_TYPE_ERROR);
 		return FILEIO::WRITE_ERROR;
 	}
 	
@@ -228,12 +266,18 @@ FILEIO::READ_STATUS File::setReadPosition(const unsigned long readPosition)
 	
 	if (mReadPosition < mFileSize) {
 		mReadPosition = readPosition;
-		fseek(mFile, mReadPosition, SEEK_SET);
+		if (0 != mFile)
+			fseek(mFile, mReadPosition, SEEK_SET);
+		if (0 != mAAsset)
+			AAsset_seek(mAAsset, mReadPosition, SEEK_SET);
 		return FILEIO::READ_OK;
 	}
 	else {
 		mReadPosition = mFileSize;
-		fseek(mFile, 0, SEEK_END);
+		if (0 != mFile)
+			fseek(mFile, 0, SEEK_END);
+		if (0 != mAAsset)
+			AAsset_seek(mAAsset, 0, SEEK_END);
 		return FILEIO::READ_EOF;
 	}
 }
