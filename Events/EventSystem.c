@@ -96,7 +96,7 @@ void GAE_EventSystem_sendEvent(GAE_EventSystem_t* system, const GAE_EventType_t 
 	}
 }
 
-void GAE_EventSystem_update(GAE_EventSystem_t* system) {
+void GAE_EventSystem_updateTriggers(GAE_EventSystem_t* system) {
 	/* Outside Array */
 	GAE_Array_t* triggerArrayBegin = (GAE_Array_t*)GAE_Map_begin(system->triggers);
 	GAE_Array_t* triggerArray = triggerArrayBegin;

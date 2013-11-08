@@ -40,6 +40,9 @@ GAE_EventSystem_t* GAE_EventSystem_create(void);
 /* Platform specific update function */
 void GAE_EventSystem_update(GAE_EventSystem_t* system);
 
+/* Update all triggers - called by update */
+void GAE_EventSystem_updateTriggers(GAE_EventSystem_t* system);
+
 /* Platform specific delete function */
 void GAE_EventSystem_delete(GAE_EventSystem_t* system);
 

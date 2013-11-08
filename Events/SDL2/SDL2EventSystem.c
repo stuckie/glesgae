@@ -143,6 +143,8 @@ void GAE_EventSystem_update(GAE_EventSystem_t* system) {
 			break;
 		}
 	}
+
+	GAE_EventSystem_updateTriggers(system);
 }
 
 void GAE_EventSystem_delete(GAE_EventSystem_t* system) {
