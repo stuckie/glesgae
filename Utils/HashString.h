@@ -1,33 +1,11 @@
 #ifndef _HASH_STRING_H_
 #define _HASH_STRING_H_
 
-namespace GLESGAE
-{
-	class HashString
-	{
-		public:
-			explicit HashString() : mHash(0U) {}
-			explicit HashString(const char* string) : mHash(0U) { hash(string); }
-			
-			//! Get the Hashed value.
-			inline unsigned int getValue() const { return mHash; }
-			
-			inline bool operator==(const HashString& rhs) const	{ return (mHash == rhs.mHash); }
-			inline bool operator< (const HashString& rhs) const	{ return (mHash < rhs.mHash); }
-			inline bool operator!=(const HashString& rhs) const	{ return !(*this == rhs); }
+#include "../GAE_Types.h"
 
-		private:
-			inline void hash(const char* string)
-			{
-				int c;
-				while ((c = *string++)) /* http://www.cse.yorku.ca/~oz/hash.html */
-					mHash = ((mHash << 5) + mHash) ^ c;
-			}
-			
-			unsigned int mHash;
-	};
-	
-	extern const HashString INVALID_HASHSTRING;
-}
+GAE_HashString_t GAE_HashString_create(const char* string);
+GAE_BOOL GAE_HashString_compare(void* const A, void* const B);
+
+extern const GAE_HashString_t GAE_INVALID_HASHSTRING;
 
 #endif

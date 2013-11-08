@@ -1,34 +1,18 @@
 #ifndef _STATE_H_
 #define _STATE_H_
 
-#include "../Utils/HashString.h"
+#include "../GAE_Types.h"
 
-namespace GLESGAE
-{
-	namespace States
-	{
-		typedef HashString Id;
-	}
-	
-	class State
-	{
-		public:
-			virtual ~State() {}
-			
-			/// Grab the Id of this state
-			States::Id getId() const { return mId; }
-			
-			/// Single Update Function. Must be overloaded. Return true if successful update.
-			virtual bool update(const float delta) = 0;
-			
-		protected:
-			/// Private Constructor to force overloading
-			State(const States::Id id) : mId(id) {}
-			
-		private:
-			States::Id mId;
-	};
-}
+typedef GAE_BOOL (*GAE_State_update_t)(const float delta, void* userData);
+
+typedef struct GAE_State_s {
+	GAE_HashString_t id;
+	GAE_State_update_t* update;
+	void* userData;
+} GAE_State_t;
+
+GAE_State_t* GAE_State_create(const GAE_HashString_t id, GAE_State_update_t* update, void* userData);
+void GAE_State_delete(GAE_State_t* state);
 
 #endif
 

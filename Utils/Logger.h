@@ -1,85 +1,50 @@
 #ifndef _LOGGER_H_
 #define _LOGGER_H_
 
-#include <string>
-#include <sstream>
+struct GAE_File_s;
 
-// Quick function to convert anything to a string.
-template <class T>
-inline std::string toString (const T& t)
-{
-	std::stringstream ss;
-	ss << t;
-	return ss.str();
-}
+typedef enum GAE_LOG_OUTPUT_e {
+	GAE_LOG_OUTPUT_FILE
+,	GAE_LOG_OUTPUT_TERMINAL
+,	GAE_LOG_OUTPUT_FILE_AND_TERMINAL
+,	GAE_LOG_OUTPUT_SILENT
+,	GAE_LOG_OUTPUT_DEFAULT
+} GAE_LOG_OUTPUT;
 
-namespace GLESGAE
-{
+typedef enum GAE_LOG_TYPE_e {
+	GAE_LOG_TYPE_INFO
+,	GAE_LOG_TYPE_DEBUG
+,	GAE_LOG_TYPE_ERROR
+,	GAE_LOG_TYPE_VERBATIM
+,	GAE_LOG_TYPE_DEFAULT
+} GAE_LOG_TYPE;
 
-class Logger
-{
-	public:
-		Logger();
-		~Logger();
+typedef enum GAE_LOG_FILETYPE_e {
+	GAE_LOG_FILE_TEXT
+,	GAE_LOG_FILE_HTML
+,	GAE_LOG_FILE_UNOPENED
+} GAE_LOG_FILETYPE;
 
-		enum Output {
-			LOG_OUTPUT_FILE
-		,	LOG_OUTPUT_TERMINAL
-		,	LOG_OUTPUT_FILE_AND_TERMINAL
-		,	LOG_OUTPUT_SILENT
-		,	LOG_OUTPUT_DEFAULT
-		};
+typedef struct GAE_Logger_s {
+	GAE_LOG_OUTPUT output;
+	GAE_LOG_TYPE type;
+	GAE_LOG_FILETYPE fileType;
 
-		enum Type {
-			LOG_TYPE_INFO
-		,	LOG_TYPE_DEBUG
-		,	LOG_TYPE_ERROR
-		,	LOG_TYPE_VERBATIM
-		,	LOG_TYPE_DEFAULT
-		};
+	struct GAE_File_s* file;
+} GAE_Logger_t;
 
-		enum FileType {
-			LOG_FILE_TEXT
-		,	LOG_FILE_HTML
-		,	LOG_FILE_UNOPENED
-		};
+/* Create a new Logger construct */
+GAE_Logger_t* GAE_Logger_create();
 
-		/// Set the default Output for Logger.
-		void setOutput(const Output& output) { mOutput = output; }
+/* Set the file the Logger deals with */
+GAE_Logger_t* GAE_Logger_setFile(GAE_Logger_t* logger, const char* fileName, const GAE_LOG_FILETYPE fileType);
 
-		/// Set the default log Type for Logger.
-		void setType(const Type& type) { mType = type; }
+/* Sets a footer and closes the file */
+GAE_Logger_t* GAE_Logger_closeFile(GAE_Logger_t* logger);
 
-		/// Set the output file for Logger, and it's type.
-		void setFile(const std::string& filename, const FileType& fileType);
+/* Logs something out through this Logger - which may be to a file, terminal or both */
+GAE_Logger_t* GAE_Logger_log(GAE_Logger_t* logger, const GAE_LOG_TYPE type, const GAE_LOG_OUTPUT output, const char* string, ... );
 
-		/// Closes the log file.
-		void closeFile();
-
-		/// Log a string.
-		/// Optional parameters include overriding Type and Output.
-		void log(const std::string& text, const Type type = LOG_TYPE_DEFAULT, const Output output = LOG_OUTPUT_DEFAULT);
-
-	protected:
-		/// Log text string to File.
-		void logToFile(const std::string& text, const Type& type);
-
-		/// Log text string to Terminal.
-		void logToTerm(const std::string& text, const Type& type);
-
-		/// Creates a log Header.
-		std::string getHeader();
-
-		/// Creates a log Footer.
-		std::string getFooter();
-
-	private:
-		Output mOutput;				//!< Default Log Output
-		Type mType;					//!< Default Log Type
-		FileType mFileType;			//!< Current File Type
-		std::string mFilename;		//!< Current File Name
-};
-
-}
+void GAE_Logger_delete(GAE_Logger_t* logger);
 
 #endif

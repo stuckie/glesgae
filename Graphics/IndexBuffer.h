@@ -1,90 +1,51 @@
 #ifndef _INDEX_BUFFER_H_
 #define _INDEX_BUFFER_H_
 
-namespace GLESGAE
-{
-	class IndexBuffer
-	{
-		public:
-			
-			struct UpdateData
-			{
-				bool retain;
-				unsigned int offset;
-				unsigned int size;
-				unsigned char* data;
-				
-				UpdateData() : retain(false), offset(0), size(0), data(0) {}
-			};
-			
-			enum DrawType {
-				DRAW_STATIC
-			,	DRAW_STREAM
-			,	DRAW_DYNAMIC
-			};
-			
-			enum IndexType {
-				INDEX_FLOAT					// unsupported by ES 1
-			,	INDEX_UNSIGNED_BYTE
-			,	INDEX_UNSIGNED_SHORT
-			,	INDEX_UNSIGNED_INT			// unsupported by unextended ES variants.
-			};
-			
-			enum FormatType {
-				FORMAT_POINTS
-			,	FORMAT_LINES
-			,	FORMAT_LINE_STRIP
-			,	FORMAT_LINE_LOOP
-			,	FORMAT_TRIANGLES
-			,	FORMAT_TRAINGLE_STRIP
-			,	FORMAT_TRIANGLE_FAN
-			};
+#include "../GAE_Types.h"
 
-			IndexBuffer(unsigned char* const data, const unsigned int count, const IndexType type, const FormatType format, const DrawType drawType = DRAW_STATIC);
-			IndexBuffer(const IndexBuffer& indexBuffer);
-			IndexBuffer& operator=(const IndexBuffer& indexBuffer);
-			~IndexBuffer();
+typedef struct GAE_IndexBuffer_UpdateData_s	{
+	GAE_BOOL retain;
+	unsigned int offset;
+	unsigned int size;
+	GAE_BYTE* data;
+} GAE_IndexBuffer_UpdateData_t;
+			
+typedef enum GAE_IndexBuffer_Draw_e {
+	GAE_INDEXBUFFER_DRAW_STATIC
+,	GAE_INDEXBUFFER_DRAW_STREAM
+,	GAE_INDEXBUFFER_DRAW_DYNAMIC
+} GAE_IndexBuffer_Draw;
+			
+typedef enum GAE_IndexBuffer_IndexType_e {
+	GAE_INDEXBUFFER_INDEX_FLOAT					/* unsupported by ES 1 */
+,	GAE_INDEXBUFFER_INDEX_UNSIGNED_BYTE
+,	GAE_INDEXBUFFER_INDEX_UNSIGNED_SHORT
+,	GAE_INDEXBUFFER_INDEX_UNSIGNED_INT			/* unsupported by unextended ES variants. */
+} GAE_IndexBuffer_IndexType;
+			
+typedef enum GAE_IndexBuffer_Format_e {
+	GAE_INDEXBUFFER_FORMAT_POINTS
+,	GAE_INDEXBUFFER_FORMAT_LINES
+,	GAE_INDEXBUFFER_FORMAT_LINE_STRIP
+,	GAE_INDEXBUFFER_FORMAT_LINE_LOOP
+,	GAE_INDEXBUFFER_FORMAT_TRIANGLES
+,	GAE_INDEXBUFFER_FORMAT_TRAINGLE_STRIP
+,	GAE_INDEXBUFFER_FORMAT_TRIANGLE_FAN
+} GAE_IndexBuffer_Format;
 
-			/// Retrieve format details
-			FormatType getFormat() const { return mFormat; }
-			
-			/// Retrieve Index details
-			IndexType getType() const { return mType; }
-			
-			/// Retrieve the draw type
-			DrawType getDrawType() const { return mDrawType; }
+typedef struct GAE_IndexBuffer_s {
+	unsigned int count;
+	unsigned int size;
+	GAE_BYTE* data;
+	unsigned int* vboId;
+	GAE_IndexBuffer_Format format;
+	GAE_IndexBuffer_IndexType type;
+	GAE_IndexBuffer_Draw draw;
+	GAE_IndexBuffer_UpdateData_t* updateData;
+} GAE_IndexBuffer_t;
 
-			/// Retrieve data
-			unsigned char* getData() const { return mData; }
-
-			/// Retrieve element count
-			unsigned int getCount() const { return mCount; }
-			
-			/// Retrieve data size
-			unsigned int getSize() const { return mSize; }
-			
-			/// Retrieve the Vbo Id
-			unsigned int* getVboId() const { return mVboId; }
-			
-			/// Set the Vbo Id
-			void setVboId(unsigned int* vboId) { mVboId = vboId; }
-			
-			/// Set Update Data
-			void setUpdateData(UpdateData* const updateData) { mUpdateData = updateData; }
-			
-			/// Get Update Data
-			UpdateData* getUpdateData() { return mUpdateData; }
-
-		private:
-			unsigned int mCount;
-			unsigned int mSize;
-			unsigned char* mData;
-			unsigned int* mVboId;
-			FormatType mFormat;
-			IndexType mType;
-			DrawType mDrawType;
-			UpdateData* mUpdateData;
-	};
-}
+GAE_IndexBuffer_t* GAE_IndexBuffer_create(GAE_BYTE* const data, const unsigned int count, const GAE_IndexBuffer_IndexType type, const GAE_IndexBuffer_Format format, const GAE_IndexBuffer_Draw drawType);
+GAE_IndexBuffer_t* GAE_IndexBuffer_clone(GAE_IndexBuffer_t* const buffer);
+void GAE_IndexBuffer_delete(GAE_IndexBuffer_t* buffer);
 
 #endif

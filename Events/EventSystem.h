@@ -1,67 +1,52 @@
 #ifndef _EVENT_SYSTEM_H_
 #define _EVENT_SYSTEM_H_
 
-#include "EventTypes.h"
-// This defines general purpose Event System logic.
-// Each of the platform specific headers ( included below ) extend this.
+#include "Event.h"
 
-#include <map>
-#include <vector>
+/** Event System
 
-namespace GLESGAE
-{
-	class Event;
-	class EventObserver;
-	class EventTrigger;
-	class RenderWindow;
-	class CommonEventSystem
-	{
-		public:
-			CommonEventSystem()
-			: mEventObservers()
-			, mEventTriggers()
-			{
-			}
+The Event System has been simplified immensely from it's original C++ design.
+An Event System datum can be created via _create, and must be removed by the corresponding _delete function.
+The datum itself contains a map of observers and triggers. The key being the Event Type, and the value being an array of Info data.
+When an Observer or Trigger callback is made, the user data that was specified on creation of the callback is sent with it.
 
-			virtual ~CommonEventSystem() {}
+The update function is platform specific and is defined in each platform's EventSystem.c
+**/
 
-			/// Update the Event System.
-			virtual void update() = 0;
+struct GAE_Map_s;
 
-			/// Bind to specified Window.
-			virtual void bindToWindow(RenderWindow* const window) = 0;
+typedef GAE_Event_t* (*GAE_EventTrigger_t)(void* userData);
+typedef void (*GAE_EventObserver_t)(struct GAE_Event_s* const event, void* userData);
 
-			/// Register an Event Type.
-			void registerEventType(const EventType& eventType);
+typedef struct GAE_EventObserverInfo_s {
+	GAE_EventObserver_t observer;
+	void* userData;
+} GAE_EventObserverInfo_t;
 
-			/// Register an Event Observer with Event Type.
-			void registerObserver(const EventType& eventType, EventObserver* const observer);
+typedef struct GAE_EventTriggerInfo_s {
+	GAE_EventTrigger_t trigger;
+	void* userData;
+} GAE_EventTriggerInfo_t;
 
-			/// Deregister an Event Observer from Event Type.
-			void deregisterObserver(const EventType& eventType, EventObserver* const observer);
+typedef struct GAE_EventSystem_s {
+	struct GAE_Map_s* observers;
+	struct GAE_Map_s* triggers;
+	void* userData;
+} GAE_EventSystem_t;
 
-			/// Register a Custom Event Trigger.
-			void registerTrigger(const EventType& eventType, EventTrigger* const trigger);
+/* Platform specific create function - binds to the specified Window for window events */
+GAE_EventSystem_t* GAE_EventSystem_create(void);
 
-			/// Deregister a Custom Event Trigger.
-			void deregisterTrigger(const EventType& eventType, EventTrigger* const trigger);
+/* Platform specific update function */
+void GAE_EventSystem_update(GAE_EventSystem_t* system);
 
-			/// Send an Event to all Observers of this type.
-			void sendEvent(const EventType& eventType, Event* const event);
+/* Platform specific delete function */
+void GAE_EventSystem_delete(GAE_EventSystem_t* system);
 
-		protected:
-			/// Update all the Triggers to send Events if necessary.
-			void updateAllTriggers();
-
-			std::map<EventType, std::vector<EventObserver*> > mEventObservers; 	//!< Outer = Event Type; Inner = Array of Event Observers for this Event Type. These are callback pointers, so no need to delete them.
-			std::map<EventType, std::vector<EventTrigger*> > mEventTriggers;	//!< Outer = Event Type; Inner = Array of Event Triggers for this Event Type. These are callback pointers, so no need to delete them.
-	};
-}
-
-#if defined(LINUX) || defined(PANDORA)
-	#include "X11/X11EventSystem.h"
-#elif defined(ANDROID)
-	#include "Android/AndroidEventSystem.h"
-#endif
+void GAE_EventSystem_registerObserver(GAE_EventSystem_t* system, const GAE_EventType_t type, GAE_EventObserver_t observer, void* userData);
+void GAE_EventSystem_deregisterObserver(GAE_EventSystem_t* system, const GAE_EventType_t type, GAE_EventObserver_t observer);
+void GAE_EventSystem_registerTrigger(GAE_EventSystem_t* system, const GAE_EventType_t type, GAE_EventTrigger_t trigger, void* userData);
+void GAE_EventSystem_deregisterTrigger(GAE_EventSystem_t* system, const GAE_EventType_t type, GAE_EventTrigger_t trigger);
+void GAE_EventSystem_sendEvent(GAE_EventSystem_t* system, const GAE_EventType_t type, GAE_Event_t* const event);
 
 #endif

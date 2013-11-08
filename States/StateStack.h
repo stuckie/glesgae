@@ -1,52 +1,22 @@
 #ifndef _STATE_STACK_H_
 #define _STATE_STACK_H_
 
-#include "State.h"
+#include "../GAE_Types.h"
 
-#include <vector>
+struct GAE_Array_s;
+struct GAE_State_s;
 
-namespace GLESGAE
-{
-	class StateStack
-	{
-		public:
-			StateStack();
-			StateStack(const StateStack& stateStack);
-			StateStack& operator=(const StateStack& stateStack);
-			
-			/// Push a new State onto the Stack - keeping the other ones in place beneath.
-			template <typename T_State> void push();
-			
-			/// Replaces the current State with this State.
-			template <typename T_State> void replace();
-			
-			/// Pops the current State off the stack, and resumes the one below.
-			void pop();
-			
-			/// Retrieves the current State.
-			State* get();
-			
-			/// Update the current State.
-			bool update(const float delta);
-			
-		private:
-			State* mLastState;
-			std::vector<State*> mStack;
-	};
-	
-	template <typename T_State>
-	void StateStack::push()
-	{
-		mStack.push_back(new T_State);
-	}
+typedef struct GAE_StateStack_s {
+	struct GAE_Array_s* stack;
+	struct GAE_State_s* lastState;
+} GAE_StateStack_t;
 
-	template <typename T_State>
-	void StateStack::replace()
-	{
-		pop();
-		push<T_State>();
-	}
-}
+GAE_StateStack_t* GAE_StateStack_create(void);
+GAE_BOOL GAE_StateStack_update(GAE_StateStack_t* stack, const float delta);
+struct GAE_State_s* GAE_StateStack_get(GAE_StateStack_t* stack);
+GAE_StateStack_t* GAE_StateStack_pop(GAE_StateStack_t* stack);
+GAE_StateStack_t* GAE_StateStack_push(GAE_StateStack_t* stack, struct GAE_State_s* state);
+GAE_StateStack_t* GAE_StateStack_replace(GAE_StateStack_t* stack, struct GAE_State_s* state);
+void GAE_StateStack_delete(GAE_StateStack_t* stack);
 
 #endif
-

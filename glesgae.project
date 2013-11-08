@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="glesgae" InternalType="">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
+  </Plugins>
+  <VirtualDirectory Name="Time">
+    <VirtualDirectory Name="Linux">
+      <File Name="Time/Linux/Clock.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Android">
+      <File Name="Time/Android/Clock.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Win32">
+      <File Name="Time/Win32/Clock.c"/>
+    </VirtualDirectory>
+    <File Name="Time/Timer.h"/>
+    <File Name="Time/Timer.c"/>
+    <File Name="Time/Clock.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Platform">
+    <VirtualDirectory Name="Pandora">
+      <File Name="Platform/Pandora/PandoraPlatform.h"/>
+      <File Name="Platform/Pandora/PandoraLifecycle.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Linux">
+      <File Name="Platform/Linux/LinuxPlatform.c"/>
+      <File Name="Platform/Linux/LinuxPlatform.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Android">
+      <File Name="Platform/Android/AndroidPlatform.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="SDL2">
+      <File Name="Platform/SDL2/SDL2Platform.h"/>
+      <File Name="Platform/SDL2/SDL2Platform.c"/>
+    </VirtualDirectory>
+    <File Name="Platform/Lifecycle.h"/>
+    <File Name="Platform/Platform.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="External">
+    <VirtualDirectory Name="SOIL">
+      <File Name="External/SOIL/image_helper.c"/>
+      <File Name="External/SOIL/image_DXT.h"/>
+      <File Name="External/SOIL/SOIL.c"/>
+      <File Name="External/SOIL/stb_image_aug.c"/>
+      <File Name="External/SOIL/stbi_DDS_aug.h"/>
+      <File Name="External/SOIL/image_helper.h"/>
+      <File Name="External/SOIL/stb_image_aug.h"/>
+      <File Name="External/SOIL/SOIL.h"/>
+      <File Name="External/SOIL/stbi_DDS_aug_c.h"/>
+      <File Name="External/SOIL/image_DXT.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="jsmn">
+      <File Name="External/jsmn/jsmn.h"/>
+      <File Name="External/jsmn/jsmn.c"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Graphics">
+    <VirtualDirectory Name="Renderer">
+      <VirtualDirectory Name="GLES20">
+        <File Name="Graphics/Renderer/GLES20/ShaderGLVboRenderer.h"/>
+        <File Name="Graphics/Renderer/GLES20/ShaderGLVboRenderer.c"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="SDL2">
+        <File Name="Graphics/Renderer/SDL2/SDL2Renderer.c"/>
+        <File Name="Graphics/Renderer/SDL2/SDL2Renderer.h"/>
+      </VirtualDirectory>
+      <File Name="Graphics/Renderer/Renderer.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Context">
+      <VirtualDirectory Name="Pandora">
+        <File Name="Graphics/Context/Pandora/PandoraRenderContext.h"/>
+        <File Name="Graphics/Context/Pandora/PandoraRenderContext.cpp"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="Android">
+        <File Name="Graphics/Context/Android/AndroidRenderContext.cpp"/>
+        <File Name="Graphics/Context/Android/AndroidRenderContext.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="GLX">
+        <File Name="Graphics/Context/GLX/GLee.c"/>
+        <File Name="Graphics/Context/GLX/GLXRenderContext.c"/>
+        <File Name="Graphics/Context/GLX/GLee.h"/>
+        <File Name="Graphics/Context/GLX/GLXRenderContext.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="Win32">
+        <File Name="Graphics/Context/Win32/GLee.c"/>
+        <File Name="Graphics/Context/Win32/GLee.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="SDL2">
+        <File Name="Graphics/Context/SDL2/SDL2RenderContext.h"/>
+        <File Name="Graphics/Context/SDL2/SDL2RenderContext.c"/>
+      </VirtualDirectory>
+      <File Name="Graphics/Context/RenderContext.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Target">
+      <VirtualDirectory Name="Buffer">
+        <VirtualDirectory Name="OGL">
+          <File Name="Graphics/Target/Buffer/OGL/BufferRenderTarget.c"/>
+        </VirtualDirectory>
+        <VirtualDirectory Name="GLES20">
+          <File Name="Graphics/Target/Buffer/GLES20/BufferRenderTarget.c"/>
+        </VirtualDirectory>
+        <File Name="Graphics/Target/Buffer/BufferRenderTarget.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="Texture">
+        <VirtualDirectory Name="OGL">
+          <File Name="Graphics/Target/Texture/OGL/TextureRenderTarget.c"/>
+        </VirtualDirectory>
+        <VirtualDirectory Name="GLES20">
+          <File Name="Graphics/Target/Texture/GLES20/TextureRenderTarget.c"/>
+        </VirtualDirectory>
+        <VirtualDirectory Name="SDL2">
+          <File Name="Graphics/Target/Texture/SDL2/TextureRenderTarget.c"/>
+        </VirtualDirectory>
+        <File Name="Graphics/Target/Texture/TextureRenderTarget.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="Screen">
+        <VirtualDirectory Name="OGL">
+          <File Name="Graphics/Target/Screen/OGL/ScreenRenderTarget.c"/>
+        </VirtualDirectory>
+        <VirtualDirectory Name="GLES20">
+          <File Name="Graphics/Target/Screen/GLES20/ScreenRenderTarget.c"/>
+        </VirtualDirectory>
+        <File Name="Graphics/Target/Screen/ScreenRenderTarget.h"/>
+      </VirtualDirectory>
+      <File Name="Graphics/Target/RenderTarget.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Texture">
+      <VirtualDirectory Name="GL">
+        <File Name="Graphics/Texture/GL/GLTexture.h"/>
+        <File Name="Graphics/Texture/GL/GLTexture.c"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="SDL2">
+        <File Name="Graphics/Texture/SDL2/SDL2Texture.c"/>
+        <File Name="Graphics/Texture/SDL2/SDL2Texture.h"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Window">
+      <VirtualDirectory Name="X11">
+        <File Name="Graphics/Window/X11/X11RenderWindow.h"/>
+        <File Name="Graphics/Window/X11/X11RenderWindow.c"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="Android">
+        <File Name="Graphics/Window/Android/AndroidRenderWindow.c"/>
+        <File Name="Graphics/Window/Android/AndroidRenderWindow.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="SDL2">
+        <File Name="Graphics/Window/SDL2/SDL2RenderWindow.c"/>
+        <File Name="Graphics/Window/SDL2/SDL2RenderWindow.h"/>
+      </VirtualDirectory>
+      <File Name="Graphics/Window/RenderWindow.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="System">
+      <VirtualDirectory Name="SDL2">
+        <File Name="Graphics/System/SDL2/SDL2GraphicsSystem.c"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Sprite">
+      <VirtualDirectory Name="3D">
+        <File Name="Graphics/Sprite/3D/Sprite.c"/>
+        <File Name="Graphics/Sprite/3D/Sprite.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="SDL2">
+        <File Name="Graphics/Sprite/SDL2/Sprite.c"/>
+        <File Name="Graphics/Sprite/SDL2/Sprite.h"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+    <VirtualDirectory Name="State">
+      <VirtualDirectory Name="GLES2">
+        <File Name="Graphics/State/GLES2/GLES2State.h"/>
+        <File Name="Graphics/State/GLES2/GLES2State.c"/>
+      </VirtualDirectory>
+      <File Name="Graphics/State/RenderState.h"/>
+    </VirtualDirectory>
+    <File Name="Graphics/VertexBuffer.c"/>
+    <File Name="Graphics/IndexBuffer.h"/>
+    <File Name="Graphics/Material.c"/>
+    <File Name="Graphics/Camera.c"/>
+    <File Name="Graphics/Texture.h"/>
+    <File Name="Graphics/Camera.h"/>
+    <File Name="Graphics/Mesh.h"/>
+    <File Name="Graphics/Color.h"/>
+    <File Name="Graphics/Mesh.c"/>
+    <File Name="Graphics/Material.h"/>
+    <File Name="Graphics/Shader.c"/>
+    <File Name="Graphics/GraphicsSystem.h"/>
+    <File Name="Graphics/VertexBuffer.h"/>
+    <File Name="Graphics/IndexBuffer.c"/>
+    <File Name="Graphics/Shader.h"/>
+    <File Name="Graphics/Sprite.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Input">
+    <VirtualDirectory Name="Pandora">
+      <File Name="Input/Pandora/PandoraInputSystem.cpp"/>
+      <File Name="Input/Pandora/pnd_io_evdev.h"/>
+      <File Name="Input/Pandora/PandoraInputSystem.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Linux">
+      <File Name="Input/Linux/LinuxInputSystem.h"/>
+      <File Name="Input/Linux/LinuxInputSystem.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Android">
+      <File Name="Input/Android/AndroidInputSystem.cpp"/>
+      <File Name="Input/Android/AndroidInputSystem.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="SDL2">
+      <File Name="Input/SDL2/SDL2InputSystem.h"/>
+      <File Name="Input/SDL2/SDL2InputSystem.c"/>
+    </VirtualDirectory>
+    <File Name="Input/Controller.c"/>
+    <File Name="Input/InputSystem.h"/>
+    <File Name="Input/Controller.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Events">
+    <VirtualDirectory Name="X11">
+      <File Name="Events/X11/X11EventSystem.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Android">
+      <File Name="Events/Android/AndroidEventSystem.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="SDL2">
+      <File Name="Events/SDL2/SDL2EventSystem.c"/>
+      <File Name="Events/SDL2/SDL2Events.c"/>
+      <File Name="Events/SDL2/SDL2Events.h"/>
+    </VirtualDirectory>
+    <File Name="Events/EventSystem.c"/>
+    <File Name="Events/EventSystem.h"/>
+    <File Name="Events/Event.c"/>
+    <File Name="Events/Event.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="File">
+    <VirtualDirectory Name="Linux">
+      <File Name="File/Linux/File.c"/>
+      <File Name="File/Linux/File.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Android">
+      <File Name="File/Android/File.c"/>
+      <File Name="File/Android/File.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Win32">
+      <File Name="File/Win32/File.c"/>
+      <File Name="File/Win32/File.h"/>
+    </VirtualDirectory>
+    <File Name="File/File.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Utils">
+    <VirtualDirectory Name="Tiled">
+      <File Name="Utils/Tiled/TiledJsonLoader.c"/>
+      <File Name="Utils/Tiled/TiledJsonLoader.h"/>
+      <VirtualDirectory Name="SDL2">
+        <File Name="Utils/Tiled/SDL2/SDL2TiledJsonLoader.c"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+    <File Name="Utils/Map.h"/>
+    <File Name="Utils/HashString.h"/>
+    <File Name="Utils/Array.h"/>
+    <File Name="Utils/Logger.c"/>
+    <File Name="Utils/List.h"/>
+    <File Name="Utils/Map.c"/>
+    <File Name="Utils/HashString.c"/>
+    <File Name="Utils/List.c"/>
+    <File Name="Utils/Logger.h"/>
+    <File Name="Utils/Array.c"/>
+    <File Name="Utils/ArrayList.c"/>
+    <File Name="Utils/ArrayList.h"/>
+    <File Name="Utils/Group.c"/>
+    <File Name="Utils/Group.h"/>
+    <File Name="Utils/Heap.c"/>
+    <File Name="Utils/Heap.h"/>
+  </VirtualDirectory>
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="States">
+    <File Name="States/State.h"/>
+    <File Name="States/StateStack.c"/>
+    <File Name="States/StateStack.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Maths">
+    <File Name="Maths/Matrix.h"/>
+    <File Name="Maths/Matrix.c"/>
+    <File Name="Maths/Vector.h"/>
+    <File Name="Maths/Vector.c"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="glesgae">
+    <File Name="GAE_Types.h"/>
+    <File Name="GAE_Types.c"/>
+  </VirtualDirectory>
+  <Settings Type="Dynamic Library">
+    <Configuration Name="Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g" Required="yes" PreCompiledHeader="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="" IntermediateDirectory="./Debug" Command="" CommandArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild>
+        <Command Enabled="yes">cp libglesgae.a ../lib</Command>
+      </PostBuild>
+      <CustomBuild Enabled="yes">
+        <RebuildCommand>make clean &amp;&amp; make</RebuildCommand>
+        <CleanCommand>make clean</CleanCommand>
+        <BuildCommand>make</BuildCommand>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand>cmake Debug ..</MakefileGenerationCommand>
+        <ThirdPartyToolName>Other</ThirdPartyToolName>
+        <WorkingDirectory>/home/stuckie/Projects/bitbucket/arcadebadgersystem/glesgae/build</WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="" Required="yes" PreCompiledHeader="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="-O2" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="" IntermediateDirectory="./Release" Command="" CommandArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="yes">
+        <RebuildCommand/>
+        <CleanCommand>make clean</CleanCommand>
+        <BuildCommand>make</BuildCommand>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory>$(WorkspacePath)</WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <GlobalSettings>
+      <Compiler Options="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+  </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+</CodeLite_Project>

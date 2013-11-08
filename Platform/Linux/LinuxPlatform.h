@@ -1,39 +1,39 @@
-#ifndef _PLATFORM_H_
-#define _PLATFORM_H_
+#ifndef _LINUX_PLATFORM_H_
+#define _LINUX_PLATFORM_H_
 
-#define PLATFORM_MAIN 						\
-int main(void)							\
-{								
+#include "../../GAE_Types.h"
 
-#define PLATFORM_INIT
-	
-#define PLATFORM_LOOP						\
-	application->onCreate();				\
-	application->onWindowCreate();				\
-	application->onStart();					\
-	application->onResume();				\
-								\
-	bool applicationRunning(true);				\
-	while (true == applicationRunning)			\
-		applicationRunning = application->onLoop();	\
-								\
-	application->onPause();					\
-	application->onStop();					\
-	application->onDestroy();				\
+#define PLATFORM_MAIN														\
+GAE_Platform_t* GAE_PLATFORM;												\
+int main(void) {															\
+	GAE_BOOL isApplicationRunning = GAE_TRUE;								\
 
-#define END_MAIN						\
-	return 0;						\
+#define PLATFORM_INIT														\
+	GAE_PLATFORM = GAE_Platform_create();
+
+#define PLATFORM_LOOP														\
+	(*GAE_PLATFORM->lifecycle->onCreate)();									\
+	(*GAE_PLATFORM->lifecycle->onWindowCreate)();							\
+	(*GAE_PLATFORM->lifecycle->onStart)();									\
+	(*GAE_PLATFORM->lifecycle->onResume)();									\
+																			\
+	while (GAE_TRUE == isApplicationRunning)								\
+		isApplicationRunning = (*GAE_PLATFORM->lifecycle->onLoop)();		\
+																			\
+	(*GAE_PLATFORM->lifecycle->onPause)();									\
+	(*GAE_PLATFORM->lifecycle->onStop)();									\
+	(*GAE_PLATFORM->lifecycle->onDestroy)();								\
+
+#define PLATFORM_END														\
+	GAE_Platform_delete(GAE_PLATFORM);										\
+	GAE_PLATFORM = 0;														\
+	return 0;																\
 }
 
-namespace GLESGAE
-{
-	class Platform : public BasePlatform
-	{
-		public:
-			virtual ~Platform() {}
-			
-	};
-}
+extern GAE_Platform_t* GAE_PLATFORM;
+
+GAE_Platform_t* GAE_Platform_create(void);
+void GAE_Platform_delete(GAE_Platform_t* platform);
 
 #endif
 

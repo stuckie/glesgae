@@ -1,92 +1,36 @@
 #ifndef _LINUX_INPUT_SYSTEM_H_
 #define _LINUX_INPUT_SYSTEM_H_
 
-#include <list>
+struct GAE_EventSystem_s;
+struct GAE_Keyboard_s;
+struct GAE_Pointer_s;
+struct GAE_Pad_s;
+struct GAE_Joystick_s;
+struct GAE_SingleList_s;
+struct GAE_Event_s;
 
-#include "../../Events/EventObserver.h"
-#include "../ControllerTypes.h"
+typedef struct GAE_InputSystem_s {
+	struct GAE_EventSystem_s* eventSystem;
+	struct GAE_Keyboard_s* keyboard;
+	struct GAE_Pointer_s* pointer;
+	struct GAE_SingleList_s* joysticks;
+	struct GAE_SingleList_s* pads;
+} GAE_InputSystem_t;
 
-#include <X11/Xlib.h>
+GAE_InputSystem_t* GAE_InputSystem_create(struct GAE_EventSystem_s* eventSystem);
+void GAE_InputSystem_delete(GAE_InputSystem_t* system);
 
-namespace GLESGAE
-{
-	class Event;
-	class EventSystem;
-	class InputSystem : public CommonInputSystem, public EventObserver
-	{
-		public:
-			InputSystem(EventSystem* const eventSystem);
-			~InputSystem();
+GAE_InputSystem_t* GAE_InputSystem_newPointer(GAE_InputSystem_t* system);
+GAE_InputSystem_t* GAE_InputSystem_newPad(GAE_InputSystem_t* system);
+GAE_InputSystem_t* GAE_InputSystem_newKeyboard(GAE_InputSystem_t* system);
+GAE_InputSystem_t* GAE_InputSystem_newJoystick(GAE_InputSystem_t* system);
 
-			/// Update the Input System
-			void update();
+GAE_InputSystem_t* GAE_InputSystem_removePointer(GAE_InputSystem_t* system, struct GAE_Pointer_s* pointer);
+GAE_InputSystem_t* GAE_InputSystem_removePad(GAE_InputSystem_t* system, struct GAE_Pad_s* pad);
+GAE_InputSystem_t* GAE_InputSystem_removeKeyboard(GAE_InputSystem_t* system, struct GAE_Keyboard_s* keyboard);
+GAE_InputSystem_t* GAE_InputSystem_removeJoystick(GAE_InputSystem_t* system, struct GAE_Joystick_s* joystick);
 
-			/// Receive an Event
-			void receiveEvent(Event* const event);
-
-			/// Retreive number of Active Keyboards.
-			unsigned int getNumberOfKeyboards() const;
-
-			/// Retreive number of Active Joysticks.
-			unsigned int getNumberOfJoysticks() const;
-
-			/// Retreive number of Active Pads.
-			unsigned int getNumberOfPads() const;
-
-			/// Retreive number of Active Pointers.
-			unsigned int getNumberOfPointers() const;
-
-			/// Create new Keyboard - will return NULL if no more available.
-			Controller::KeyboardController* newKeyboard();
-
-			/// Create new Joystick - will return NULL if no more available.
-			Controller::JoystickController* newJoystick();
-
-			/// Create new Pad - will return NULL if no more available.
-			Controller::PadController* newPad();
-
-			/// Create new Pointer - will return NULL if no more available.
-			Controller::PointerController* newPointer();
-
-			/// Grab another instance of the specified Keyboard - returns NULL if not created.
-			Controller::KeyboardController* getKeyboard(const Controller::Id id);
-
-			/// Grab another instance of the specified Joystick - returns NULL if not created.
-			Controller::JoystickController* getJoystick(const Controller::Id id);
-
-			/// Grab another instance of the specified Pointer - returns NULL if not created.
-			Controller::PointerController* getPointer(const Controller::Id id);
-
-			/// Grab another instance of the specified Pad - returns NULL if not created.
-			Controller::PadController* getPad(const Controller::Id id);
-
-			/// Destroy a Keyboard.
-			void destroyKeyboard(Controller::KeyboardController* const keyboard);
-
-			/// Destroy a Joystick.
-			void destroyJoystick(Controller::JoystickController* const joystick);
-
-			/// Destroy a Pad.
-			void destroyPad(Controller::PadController* const pad);
-
-			/// Destroy a Pointer.
-			void destroyPointer(Controller::PointerController* const pointer);
-
-		protected:
-			Controller::KeyType convertKey(KeySym x11Key);
-
-		private:
-			// No Copying
-			InputSystem(const InputSystem&);
-			InputSystem& operator=(const InputSystem&);
-			
-			Controller::KeyboardController* mKeyboard;
-			Controller::PointerController* mPointer;
-			std::list<Controller::JoystickController*> mJoysticks;
-			std::list<Controller::PadController*> mPads;
-
-			EventSystem* mEventSystem;
-	};
-}
+GAE_InputSystem_t* GAE_InputSystem_update(GAE_InputSystem_t* system);
+void GAE_InputSystem_getEvent(struct GAE_Event_s* const event, void* userData);
 
 #endif

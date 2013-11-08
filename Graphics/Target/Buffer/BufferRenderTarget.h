@@ -3,20 +3,13 @@
 
 #include "../RenderTarget.h"
 
-namespace GLESGAE
-{
-	class BufferRenderTarget : public RenderTarget
-	{
-		public:
-			BufferRenderTarget(const RenderTarget::Options options);
-			~BufferRenderTarget();
-			
-			/// Bind the Render Target for drawing to.
-			void bind();
-			
-			/// Unbind the Render Target as the current drawing surface.
-			void unbind();
-	};
-}
+typedef struct GAE_RenderTarget_Buffer_s {
+	GAE_RenderTarget_t parent;
+} GAE_RenderTarget_Buffer_t;
+
+GAE_RenderTarget_Buffer_t* GAE_RenderTarget_Buffer_create(const GAE_RenderTarget_Type type, const GAE_RenderTarget_Options options);
+GAE_RenderTarget_Buffer_t* GAE_RenderTarget_Buffer_bind(GAE_RenderTarget_Buffer_t* target);
+GAE_RenderTarget_Buffer_t* GAE_RenderTarget_Buffer_unbind(GAE_RenderTarget_Buffer_t* target);
+void GAE_RenderTarget_Buffer_delete(GAE_RenderTarget_Buffer_t* target);
 
 #endif

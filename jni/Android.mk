@@ -4,45 +4,38 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := glesgae
 
-FILE_LIST := $(wildcard $(LOCAL_PATH)/../Events/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Events/Android/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../External/**/*.c)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../External/**/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Factories/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../File/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../File/Android/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/Context/Android/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/Platform/Android/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/Renderer/GLES10/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/Renderer/GLES11/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/Renderer/GLES20/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/State/GLES1/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/State/GLES2/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/Target/Buffer/GLES11/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/Target/Buffer/GLES20/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/Target/Screen/GLES11/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/Target/Screen/GLES20/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/Target/Texture/GLES10/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/Target/Texture/GLES20/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/Window/Android/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Input/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Input/Android/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Maths/*.cpp)
+FILE_LIST := $(wildcard $(LOCAL_PATH)/../Events/*.c)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../Events/SDL2/*.c)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../External/jsmn/*.c)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../File/*.c)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../File/Android/*.c)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/*.c)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/Context/SDL2/*.c)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/Renderer/SDL2/*.c)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/Sprite/SDL2/*.c)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/Target/Texture/SDL2/*.c)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/Texture/SDL2/*.c)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../Graphics/Window/SDL2/*.c)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../Input/*.c)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../Input/SDL2/*.c)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../Maths/*.c)
 FILE_LIST += $(wildcard $(LOCAL_PATH)/../Platform/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Platform/Android/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Resources/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Scripting/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../States/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Time/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Time/Android/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../Utils/*.cpp)
-FILE_LIST += $(wildcard $(LOCAL_PATH)/../*.cpp)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../Platform/SDL2/*.c)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../States/*.c)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../Time/*.c)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../Time/Android/*.c)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../Utils/*.c)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../*.c)
 LOCAL_SRC_FILES := $(FILE_LIST:$(LOCAL_PATH)/%=%)
 
-LOCAL_SHARED_LIBRARIES := android_native_app_glue
+SDL_INCLUDES := ../../SDL2_includes
+
+LOCAL_C_INCLUDES :=	$(LOCAL_PATH)/$(SDL_INCLUDES)
+
+LOCAL_SHARED_LIBRARIES := android_native_app_glue SDL2 SDL2_image
 LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv1_CM
-LOCAL_CFLAGS	:= -DGLES1 -DANDROID
+LOCAL_CFLAGS	:= -DSDL2 -DANDROID
 include $(BUILD_SHARED_LIBRARY)
 
 $(call import-module,android/native_app_glue)
+

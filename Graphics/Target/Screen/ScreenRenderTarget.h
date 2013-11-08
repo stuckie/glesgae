@@ -3,20 +3,13 @@
 
 #include "../RenderTarget.h"
 
-namespace GLESGAE
-{
-	class ScreenRenderTarget : public RenderTarget
-	{
-		public:
-			ScreenRenderTarget() : RenderTarget(RenderTarget::TARGET_SCREEN, RenderTarget::OPTIONS_WITH_COLOUR) {}
-			~ScreenRenderTarget() {}
-			
-			/// Bind the Render Target for drawing to.
-			void bind();
-			
-			/// Unbind the Render Target as the current drawing surface.
-			void unbind();
-	};
-}
+typedef struct GAE_RenderTarget_Screen_s {
+	GAE_RenderTarget_t parent;
+} GAE_RenderTarget_Screen_t;
+
+GAE_RenderTarget_Screen_t* GAE_RenderTarget_Screen_create(const GAE_RenderTarget_Type type, const GAE_RenderTarget_Options options);
+GAE_RenderTarget_Screen_t* GAE_RenderTarget_Screen_bind(GAE_RenderTarget_Screen_t* target);
+GAE_RenderTarget_Screen_t* GAE_RenderTarget_Screen_unbind(GAE_RenderTarget_Screen_t* target);
+void GAE_RenderTarget_Screen_delete(GAE_RenderTarget_Screen_t* target);
 
 #endif

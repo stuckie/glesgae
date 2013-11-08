@@ -1,56 +1,30 @@
 #ifndef _RENDER_WINDOW_H_
 #define _RENDER_WINDOW_H_
 
-namespace GLESGAE
-{
-	class RenderWindow
-	{
-		public:
-			RenderWindow(const char* name, const unsigned int width, const unsigned int height, const unsigned int bpp, const bool fullscreen)
-			: mName(name)
-			, mWidth(width)
-			, mHeight(height)
-			, mBPP(bpp)
-			, mFullscreen(fullscreen)
-			{
-			}
+#include "../../GAE_Types.h"
 
-			virtual ~RenderWindow() {}
-			
-			/// Get the Name of this Window.
-			const char* getName() const { return mName; }
-			
-			/// Get the Width of this Window.
-			unsigned int getWidth() const { return mWidth; }
-			
-			/// Get the Height of this Window.
-			unsigned int getHeight() const { return mHeight; }
-			
-			/// Get the BPP of this Window.
-			unsigned int getBPP() const { return mBPP; }
-			
-			/// Is Fullscreen.
-			bool isFullscreen() const { return mFullscreen; }
-			
-			/// Open the Window
-			virtual void open() = 0;
-			
-			/// Close the Window
-			virtual void close() = 0;
+typedef struct GAE_RenderWindow_s {
+	char* name;
+	unsigned int width;
+	unsigned int height;
+	unsigned int bpp;
+	GAE_BOOL isFullscreen;
+	void* platform;
+} GAE_RenderWindow_t;
 
-		protected:
-			const char* mName;
-			unsigned int mWidth;
-			unsigned int mHeight;
-			unsigned int mBPP;
-			bool mFullscreen;
-			
-		private:
-			// No copying
-			RenderWindow(const RenderWindow&);
-			RenderWindow& operator=(const RenderWindow&);
-	};
-}
+GAE_RenderWindow_t* GAE_RenderWindow_create(char* const name, const unsigned int width, const unsigned int height, const unsigned int bpp, const GAE_BOOL fullscreen);
+GAE_RenderWindow_t* GAE_RenderWindow_open(GAE_RenderWindow_t* window);
+GAE_RenderWindow_t* GAE_RenderWindow_refresh(GAE_RenderWindow_t* window);
+GAE_RenderWindow_t* GAE_RenderWindow_close(GAE_RenderWindow_t* window);
+void GAE_RenderWindow_delete(GAE_RenderWindow_t* window);
+
+#if defined(SDL2)
+#include "SDL2/SDL2RenderWindow.h"
+#elif defined(GLX) || defined(PANDORA)
+#include "X11/X11RenderWindow.h"
+#elif defined(ANDROID)
+#include "Android/AndroidRenderWindow.h"
+#endif
 
 #endif
 

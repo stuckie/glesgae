@@ -1,52 +1,26 @@
 #ifndef _FILE_H_
 #define _FILE_H_
 
-#include <cstdio>
-#include <android/asset_manager.h>
+#include <stdio.h>
 
-namespace GLESGAE
-{
+struct AAsset;
 
-class File : public BaseFile
-{
-	public:
-		File(const std::string& filepath);
-		~File();
-		
-		/// Open the file in the specified mode.
-		FILEIO::FILE_STATUS open(const FILEIO::OPEN_MODE openMode, const FILEIO::FILE_MODE fileMode);
-		
-		/// Close the file - with an option to delete the data.
-		FILEIO::FILE_STATUS close(const FILEIO::CLOSE_MODE mode = FILEIO::CLOSE_RETAIN_DATA);
-		
-		/// Delete buffer data.
-		bool deleteBuffer();
-		
-		/// Read File - automatically reads all, or up to the specified amount till it reaches the end of the file.
-		FILEIO::READ_STATUS read(const unsigned long amount = static_cast<unsigned long>(-1U));
-		
-		/// Write File - write out what's in the buffer.
-		FILEIO::WRITE_STATUS write();
-		
-		/// Set Read position of file.
-		FILEIO::READ_STATUS setReadPosition(const unsigned long readPosition);
-		
-		/// Set the file buffer.
-		bool setBuffer(unsigned char* buffer, const unsigned long size, const FILEIO::BUFFER_TYPE type = FILEIO::BUFFER_NOT_OWNED);
-		
-		/// Create a new file buffer.
-		/// Returns true if successful, false if there's an error.
-		bool newBuffer(const unsigned long size);
-		
-	private:
-		// No copying
-		File(const File& rhs);
-		File& operator=(const File& rhs);
-		
-		FILE* mFile;
-		AAsset* mAAsset;
-};
+typedef struct GAE_PlatformFile_s {
+	FILE* file;
+	struct AAsset* asset;
+} GAE_PlatformFile_t;
 
-}
+static const unsigned int GAE_FILE_READ_ALL = (unsigned int)-1;
+
+GAE_File_t* GAE_File_create(const char* filePath);
+void GAE_File_delete(GAE_File_t* file);
+GAE_File_t* GAE_File_open(GAE_File_t* file, const GAE_FILE_OPEN_MODE openMode, const GAE_FILE_MODE fileMode, GAE_FILE_STATUS* status);
+GAE_File_t* GAE_File_close(GAE_File_t* file, const GAE_FILE_CLOSE_MODE closeMode, GAE_FILE_STATUS* status);
+GAE_File_t* GAE_File_deleteBuffer(GAE_File_t* file, GAE_BOOL* success);
+GAE_File_t* GAE_File_read(GAE_File_t* file, const unsigned long amount, GAE_FILE_READ_STATUS* status);
+GAE_File_t* GAE_File_write(GAE_File_t* file, GAE_FILE_WRITE_STATUS* status);
+GAE_File_t* GAE_File_setReadPosition(GAE_File_t* file, const unsigned long position, GAE_FILE_READ_STATUS* status);
+GAE_File_t* GAE_File_setBuffer(GAE_File_t* file, GAE_BYTE* buffer, const unsigned long size, const GAE_FILE_BUFFER_TYPE type, GAE_BOOL* success);
+GAE_File_t* GAE_File_newBuffer(GAE_File_t* file, const unsigned long size, GAE_BOOL* success);
 
 #endif

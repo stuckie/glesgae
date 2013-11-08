@@ -1,54 +1,27 @@
 #ifndef _BASE_LIFECYCLE_H_
 #define _BASE_LIFECYCLE_H_
 
-namespace GLESGAE
-{
-	class BaseLifecycle
-	{
-		public:
-			virtual ~BaseLifecycle() {}
-			
-			/// onCreate - Called by the platform as soon as the application is started - IE: To setup Platform specifics.
-			virtual void onCreate() = 0;
-			
-			/// onWindowCreate - Called by the platform as soon as a window is available to bind a context to.
-			virtual void onWindowCreate() = 0;
-			
-			/// onStart - Called by the platform once it's initialized - IE: Platform specifics have been setup.
-			virtual void onStart() = 0;
-			
-			/// onResume - Called by the platform when our application has came back from a Paused state.
-			virtual void onResume() = 0;
-			
-			/// onLoop - Called by the platform to generate a new frame of logic.
-			virtual bool onLoop() = 0;
-			
-			/// onPause - Called by the platform before our application must enter a paused state.
-			virtual void onPause() = 0;
-			
-			/// onStop - Called by the platform before our application must enter a stopped state.
-			virtual void onStop() = 0;
-			
-			/// onDestroy - Called by the platform before our application is stopped - IE: to save state, etc...
-			virtual void onDestroy() = 0;
-	};
-}
+#include "../GAE_Types.h"
 
-// Include the platform specific lifecycle which will act as Lifecycle.
+typedef void (*GAE_Lifecycle_onCreate_t)(void);
+typedef void (*GAE_Lifecycle_onWindowCreate_t)(void);
+typedef void (*GAE_Lifecycle_onStart_t)(void);
+typedef void (*GAE_Lifecycle_onResume_t)(void);
+typedef GAE_BOOL (*GAE_Lifecycle_onLoop_t)(void);
+typedef void (*GAE_Lifecycle_onPause_t)(void);
+typedef void (*GAE_Lifecycle_onStop_t)(void);
+typedef void (*GAE_Lifecycle_onDestroy_t)(void);
 
-#if defined(PANDORA)
-	#include "Pandora/PandoraLifecycle.h"
-#elif defined(LINUX)
-	#include "Linux/LinuxLifecycle.h"
-#elif defined(WIN32)
-	#include "Win32/Win32Lifecycle.h"
-#elif defined(DARWIN)
-	#include "Darwin/DarwinLifecycle.h"
-#elif defined(IOS)
-	#include "iOS/iOSLifecycle.h"
-#elif defined(ANDROID)
-	#include "Android/AndroidLifecycle.h"
-#endif
+typedef struct GAE_Lifecycle_s {
+	GAE_Lifecycle_onCreate_t onCreate;
+	GAE_Lifecycle_onWindowCreate_t onWindowCreate;
+	GAE_Lifecycle_onStart_t onStart;
+	GAE_Lifecycle_onResume_t onResume;
+	GAE_Lifecycle_onLoop_t onLoop;
+	GAE_Lifecycle_onPause_t onPause;
+	GAE_Lifecycle_onStop_t onStop;
+	GAE_Lifecycle_onDestroy_t onDestroy;
+} GAE_Lifecycle_t;
 
 #endif
 

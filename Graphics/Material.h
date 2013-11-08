@@ -1,63 +1,19 @@
 #ifndef _MATERIAL_H_
 #define _MATERIAL_H_
 
-#include <vector>
-#include "Shader.h"
-#include "Texture.h"
+struct GAE_Shader_s;
+struct GAE_Array_s;
+struct GAE_Texture_s;
 
-namespace GLESGAE
-{
-	class Material
-	{
-		public:
-			Material()
-			: mShader()
-			, mTextures()
-			{
-			}
-			
-			Material(const Material& material)
-			: mShader(material.mShader)
-			, mTextures(material.mTextures)
-			{
-			}
-			
-			Material& operator=(const Material& material)
-			{
-				if (this != &material) {
-					mShader = material.mShader;
-					mTextures = material.mTextures;
-				}
-				
-				return *this;
-			}
+typedef struct GAE_Material_s {
+	struct GAE_Shader_s* shader;
+	struct GAE_Array_s* textures;
+} GAE_Material_t;
 
-			/// Grab the Shader that's linked to this Material
-			Shader* getShader() const { return mShader; }
-
-			/// Set a new Shader on this Material
-			void setShader(Shader* const shader) { mShader = shader; }
-			
-			/// Add a Texture
-			void addTexture(Texture* const texture) { mTextures.push_back(texture); }
-
-			/// Grab a Texture
-			Texture* getTexture(unsigned int index) const
-			{ 
-				if (true == mTextures.empty()) 
-					return 0; 
-				else
-					return mTextures[index]; 
-			}
-			
-			/// Grab amount of Textures we have
-			unsigned int getTextureCount() const { return mTextures.size(); }
-
-		private:
-			Shader* mShader;
-			std::vector<Texture*> mTextures;
-	};
-}
+GAE_Material_t* GAE_Material_create(void);
+GAE_Material_t* GAE_Material_addTexture(GAE_Material_t* material, struct GAE_Texture_s* const texture);
+struct GAE_Array_s* GAE_Material_textures(GAE_Material_t* material);
+void GAE_Material_delete(GAE_Material_t* material);
 
 #endif
 

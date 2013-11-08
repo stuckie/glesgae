@@ -419,7 +419,7 @@ RGBE_to_RGBdivA2
 		m = (r > g) ? r : g;
 		m = (b > m) ? b : m;
 		/* and encode it into RGBdivA */
-		iv = (m != 0.0f) ? (int)sqrtf( 255.0f * 255.0f / m ) : 1.0f;
+		iv = (m != 0.0f) ? (int)sqrt( 255.0f * 255.0f / m ) : 1.0f;
 		iv = (iv < 1) ? 1 : iv;
 		img[3] = (iv > 255) ? 255 : iv;
 		iv = (int)(img[3] * img[3] * r / 255.0f + 0.5f);

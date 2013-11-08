@@ -1,8 +1,9 @@
-
+/*
 ///	DDS file support, does decoding, _not_ direct uploading
 ///	(use SOIL for that ;-)
+*/
 
-///	A bunch of DirectDraw Surface structures and flags
+/*	A bunch of DirectDraw Surface structures and flags*/
 typedef struct {
     unsigned int    dwMagic;
     unsigned int    dwSize;
@@ -14,7 +15,7 @@ typedef struct {
     unsigned int    dwMipMapCount;
     unsigned int    dwReserved1[ 11 ];
 
-    //  DDPIXELFORMAT
+    /*  DDPIXELFORMAT*/
     struct {
       unsigned int    dwSize;
       unsigned int    dwFlags;
@@ -26,7 +27,7 @@ typedef struct {
       unsigned int    dwAlphaBitMask;
     }               sPixelFormat;
 
-    //  DDCAPS2
+    /*  DDCAPS2*/
     struct {
       unsigned int    dwCaps1;
       unsigned int    dwCaps2;
@@ -36,10 +37,10 @@ typedef struct {
     unsigned int    dwReserved2;
 } DDS_header ;
 
-//	the following constants were copied directly off the MSDN website
+/*	the following constants were copied directly off the MSDN website*/
 
-//	The dwFlags member of the original DDSURFACEDESC2 structure
-//	can be set to one or more of the following values.
+/*	The dwFlags member of the original DDSURFACEDESC2 structure*/
+/*	can be set to one or more of the following values.*/
 #define DDSD_CAPS	0x00000001
 #define DDSD_HEIGHT	0x00000002
 #define DDSD_WIDTH	0x00000004
@@ -49,19 +50,19 @@ typedef struct {
 #define DDSD_LINEARSIZE	0x00080000
 #define DDSD_DEPTH	0x00800000
 
-//	DirectDraw Pixel Format
+/*	DirectDraw Pixel Format*/
 #define DDPF_ALPHAPIXELS	0x00000001
 #define DDPF_FOURCC	0x00000004
 #define DDPF_RGB	0x00000040
 
-//	The dwCaps1 member of the DDSCAPS2 structure can be
-//	set to one or more of the following values.
+/*	The dwCaps1 member of the DDSCAPS2 structure can be*/
+/*	set to one or more of the following values.*/
 #define DDSCAPS_COMPLEX	0x00000008
 #define DDSCAPS_TEXTURE	0x00001000
 #define DDSCAPS_MIPMAP	0x00400000
 
-//	The dwCaps2 member of the DDSCAPS2 structure can be
-//	set to one or more of the following values.
+/*	The dwCaps2 member of the DDSCAPS2 structure can be*/
+/*	set to one or more of the following values.*/
 #define DDSCAPS2_CUBEMAP	0x00000200
 #define DDSCAPS2_CUBEMAP_POSITIVEX	0x00000400
 #define DDSCAPS2_CUBEMAP_NEGATIVEX	0x00000800
@@ -73,12 +74,12 @@ typedef struct {
 
 static int dds_test(stbi *s)
 {
-	//	check the magic number
+	/*	check the magic number*/
 	if (get8(s) != 'D') return 0;
 	if (get8(s) != 'D') return 0;
 	if (get8(s) != 'S') return 0;
 	if (get8(s) != ' ') return 0;
-	//	check header size
+	/*	check header size*/
 	if (get32le(s) != 124) return 0;
 	return 1;
 }
@@ -101,7 +102,7 @@ int      stbi_dds_test_memory      (stbi_uc const *buffer, int len)
    return dds_test(&s);
 }
 
-//	helper functions
+/*	helper functions*/
 int stbi_convert_bit_range( int c, int from_bits, int to_bits )
 {
 	int b = (1 << (from_bits - 1)) + c * ((1 << to_bits) - 1);
@@ -121,7 +122,7 @@ void stbi_decode_DXT1_block(
 	int i, r, g, b;
 	int c0, c1;
 	unsigned char decode_colors[4*4];
-	//	find the 2 primary colors
+	/*	find the 2 primary colors*/
 	c0 = compressed[0] + (compressed[1] << 8);
 	c1 = compressed[2] + (compressed[3] << 8);
 	stbi_rgb_888_from_565( c0, &r, &g, &b );
@@ -136,7 +137,7 @@ void stbi_decode_DXT1_block(
 	decode_colors[7] = 255;
 	if( c0 > c1 )
 	{
-		//	no alpha, 2 interpolated colors
+		/*	no alpha, 2 interpolated colors*/
 		decode_colors[8] = (2*decode_colors[0] + decode_colors[4]) / 3;
 		decode_colors[9] = (2*decode_colors[1] + decode_colors[5]) / 3;
 		decode_colors[10] = (2*decode_colors[2] + decode_colors[6]) / 3;
@@ -147,7 +148,7 @@ void stbi_decode_DXT1_block(
 		decode_colors[15] = 255;
 	} else
 	{
-		//	1 interpolated color, alpha
+		/*	1 interpolated color, alpha*/
 		decode_colors[8] = (decode_colors[0] + decode_colors[4]) / 2;
 		decode_colors[9] = (decode_colors[1] + decode_colors[5]) / 2;
 		decode_colors[10] = (decode_colors[2] + decode_colors[6]) / 2;
@@ -157,7 +158,7 @@ void stbi_decode_DXT1_block(
 		decode_colors[14] = 0;
 		decode_colors[15] = 0;
 	}
-	//	decode the block
+	/*	decode the block*/
 	for( i = 0; i < 16*4; i += 4 )
 	{
 		int idx = ((compressed[next_bit>>3] >> (next_bit & 7)) & 3) * 4;
@@ -167,14 +168,14 @@ void stbi_decode_DXT1_block(
 		uncompressed[i+2] = decode_colors[idx+2];
 		uncompressed[i+3] = decode_colors[idx+3];
 	}
-	//	done
+	/*	done*/
 }
 void stbi_decode_DXT23_alpha_block(
 			unsigned char uncompressed[16*4],
 			unsigned char compressed[8] )
 {
 	int i, next_bit = 0;
-	//	each alpha value gets 4 bits
+	/*	each alpha value gets 4 bits*/
 	for( i = 3; i < 16*4; i += 4 )
 	{
 		uncompressed[i] = stbi_convert_bit_range(
@@ -189,12 +190,12 @@ void stbi_decode_DXT45_alpha_block(
 {
 	int i, next_bit = 8*2;
 	unsigned char decode_alpha[8];
-	//	each alpha value gets 3 bits, and the 1st 2 bytes are the range
+	/*	each alpha value gets 3 bits, and the 1st 2 bytes are the range*/
 	decode_alpha[0] = compressed[0];
 	decode_alpha[1] = compressed[1];
 	if( decode_alpha[0] > decode_alpha[1] )
 	{
-		//	6 step intermediate
+		/*	6 step intermediate*/
 		decode_alpha[2] = (6*decode_alpha[0] + 1*decode_alpha[1]) / 7;
 		decode_alpha[3] = (5*decode_alpha[0] + 2*decode_alpha[1]) / 7;
 		decode_alpha[4] = (4*decode_alpha[0] + 3*decode_alpha[1]) / 7;
@@ -203,7 +204,7 @@ void stbi_decode_DXT45_alpha_block(
 		decode_alpha[7] = (1*decode_alpha[0] + 6*decode_alpha[1]) / 7;
 	} else
 	{
-		//	4 step intermediate, pluss full and none
+		/*	4 step intermediate, pluss full and none*/
 		decode_alpha[2] = (4*decode_alpha[0] + 1*decode_alpha[1]) / 5;
 		decode_alpha[3] = (3*decode_alpha[0] + 2*decode_alpha[1]) / 5;
 		decode_alpha[4] = (2*decode_alpha[0] + 3*decode_alpha[1]) / 5;
@@ -225,7 +226,7 @@ void stbi_decode_DXT45_alpha_block(
 		++next_bit;
 		uncompressed[i] = decode_alpha[idx & 7];
 	}
-	//	done
+	/*	done*/
 }
 void stbi_decode_DXT_color_block(
 			unsigned char uncompressed[16*4],
@@ -235,7 +236,7 @@ void stbi_decode_DXT_color_block(
 	int i, r, g, b;
 	int c0, c1;
 	unsigned char decode_colors[4*3];
-	//	find the 2 primary colors
+	/*	find the 2 primary colors*/
 	c0 = compressed[0] + (compressed[1] << 8);
 	c1 = compressed[2] + (compressed[3] << 8);
 	stbi_rgb_888_from_565( c0, &r, &g, &b );
@@ -246,15 +247,15 @@ void stbi_decode_DXT_color_block(
 	decode_colors[3] = r;
 	decode_colors[4] = g;
 	decode_colors[5] = b;
-	//	Like DXT1, but no choicees:
-	//	no alpha, 2 interpolated colors
+	/*	Like DXT1, but no choicees:*/
+	/*	no alpha, 2 interpolated colors*/
 	decode_colors[6] = (2*decode_colors[0] + decode_colors[3]) / 3;
 	decode_colors[7] = (2*decode_colors[1] + decode_colors[4]) / 3;
 	decode_colors[8] = (2*decode_colors[2] + decode_colors[5]) / 3;
 	decode_colors[9] = (decode_colors[0] + 2*decode_colors[3]) / 3;
 	decode_colors[10] = (decode_colors[1] + 2*decode_colors[4]) / 3;
 	decode_colors[11] = (decode_colors[2] + 2*decode_colors[5]) / 3;
-	//	decode the block
+	/*	decode the block*/
 	for( i = 0; i < 16*4; i += 4 )
 	{
 		int idx = ((compressed[next_bit>>3] >> (next_bit & 7)) & 3) * 3;
@@ -263,11 +264,11 @@ void stbi_decode_DXT_color_block(
 		uncompressed[i+1] = decode_colors[idx+1];
 		uncompressed[i+2] = decode_colors[idx+2];
 	}
-	//	done
+	/*	done*/
 }
 static stbi_uc *dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
-	//	all variables go up front
+	/*	all variables go up front*/
 	stbi_uc *dds_data = NULL;
 	stbi_uc block[16*4];
 	stbi_uc compressed[8];
@@ -277,17 +278,17 @@ static stbi_uc *dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 	int block_pitch, num_blocks;
 	DDS_header header;
 	int i, sz, cf;
-	//	load the header
+	/*	load the header*/
 	if( sizeof( DDS_header ) != 128 )
 	{
 		return NULL;
 	}
 	getn( s, (stbi_uc*)(&header), 128 );
-	//	and do some checking
+	/*	and do some checking*/
 	if( header.dwMagic != (('D' << 0) | ('D' << 8) | ('S' << 16) | (' ' << 24)) ) return NULL;
 	if( header.dwSize != 124 ) return NULL;
 	flags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT;
-	if( (header.dwFlags & flags) != flags ) return NULL;
+	if( (header.dwFlags & flags) != (unsigned int)flags ) return NULL;
 	/*	According to the MSDN spec, the dwFlags should contain
 		DDSD_LINEARSIZE if it's compressed, or DDSD_PITCH if
 		uncompressed.  Some DDS writers do not conform to the
@@ -296,7 +297,7 @@ static stbi_uc *dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 	flags = DDPF_FOURCC | DDPF_RGB;
 	if( (header.sPixelFormat.dwFlags & flags) == 0 ) return NULL;
 	if( (header.sCaps.dwCaps1 & DDSCAPS_TEXTURE) == 0 ) return NULL;
-	//	get the image data
+	/*	get the image data*/
 	s->img_x = header.dwWidth;
 	s->img_y = header.dwHeight;
 	s->img_n = 4;
@@ -318,56 +319,56 @@ static stbi_uc *dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 	if( is_compressed )
 	{
 		/*	compressed	*/
-		//	note: header.sPixelFormat.dwFourCC is something like (('D'<<0)|('X'<<8)|('T'<<16)|('1'<<24))
+		/*	note: header.sPixelFormat.dwFourCC is something like (('D'<<0)|('X'<<8)|('T'<<16)|('1'<<24))*/
 		DXT_family = 1 + (header.sPixelFormat.dwFourCC >> 24) - '1';
 		if( (DXT_family < 1) || (DXT_family > 5) ) return NULL;
 		/*	check the expected size...oops, nevermind...
 			those non-compliant writers leave
 			dwPitchOrLinearSize == 0	*/
-		//	passed all the tests, get the RAM for decoding
+		/*	passed all the tests, get the RAM for decoding*/
 		sz = (s->img_x)*(s->img_y)*4*cubemap_faces;
 		dds_data = (unsigned char*)malloc( sz );
 		/*	do this once for each face	*/
 		for( cf = 0; cf < cubemap_faces; ++ cf )
 		{
-			//	now read and decode all the blocks
+			/*	now read and decode all the blocks*/
 			for( i = 0; i < num_blocks; ++i )
 			{
-				//	where are we?
+				/*	where are we?*/
 				int bx, by, bw=4, bh=4;
 				int ref_x = 4 * (i % block_pitch);
 				int ref_y = 4 * (i / block_pitch);
-				//	get the next block's worth of compressed data, and decompress it
+				/*	get the next block's worth of compressed data, and decompress it*/
 				if( DXT_family == 1 )
 				{
-					//	DXT1
+					/*	DXT1*/
 					getn( s, compressed, 8 );
 					stbi_decode_DXT1_block( block, compressed );
 				} else if( DXT_family < 4 )
 				{
-					//	DXT2/3
+					/*	DXT2/3*/
 					getn( s, compressed, 8 );
 					stbi_decode_DXT23_alpha_block ( block, compressed );
 					getn( s, compressed, 8 );
 					stbi_decode_DXT_color_block ( block, compressed );
 				} else
 				{
-					//	DXT4/5
+					/*	DXT4/5*/
 					getn( s, compressed, 8 );
 					stbi_decode_DXT45_alpha_block ( block, compressed );
 					getn( s, compressed, 8 );
 					stbi_decode_DXT_color_block ( block, compressed );
 				}
-				//	is this a partial block?
-				if( ref_x + 4 > s->img_x )
+				/*	is this a partial block?*/
+				if( ref_x + 4 > (int)s->img_x )
 				{
 					bw = s->img_x - ref_x;
 				}
-				if( ref_y + 4 > s->img_y )
+				if( ref_y + 4 > (int)s->img_y )
 				{
 					bh = s->img_y - ref_y;
 				}
-				//	now drop our decompressed data into the buffer
+				/*	now drop our decompressed data into the buffer*/
 				for( by = 0; by < bh; ++by )
 				{
 					int idx = 4*((ref_y+by+cf*s->img_x)*s->img_x + ref_x);
@@ -387,7 +388,7 @@ static stbi_uc *dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 				{
 					block_size = 8;
 				}
-				for( i = 1; i < header.dwMipMapCount; ++i )
+				for( i = 1; i < (int)header.dwMipMapCount; ++i )
 				{
 					int mx = s->img_x >> (i + 2);
 					int my = s->img_y >> (i + 2);
@@ -424,7 +425,7 @@ static stbi_uc *dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 				skip MIPmaps if present	*/
 			if( has_mipmap )
 			{
-				for( i = 1; i < header.dwMipMapCount; ++i )
+				for( i = 1; i < (int)header.dwMipMapCount; ++i )
 				{
 					int mx = s->img_x >> i;
 					int my = s->img_y >> i;
@@ -453,8 +454,8 @@ static stbi_uc *dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 		note: sz is already up to date	*/
 	s->img_y *= cubemap_faces;
 	*y = s->img_y;
-	//	did the user want something else, or
-	//	see if all the alpha values are 255 (i.e. no transparency)
+	/*	did the user want something else, or*/
+	/*	see if all the alpha values are 255 (i.e. no transparency)*/
 	has_alpha = 0;
 	if( s->img_n == 4)
 	{
@@ -465,7 +466,7 @@ static stbi_uc *dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 	}
 	if( (req_comp <= 4) && (req_comp >= 1) )
 	{
-		//	user has some requirements, meet them
+		/*	user has some requirements, meet them*/
 		if( req_comp != s->img_n )
 		{
 			dds_data = convert_format( dds_data, s->img_n, req_comp, s->img_x, s->img_y );
@@ -473,14 +474,14 @@ static stbi_uc *dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 		}
 	} else
 	{
-		//	user had no requirements, only drop to RGB is no alpha
+		/*	user had no requirements, only drop to RGB is no alpha*/
 		if( (has_alpha == 0) && (s->img_n == 4) )
 		{
 			dds_data = convert_format( dds_data, 4, 3, s->img_x, s->img_y );
 			*comp = 3;
 		}
 	}
-	//	OK, done
+	/*	OK, done*/
 	return dds_data;
 }
 

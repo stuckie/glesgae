@@ -1,210 +1,91 @@
 #ifndef _VERTEX_BUFFER_H_
 #define _VERTEX_BUFFER_H_
 
-namespace GLESGAE
-{
-	class VertexBuffer
-	{
-		public:
-			const static unsigned int FORMAT_SIZE = 8U;
-			
-			struct UpdateData
-			{
-				bool retain;
-				unsigned int offset;
-				unsigned int size;
-				unsigned char* data;
-				
-				UpdateData() : retain(false), offset(0), size(0), data(0) {}
-			};
-			
-			enum BufferType
-			{
-				FORMAT_STATIC
-			,	FORMAT_DYNAMIC
-			,	FORMAT_STREAM
-			};
-			
-			enum FormatType
-			{
-				INVALID_FORMAT
-				// Float
-			,	FORMAT_CUSTOM_4F
-			,	FORMAT_CUSTOM_3F
-			,	FORMAT_CUSTOM_2F
-			,	FORMAT_POSITION_2F
-			,	FORMAT_POSITION_3F
-			,	FORMAT_POSITION_4F
-			,	FORMAT_NORMAL_3F
-			,	FORMAT_COLOUR_3F	// Not available in GLES1
-			,	FORMAT_COLOUR_4F
-			,	FORMAT_TEXTURE_2F
-			,	FORMAT_TEXTURE_3F
-			,	FORMAT_TEXTURE_4F
-				// Unsigned/Byte
-			,	FORMAT_CUSTOM_2B
-			,	FORMAT_CUSTOM_3B
-			,	FORMAT_CUSTOM_4B
-			,	FORMAT_POSITION_2B
-			,	FORMAT_POSITION_3B
-			,	FORMAT_POSITION_4B
-			,	FORMAT_NORMAL_3B
-			,	FORMAT_COLOUR_3UB	// Not available in GLES1
-			,	FORMAT_COLOUR_4UB
-			,	FORMAT_TEXTURE_2B
-			,	FORMAT_TEXTURE_3B
-			,	FORMAT_TEXTURE_4B
-				// Short
-			,	FORMAT_CUSTOM_2S
-			,	FORMAT_CUSTOM_3S
-			,	FORMAT_CUSTOM_4S
-			,	FORMAT_POSITION_2S
-			,	FORMAT_POSITION_3S
-			,	FORMAT_POSITION_4S
-			,	FORMAT_NORMAL_3S
-			,	FORMAT_COLOUR_3S	// Not available in GLES1
-			,	FORMAT_COLOUR_4S	// Not available in GLES1
-			,	FORMAT_TEXTURE_2S
-			,	FORMAT_TEXTURE_3S
-			,	FORMAT_TEXTURE_4S
-			};
+#include "../GAE_Types.h"
 
-			class Format
-			{
-				public:
-					Format() : mType(INVALID_FORMAT), mSize(0U), mOffset(0U) {}
-					Format(const FormatType type, unsigned int offset)
-					: mType(type)
-					, mSize(0U)
-					, mOffset(offset)
-					{
-						switch (mType)
-						{
-							case FORMAT_CUSTOM_2F:
-							case FORMAT_POSITION_2F:
-							case FORMAT_TEXTURE_2F:
-								mSize = sizeof(float) * 2;
-								break;
-							case FORMAT_CUSTOM_3F:
-							case FORMAT_POSITION_3F:
-							case FORMAT_NORMAL_3F:
-							case FORMAT_COLOUR_3F:
-							case FORMAT_TEXTURE_3F:
-								mSize = sizeof(float) * 3;
-								break;
-							case FORMAT_CUSTOM_4F:
-							case FORMAT_POSITION_4F:
-							case FORMAT_COLOUR_4F:
-							case FORMAT_TEXTURE_4F:
-								mSize = sizeof(float) * 4;
-								break;
-							case FORMAT_CUSTOM_2B:
-							case FORMAT_POSITION_2B:
-							case FORMAT_TEXTURE_2B:
-								mSize = sizeof(char) * 2;
-								break;
-							case FORMAT_CUSTOM_3B:
-							case FORMAT_POSITION_3B:
-							case FORMAT_NORMAL_3B:
-							case FORMAT_COLOUR_3UB:
-							case FORMAT_TEXTURE_3B:
-								mSize = sizeof(char) * 3;
-								break;
-							case FORMAT_CUSTOM_4B:
-							case FORMAT_POSITION_4B:
-							case FORMAT_COLOUR_4UB:
-							case FORMAT_TEXTURE_4B:
-								mSize = sizeof(char) * 4;
-							case FORMAT_CUSTOM_2S:
-							case FORMAT_POSITION_2S:
-							case FORMAT_TEXTURE_2S:
-								mSize = sizeof(short) * 2;
-								break;
-							case FORMAT_CUSTOM_3S:
-							case FORMAT_POSITION_3S:
-							case FORMAT_NORMAL_3S:
-							case FORMAT_COLOUR_3S:
-							case FORMAT_TEXTURE_3S:
-								mSize = sizeof(short) * 3;
-								break;
-							case FORMAT_CUSTOM_4S:
-							case FORMAT_POSITION_4S:
-							case FORMAT_COLOUR_4S:
-							case FORMAT_TEXTURE_4S:
-								mSize = sizeof(short) * 4;
-								break;
-							default:
-								break;
-						};
-					}
+#define GAE_VERTEXBUFFER_FORMAT_SIZE 8U
 
-					/// Retrieve the type of this Format Identifier
-					FormatType getType() const { return mType; }
+typedef struct GAE_VertexBuffer_UpdateData_s {
+	GAE_BOOL retain;
+	unsigned int offset;
+	unsigned int size;
+	GAE_BYTE* data;
+} GAE_VertexBuffer_UpdateData_t;
 
-					/// Retrieve the offset of this Format Identifier
-					unsigned int getOffset() const { return mOffset; }
+typedef enum GAE_VertexBuffer_Type_e {
+	GAE_VERTEXBUFFER_TYPE_STATIC
+,	GAE_VERTEXBUFFER_TYPE_DYNAMIC
+,	GAE_VERTEXBUFFER_TYPE_STREAM
+} GAE_VertexBuffer_Type;
 
-					/// Retrieve the size of this Format Identifier
-					unsigned int getSize() const { return mSize; }
+typedef enum GAE_VertexBuffer_FormatType_e {
+	GAE_VERTEXBUFFER_INVALID_FORMAT
+	/* Float*/
+,	GAE_VERTEXBUFFER_FORMAT_CUSTOM_4F
+,	GAE_VERTEXBUFFER_FORMAT_CUSTOM_3F
+,	GAE_VERTEXBUFFER_FORMAT_CUSTOM_2F
+,	GAE_VERTEXBUFFER_FORMAT_POSITION_2F
+,	GAE_VERTEXBUFFER_FORMAT_POSITION_3F
+,	GAE_VERTEXBUFFER_FORMAT_POSITION_4F
+,	GAE_VERTEXBUFFER_FORMAT_NORMAL_3F
+,	GAE_VERTEXBUFFER_FORMAT_COLOUR_3F	/* Not available in GLES1*/
+,	GAE_VERTEXBUFFER_FORMAT_COLOUR_4F
+,	GAE_VERTEXBUFFER_FORMAT_TEXTURE_2F
+,	GAE_VERTEXBUFFER_FORMAT_TEXTURE_3F
+,	GAE_VERTEXBUFFER_FORMAT_TEXTURE_4F
+	/* Unsigned/Byte*/
+,	GAE_VERTEXBUFFER_FORMAT_CUSTOM_2B
+,	GAE_VERTEXBUFFER_FORMAT_CUSTOM_3B
+,	GAE_VERTEXBUFFER_FORMAT_CUSTOM_4B
+,	GAE_VERTEXBUFFER_FORMAT_POSITION_2B
+,	GAE_VERTEXBUFFER_FORMAT_POSITION_3B
+,	GAE_VERTEXBUFFER_FORMAT_POSITION_4B
+,	GAE_VERTEXBUFFER_FORMAT_NORMAL_3B
+,	GAE_VERTEXBUFFER_FORMAT_COLOUR_3UB	/* Not available in GLES1*/
+,	GAE_VERTEXBUFFER_FORMAT_COLOUR_4UB
+,	GAE_VERTEXBUFFER_FORMAT_TEXTURE_2B
+,	GAE_VERTEXBUFFER_FORMAT_TEXTURE_3B
+,	GAE_VERTEXBUFFER_FORMAT_TEXTURE_4B
+	/* Short*/
+,	GAE_VERTEXBUFFER_FORMAT_CUSTOM_2S
+,	GAE_VERTEXBUFFER_FORMAT_CUSTOM_3S
+,	GAE_VERTEXBUFFER_FORMAT_CUSTOM_4S
+,	GAE_VERTEXBUFFER_FORMAT_POSITION_2S
+,	GAE_VERTEXBUFFER_FORMAT_POSITION_3S
+,	GAE_VERTEXBUFFER_FORMAT_POSITION_4S
+,	GAE_VERTEXBUFFER_FORMAT_NORMAL_3S
+,	GAE_VERTEXBUFFER_FORMAT_COLOUR_3S	/* Not available in GLES1*/
+,	GAE_VERTEXBUFFER_FORMAT_COLOUR_4S	/* Not available in GLES1*/
+,	GAE_VERTEXBUFFER_FORMAT_TEXTURE_2S
+,	GAE_VERTEXBUFFER_FORMAT_TEXTURE_3S
+,	GAE_VERTEXBUFFER_FORMAT_TEXTURE_4S
+} GAE_VertexBuffer_FormatType;
 
-				private:
-					FormatType mType;
-					unsigned int mSize;
-					unsigned int mOffset;
-			};
+typedef struct GAE_VertexBuffer_Format_s {
+	GAE_VertexBuffer_FormatType type;
+	unsigned int size;
+	unsigned int offset;
+} GAE_VertexBuffer_Format_t;
 
-			VertexBuffer(unsigned char* const data, const unsigned int size, const Format format[], const BufferType bufferType = FORMAT_STATIC);
-			VertexBuffer(unsigned char* const data, const unsigned int size, const BufferType bufferType = FORMAT_STATIC);
-			VertexBuffer(const VertexBuffer& vertexBuffer);
-			VertexBuffer& operator=(const VertexBuffer& vertexBuffer);
-			~VertexBuffer();
+typedef struct GAE_VertexBuffer_s {
+	unsigned int size;
+	GAE_BYTE* data;
+	unsigned int stride;
+	unsigned int offset;
+	unsigned int* vboId;
+	GAE_VertexBuffer_Type type;
+	GAE_VertexBuffer_Format_t format[GAE_VERTEXBUFFER_FORMAT_SIZE];
+	GAE_VertexBuffer_UpdateData_t* updateData;
+} GAE_VertexBuffer_t;
 
-			/// Retrieve format details
-			const Format* getFormat() const { return mFormat; }
+GAE_VertexBuffer_Format_t GAE_VertexBuffer_Format_create(const GAE_VertexBuffer_FormatType type, unsigned int offset);
 
-			/// Retrieve data
-			unsigned char* getData() const { return mData; }
-			
-			/// Retrieve writable data - use with care.
-			unsigned char* getWriteableData();
+GAE_VertexBuffer_t* GAE_VertexBuffer_create(GAE_BYTE* const data, const unsigned int size, const GAE_VertexBuffer_Type type);
+GAE_VertexBuffer_t* GAE_VertexBuffer_createWithFormat(GAE_BYTE* const data, const unsigned int size, const GAE_VertexBuffer_Type type, const GAE_VertexBuffer_Format_t format[]);
+GAE_VertexBuffer_t* GAE_VertexBuffer_clone(GAE_VertexBuffer_t* buffer);
+void GAE_VertexBuffer_delete(GAE_VertexBuffer_t* buffer);
 
-			/// Retrieve size
-			unsigned int getSize() const { return mSize; }
-
-			/// Retrieve stride
-			unsigned int getStride() const { return mStride; }
-			
-			/// Set to interleaved format
-			void isInterleaved();
-			
-			/// Retrieve the Buffer Type
-			BufferType getType() const { return mType; }
-			
-			/// Retrieve the Vbo Id
-			unsigned int* getVboId() const { return mVboId; }
-			
-			/// Set the Vbo Id
-			void setVboId(unsigned int* vboId) { mVboId = vboId; }
-
-			/// Add a Format Identifier
-			void addFormatIdentifier(const FormatType formatType, const unsigned int amount);
-			
-			/// Add update data
-			void setUpdateData(UpdateData* const updateData) { mUpdateData = updateData; }
-			
-			/// Retrieve update data
-			UpdateData* getUpdateData() { return mUpdateData; }
-
-		private:
-			unsigned int mSize;
-			unsigned char* mData;
-			unsigned int mStride;
-			unsigned int mOffset;
-			BufferType mType;
-			unsigned int* mVboId;			// using unsigned int rather than GLuint to keep GL dependency away from the header.
-			Format mFormat[FORMAT_SIZE];
-			UpdateData* mUpdateData;
-	};
-}
+GAE_VertexBuffer_t* GAE_VertexBuffer_setInterleaved(GAE_VertexBuffer_t* buffer);
+GAE_VertexBuffer_t* GAE_VertexBuffer_addFormatIdentifier(GAE_VertexBuffer_t* buffer, const GAE_VertexBuffer_FormatType type, const unsigned int amount);
 
 #endif

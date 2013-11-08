@@ -1,74 +1,52 @@
 #ifndef _PLATFORM_H_
 #define _PLATFORM_H_
 
-#include <jni.h>
-#include <android_native_app_glue.h>
-#include "../../Events/EventSystem.h"
+#define PLATFORM_MAIN		 						\
+GAE_Platform_t* gPlatform;							\
+void main(struct android_app* app) {				\
+	GAE_BOOL isApplicationRunning = GAE_TRUE;		\
+	int ident = 0;									\
+	int events = 0;									\
+	struct android_poll_source* source = 0;
 
-#define PLATFORM_MAIN 	\
-extern "C" {												\
-	void android_main(struct android_app* app)							\
-	{												\
-		app_dummy();
-	
-#define PLATFORM_INIT											\
-		app->userData = application;								\
-		app->onAppCmd = GLESGAE::EventSystem::handleAndroidCommand;				\
-		app->onInputEvent = GLESGAE::EventSystem::handleAndroidInput;				\
-		platform->setApp(app);									\
+#define PLATFORM_INIT								\
+	app_dummy();									\
+	gPlatform = GAE_Platform_create();				\
+	app->userData = gPlatform;						\
+	app->onAppCmd = gPlatform->onAppCmd;			\
+	app->onInputEvent = gPlatform->onInputEvent;	\
+	gPlatform->androidApp = app;					\
 													\
-		if (0 != app->savedState)								\
-			platform->setState(reinterpret_cast<AndroidState*>(app->savedState));
+	if (0 != app->savedState)						\
+		gPlatform->userData = app->savedState;
 	
-#define PLATFORM_LOOP											\
-		application->onCreate();								\
-		bool applicationRunning(true);								\
-		int ident(0);										\
-		int events(0);										\
-		struct android_poll_source* source(0);							\
-		while (true == applicationRunning) {							\
-			while ( (ident=ALooper_pollAll(0, NULL, &events, (void**)&source)) >= 0) {	\
-			if (0 != source) {								\
-					source->process(app, source);					\
-				}									\
-			}										\
-			applicationRunning = application->onLoop();					\
-		}
-	
-#define END_MAIN											\
-	}												\
+#define PLATFORM_LOOP																\
+	gPlatform->parent->onCreate();													\
+																					\
+																					\
+	while (GAE_TRUE == isApplicationRunning) {										\
+		while ( (ident=ALooper_pollAll(0, NULL, &events, (void**)&source)) >= 0) {	\
+		if (0 != source) {															\
+				source->process(app, source);										\
+			}																		\
+		}																			\
+		applicationRunning = gPlatform->parent->onLoop();
+
+#define END_MAIN									\
+	GAE_Platform_delete(gPlatform);					\
+	gPlatform = 0;									\
+	return 0;										\
 }
 
-class AndroidState;
-namespace GLESGAE
-{
-	class Platform : public BasePlatform
-	{
-		public:
-			Platform();
-			virtual ~Platform() {}
-			
-			/// Get the Android App magic struct.
-			android_app* getApp() { return mApp; }
-			
-			/// Set the Android App magic struct.
-			void setApp(android_app* const app) { mApp = app; }
-			
-			/// Get the Android State for any saved info we may need.
-			AndroidState* getState() { return mState; }
-			
-			/// Set the Android State for any saved info we may need.
-			void setState(AndroidState* const state) { mState = state; }
-			
-		protected:
-			struct android_app* 	mApp;
-			AndroidState*		mState;
-			
-		private:
-			Platform(const Platform&);
-			Platform& operator=(const Platform&);
-	};
-}
+typedef struct GAE_Platform_s {
+	GAE_Common_Platform_t parent;
+	onAppCmd* onAppCmd;
+	onInputEvent* onInputEvent;
+	struct android_app* androidApp;
+	void* userData;
+} GAE_Platform_t;
+
+GAE_Platform_t* GAE_Platform_create(void);
+void GAE_Platform_destroy(GAE_Platform_t* platform);
 
 #endif
-
