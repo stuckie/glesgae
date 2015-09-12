@@ -6,3 +6,5 @@
 *.exe
 *.o
 *.so
+build-linux
+lib

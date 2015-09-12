@@ -51,8 +51,6 @@ void GAE_EventSystem_update(GAE_EventSystem_t* commonSystem) {
 
 	XEvent xEvent;
 
-	assert(window);
-
 	if (1 == XQueryPointer(window->display, window->window
 									, &rootReturn, &childReturn
 									, &rootXReturn, &rootYReturn

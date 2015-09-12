@@ -32,14 +32,14 @@ GAE_Tiled_Tileset_t* handleTileset(jsmntok_t* tokens, char* string);
 GAE_BOOL StringCompare(void* A, void* B) {
 	char* a = (char*)A;
 	char* b = (char*)B;
-
+	
 	return !strncmp(a, b, strlen(a)); /*strncmp returns 0 if they match*/
 }
 
 GAE_Tiled_t* GAE_TiledParser_create(struct GAE_File_s* const file) {
 	GAE_FILE_STATUS openStatus;
 	GAE_FILE_READ_STATUS readStatus;
-    jsmntok_t* tokens = 0;
+	jsmntok_t* tokens = 0;
 
 	GAE_File_open(file, GAE_FILE_OPEN_READ, GAE_FILE_ASCII, &openStatus);
 	GAE_File_read(file, GAE_FILE_READ_ALL, &readStatus);
@@ -54,86 +54,86 @@ void GAE_TiledParser_delete(GAE_Tiled_t* tiledParser) {
 }
 
 jsmntok_t* jsonTokenise(const char* js) {
-    jsmn_parser parser;
-    unsigned int numTokens = JSON_TOKENS;
-    jsmntok_t* tokens = (jsmntok_t*)malloc(sizeof(jsmntok_t) * numTokens);
-    int ret = 0;
+	jsmn_parser parser;
+	unsigned int numTokens = JSON_TOKENS;
+	jsmntok_t* tokens = (jsmntok_t*)malloc(sizeof(jsmntok_t) * numTokens);
+	int ret = 0;
 
-    jsmn_init(&parser);
-    ret = jsmn_parse(&parser, js, tokens, numTokens);
+	jsmn_init(&parser);
+	ret = jsmn_parse(&parser, js, tokens, numTokens);
 
-    while (ret == JSMN_ERROR_NOMEM) { /* Not enough tokens allocated, allocate some more */
-        numTokens = numTokens * 2 + 1;
-        tokens = realloc(tokens, sizeof(jsmntok_t) * numTokens);
-        ret = jsmn_parse(&parser, js, tokens, numTokens);
-    }
+	while (ret == JSMN_ERROR_NOMEM) { /* Not enough tokens allocated, allocate some more */
+		numTokens = numTokens * 2 + 1;
+		tokens = realloc(tokens, sizeof(jsmntok_t) * numTokens);
+		ret = jsmn_parse(&parser, js, tokens, numTokens);
+	}
 
-    if (ret == JSMN_ERROR_INVAL) {
-        /*log_die("jsmn_parse: invalid JSON string");*/
-    }
-    if (ret == JSMN_ERROR_PART) {
-        /*log_die("jsmn_parse: truncated JSON string");*/
-    }
+	if (ret == JSMN_ERROR_INVAL) {
+		/*log_die("jsmn_parse: invalid JSON string");*/
+	}
+	if (ret == JSMN_ERROR_PART) {
+		/*log_die("jsmn_parse: truncated JSON string");*/
+	}
 
     return tokens;
 }
 
 GAE_BOOL json_token_streq(char* js, jsmntok_t* t, char* s) {
-    return (strncmp(js + t->start, s, t->end - t->start) == 0
-            && strlen(s) == (size_t) (t->end - t->start));
+	return (0 == strncmp(js + t->start, s, t->end - t->start)
+		&& strlen(s) == (size_t) (t->end - t->start));
 }
 
 char* json_token_tostr(char* js, jsmntok_t* t) {
-    js[t->end] = '\0';
-    return js + t->start;
+	js[t->end] = '\0';
+	return js + t->start;
 }
 
 GAE_Tiled_t* handleMap(jsmntok_t* tokens, char* string) {
-    GAE_Tiled_t* tiledParser = (GAE_Tiled_t*)malloc(sizeof(GAE_Tiled_t));
+	GAE_Tiled_t* tiledParser = (GAE_Tiled_t*)malloc(sizeof(GAE_Tiled_t));
 
-    unsigned int index = 0U;
-    unsigned int currentToken = 1U;
-    unsigned int objects = 0U;
-    unsigned int keyIndex = 0U;
-    unsigned int depth = 0U;
-    int parent = 0U;
-    jsmntok_t* token = &tokens[index];
+	unsigned int index = 0U;
+	unsigned int currentToken = 1U;
+	unsigned int objects = 0U;
+	unsigned int keyIndex = 0U;
+	unsigned int depth = 0U;
+	int parent = 0U;
+	jsmntok_t* token = &tokens[index];
 
-    memset(tiledParser, 0, sizeof(GAE_Tiled_t));
+	memset(tiledParser, 0, sizeof(GAE_Tiled_t));
 
-    tiledParser->layers = GAE_Array_create(sizeof(GAE_Tiled_Layer_t));
-    tiledParser->tilesets = GAE_Array_create(sizeof(GAE_Tiled_Tileset_t));
-    tiledParser->properties = 0;
+	tiledParser->layers = GAE_Array_create(sizeof(GAE_Tiled_Layer_t));
+	tiledParser->tilesets = GAE_Array_create(sizeof(GAE_Tiled_Tileset_t));
+	tiledParser->properties = 0;
 
-    assert(token->type == JSMN_OBJECT); /* First token should be the entire JSON object */
+	assert(token->type == JSMN_OBJECT); /* First token should be the entire JSON object */
 
-    objects = token->size / 2U; /* How many objects and things have we here? JSMN counts open/closed objects. */
+	objects = token->size / 2U; /* How many objects and things have we here? JSMN counts open/closed objects. */
 
-    for (index = 0U; index < objects;) {
-        token = &tokens[currentToken++];
+	for (index = 0U; index < objects;) {
+		token = &tokens[currentToken++];
 
-        if (token->parent < parent) {
-            --depth;
-            parent = token->parent;
+		if (token->parent < parent) {
+			--depth;
+			parent = token->parent;
 
-            if (parent == 0)
-                depth = 0;
-        }
+			if (parent == 0)
+				depth = 0;
+		}
 
-        for (keyIndex = 0U; keyIndex < KEY_MAX; ++keyIndex) {
-            if (json_token_streq(string, token, KEYS[keyIndex])) {
-                if (0 == depth) {
-                    parseRootKey(&tokens[currentToken], string, keyIndex, tiledParser);
-                    ++index;
-                }
-                break;
-            }
-        }
-        if ((token->type == JSMN_OBJECT) || (token->type == JSMN_ARRAY)) {
-            ++depth;
-            parent = currentToken - 1U;
-        }
-    }
+		for (keyIndex = 0U; keyIndex < KEY_MAX; ++keyIndex) {
+			if (json_token_streq(string, token, KEYS[keyIndex])) {
+				if (0 == depth) {
+					parseRootKey(&tokens[currentToken], string, keyIndex, tiledParser);
+					++index;
+				}
+				break;
+			}
+		}
+		if ((token->type == JSMN_OBJECT) || (token->type == JSMN_ARRAY)) {
+			++depth;
+			parent = currentToken - 1U;
+		}
+	}
 
     return tiledParser;
 }
@@ -142,59 +142,59 @@ GAE_Tiled_Layer_t* handleLayer(jsmntok_t* tokens, char* string) {
 	GAE_Tiled_Layer_t* layer = (GAE_Tiled_Layer_t*)malloc(sizeof(GAE_Tiled_Layer_t));
 
 	unsigned int index = 0U;
-    unsigned int currentToken = 1U;
-    unsigned int objects = 0U;
-    unsigned int keyIndex = 0U;
-    jsmntok_t* token = &tokens[index];
+	unsigned int currentToken = 1U;
+	unsigned int objects = 0U;
+	unsigned int keyIndex = 0U;
+	jsmntok_t* token = &tokens[index];
 
-    memset(layer, 0, sizeof(GAE_Tiled_Layer_t));
+	memset(layer, 0, sizeof(GAE_Tiled_Layer_t));
 
-    assert(token->type == JSMN_OBJECT);
-    objects = token->size / 2U;
+	assert(token->type == JSMN_OBJECT);
+	objects = token->size / 2U;
 
-    for (index = 0U; index < objects;) {
-        token = &tokens[currentToken++];
+	for (index = 0U; index < objects;) {
+		token = &tokens[currentToken++];
 
-        for (keyIndex = 0U; keyIndex < KEY_MAX; ++keyIndex) {
-            if (json_token_streq(string, token, KEYS[keyIndex])) {
-                parseLayerKey(&tokens[currentToken], string, keyIndex, layer);
-                ++index;
-                break;
-            }
-        }
-    }
+		for (keyIndex = 0U; keyIndex < KEY_MAX; ++keyIndex) {
+			if (json_token_streq(string, token, KEYS[keyIndex])) {
+				parseLayerKey(&tokens[currentToken], string, keyIndex, layer);
+				++index;
+				break;
+			}
+		}
+	}
 	return layer;
 }
 
 GAE_Tiled_Tileset_t* handleTileset(jsmntok_t* tokens, char* string) {
 	GAE_Tiled_Tileset_t* tileset = (GAE_Tiled_Tileset_t*)malloc(sizeof(GAE_Tiled_Tileset_t));
 	unsigned int index = 0U;
-    unsigned int currentToken = 1U;
-    unsigned int objects = 0U;
-    unsigned int keyIndex = 0U;
-    jsmntok_t* token = &tokens[index];
-    int parent = (&tokens[currentToken])->parent;
+	unsigned int currentToken = 1U;
+	unsigned int objects = 0U;
+	unsigned int keyIndex = 0U;
+	jsmntok_t* token = &tokens[index];
+	int parent = (&tokens[currentToken])->parent;
 
-    memset(tileset, 0, sizeof(GAE_Tiled_Tileset_t));
-    tileset->terrains = GAE_Array_create(sizeof(GAE_Tiled_Terrain_t));
-    tileset->tiles = GAE_Array_create(sizeof(GAE_Tiled_Tile_t));
+	memset(tileset, 0, sizeof(GAE_Tiled_Tileset_t));
+	tileset->terrains = GAE_Array_create(sizeof(GAE_Tiled_Terrain_t));
+	tileset->tiles = GAE_Array_create(sizeof(GAE_Tiled_Tile_t));
 
-    assert(token->type == JSMN_OBJECT);
-    objects = token->size / 2U;
+	assert(token->type == JSMN_OBJECT);
+	objects = token->size / 2U;
 
-    for (index = 0U; index < objects;) {
-        token = &tokens[currentToken++];
+	for (index = 0U; index < objects;) {
+		token = &tokens[currentToken++];
 
 		if ((&tokens[currentToken])->parent == parent) {
-	        for (keyIndex = 0U; keyIndex < KEY_MAX; ++keyIndex) {
-	            if (json_token_streq(string, token, KEYS[keyIndex])) {
-	                parseTilesetKey(&tokens[currentToken], string, keyIndex, tileset);
-	                ++index;
-	                break;
-	            }
-	        }
-	    }
-    }
+			for (keyIndex = 0U; keyIndex < KEY_MAX; ++keyIndex) {
+				if (json_token_streq(string, token, KEYS[keyIndex])) {
+					parseTilesetKey(&tokens[currentToken], string, keyIndex, tileset);
+					++index;
+					break;
+				}
+			}
+		}
+	}
 
 	return tileset;
 }
@@ -278,27 +278,27 @@ GAE_Map_t* handleProperties(jsmntok_t* tokens, char* string) {
 
 	assert(key->type == JSMN_OBJECT); /* First token should be the entire JSON object */
 
-    objects = key->size / 2U; /* How many objects and things have we here? JSMN counts open/closed objects. */
+	objects = key->size / 2U; /* How many objects and things have we here? JSMN counts open/closed objects. */
 
-    for (index = 0U; index < objects; ++index) {
-        key = &tokens[currentToken++];
-        value = &tokens[currentToken++];
+	for (index = 0U; index < objects; ++index) {
+		key = &tokens[currentToken++];
+		value = &tokens[currentToken++];
 
-        keyString = json_token_tostr(string, key);
-        valueString = json_token_tostr(string, value);
+		keyString = json_token_tostr(string, key);
+		valueString = json_token_tostr(string, value);
 
-        if (255 > strlen(keyString))
-        	keySize = strlen(keyString) + 1;
-        else keySize = 255;
+		if (255 > strlen(keyString))
+			keySize = strlen(keyString) + 1;
+		else keySize = 255;
 
-        if (255 > strlen(valueString))
-        	valueSize = strlen(valueString) + 1;
-        else valueSize = 255;
-        
-        strncpy(keyBuffer, (void*)json_token_tostr(string, key), keySize);
-        strncpy(valueBuffer, json_token_tostr(string, value), valueSize);
-        GAE_Map_push(map, (void*)keyBuffer, (void*)valueBuffer);
-    }
+		if (255 > strlen(valueString))
+			valueSize = strlen(valueString) + 1;
+		else valueSize = 255;
+		
+		strncpy(keyBuffer, (void*)json_token_tostr(string, key), keySize);
+		strncpy(valueBuffer, json_token_tostr(string, value), valueSize);
+		GAE_Map_push(map, (void*)keyBuffer, (void*)valueBuffer);
+      }
 
     return map;
 }
@@ -538,15 +538,15 @@ GAE_Array_t* parseData(jsmntok_t* token, char* string) {
 	GAE_Array_t* data = GAE_Array_create(sizeof(unsigned int));
 	unsigned int index = 0U;
 	unsigned int currentToken = 1U;
-    const unsigned int size = token->size;
-    unsigned int value = 0U;
-    assert(token->type == JSMN_ARRAY);
+	const unsigned int size = token->size;
+	unsigned int value = 0U;
+	assert(token->type == JSMN_ARRAY);
 
-    for (index = 0U; index < size; ++index) {
-    	value = atoi(json_token_tostr(string, token + currentToken));
-    	GAE_Array_push(data, (void*)&value);
-    	++currentToken;
-    }
+	for (index = 0U; index < size; ++index) {
+		value = atoi(json_token_tostr(string, token + currentToken));
+		GAE_Array_push(data, (void*)&value);
+		++currentToken;
+	}
 
 	return data;
 }

@@ -17,10 +17,10 @@ typedef enum GAE_IndexBuffer_Draw_e {
 } GAE_IndexBuffer_Draw;
 			
 typedef enum GAE_IndexBuffer_IndexType_e {
-	GAE_INDEXBUFFER_INDEX_FLOAT					/* unsupported by ES 1 */
+	GAE_INDEXBUFFER_INDEX_FLOAT		/* unsupported by ES 1 */
 ,	GAE_INDEXBUFFER_INDEX_UNSIGNED_BYTE
 ,	GAE_INDEXBUFFER_INDEX_UNSIGNED_SHORT
-,	GAE_INDEXBUFFER_INDEX_UNSIGNED_INT			/* unsupported by unextended ES variants. */
+,	GAE_INDEXBUFFER_INDEX_UNSIGNED_INT	/* unsupported by unextended ES variants. */
 } GAE_IndexBuffer_IndexType;
 			
 typedef enum GAE_IndexBuffer_Format_e {

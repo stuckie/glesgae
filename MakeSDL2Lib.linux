@@ -35,7 +35,7 @@ export STRIP	:=	$(PREFIX)strip
 # DATA is a list of directories containing data files
 # INCLUDES is a list of directories containing header files
 #---------------------------------------------------------------------------------
-TARGET		:=	lib/libglesgae
+TARGET		:=	lib/libGLESGAE
 BUILD		:=	build-linux
 SOURCES		:=	.\
 				Events \
