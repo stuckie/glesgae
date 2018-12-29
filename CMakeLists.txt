@@ -3,7 +3,7 @@ cmake_policy(SET CMP0015 NEW)
 
 project(libglesgae)
 
-set(CMAKE_C_FLAGS "-Wall -Werror -Wpedantic -Wno-variadic-macros -Wcast-align -Wredundant-decls -Wextra -std=gnu89 -pedantic-errors")
+set(CMAKE_C_FLAGS "-Wall -Werror -Wpedantic -Wno-variadic-macros -Wcast-align -Wredundant-decls -Wextra -pedantic-errors")
 
 # Compile Options
 option(USE_SDL2 "Use SDL2 Bindings" OFF)
@@ -42,6 +42,7 @@ if (USE_SDL2)
 	set(GLESGAE_RENDERER
 		Events/SDL2/SDL2Events.c
 		Events/SDL2/SDL2EventSystem.c
+		Graphics/Texture.c
 		Graphics/Context/SDL2/SDL2RenderContext.c
 		Graphics/Renderer/SDL2/SDL2Renderer.c
 		Graphics/System/SDL2/SDL2GraphicsSystem.c
@@ -63,16 +64,13 @@ if (USE_OGL)
 	if (UNIX)
 		set(GLESGAE_RENDERER
 			Events/X11/X11EventSystem.c
-			External/SOIL/image_DXT.c
-			External/SOIL/image_helper.c
-			External/SOIL/SOIL.c
-			External/SOIL/stb_image_aug.c
 			Graphics/VertexBuffer.c
 			Graphics/Shader.c
 			Graphics/Mesh.c
 			Graphics/Material.c
 			Graphics/IndexBuffer.c
 			Graphics/Camera.c
+			Graphics/Texture.c
 			Graphics/Context/GLX/GLee.c
 			Graphics/Context/GLX/GLXRenderContext.c
 			Graphics/Renderer/GLES20/ShaderGLVboRenderer.c
@@ -85,7 +83,8 @@ if (USE_OGL)
 			Graphics/Texture/GL/GLTexture.c
 			Graphics/Window/X11/X11RenderWindow.c
 			Input/Linux/LinuxInputSystem.c
-			Platform/Linux/LinuxPlatform.c)
+			Platform/Linux/LinuxPlatform.c
+			Utils/Tiled/OGL/GLTiledJsonLoader.c)
 		add_definitions(-DGLX)
 	elseif (WIN32)
 		set(GLESGAE_RENDERER )

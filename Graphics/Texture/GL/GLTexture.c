@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 #include "../../../Utils/HashString.h"
-#include "../../../External/SOIL/SOIL.h"
+#include "../../../External/stb/stb_image.h"
 #include "../../../File/File.h"
 
 #if defined(GLX)
@@ -162,7 +162,7 @@ GAE_BOOL GAE_Texture_save(GAE_Texture_t* texture) {
 GLuint loadTextureFromFile(GAE_Texture_t* texture) {
 	GAE_GL_Texture_t* platform = (GAE_GL_Texture_t*)texture->platform;
 	GAE_File_t* file = texture->file;
-	unsigned int flags = 0U;
+
 	int width = 1;
 	int height = 1;
 	int channels = 3;
@@ -170,30 +170,25 @@ GLuint loadTextureFromFile(GAE_Texture_t* texture) {
 
 	switch (platform->format) {
 		case GAE_GL_TEXTURE_FORMAT_RGB:
+			channels = 3;
+			break;
 		case GAE_GL_TEXTURE_FORMAT_RGBA:
-			flags = (SOIL_FLAG_POWER_OF_TWO | SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB);
+			channels = 4;
 			break;
 		case GAE_GL_TEXTURE_FORMAT_DXT1:
 		case GAE_GL_TEXTURE_FORMAT_DXT5:
-			flags = (SOIL_FLAG_POWER_OF_TWO | SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-			break;
 		default:
 			/*Application::getInstance()->getLogger()->log("Invalid Texture Format specified\n", Logger::LOG_TYPE_ERROR);*/
-			GAE_File_close(texture->file, GAE_FILE_CLOSE_DELETE_DATA, NULL);
-			return GAE_FALSE;
+			return texId;
 	}
 	
-	texId = SOIL_load_OGL_texture_from_memory_with_info
-		(	file->buffer
-		,	file->bufferSize
-		,	&width
-		,	&height
-		,	&channels
-		,	0 /* use channels from file format*/
-		,	SOIL_CREATE_NEW_ID
-		,	flags
-		)
-	;
+    int nFormat = STBI_rgb_alpha;
+    unsigned char* data = stbi_load_from_memory(file->buffer, file->bufferSize, &width, &height, &nFormat, channels);
+	
+	glGenTextures(1, &texId);
+	glBindTexture(GL_TEXTURE_2D, texId);  
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, (3 == nFormat) ? GL_RGB : GL_RGBA, GL_UNSIGNED_BYTE, data);
+	glGenerateMipmap(GL_TEXTURE_2D);
 	
 	texture->width = (unsigned int)width;
 	texture->height = (unsigned int)height;
@@ -228,15 +223,10 @@ GLuint loadTextureFromBuffer(GAE_Texture_t* texture) {
 		return texId;
 	}
 	
-	texId = SOIL_create_OGL_texture
-		(	texture->file->buffer
-		,	texture->width
-		,	texture->height
-		,	imageFormat
-		,	SOIL_CREATE_NEW_ID
-		,	0
-		)
-	;
+	glGenTextures(1, &texId);
+	glBindTexture(GL_TEXTURE_2D, texId);  
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture->width, texture->height, 0, (3 == imageFormat) ? GL_RGB : GL_RGBA, GL_UNSIGNED_BYTE, texture->file->buffer);
+	glGenerateMipmap(GL_TEXTURE_2D);
 	
 	return texId;
 }

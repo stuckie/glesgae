@@ -13,7 +13,7 @@
 #include <string.h>
 
 GAE_Sprite_t* GAE_Sprite_create(const char* texturePath) {
-	GAE_Sprite_t* sprite = malloc(sizeof(GAE_Sprite_t));
+	GAE_Sprite_t* sprite = (GAE_Sprite_t*)malloc(sizeof(GAE_Sprite_t));
 
 	const char* vSource =
 		"attribute vec4 a_position;			\n\
@@ -38,15 +38,15 @@ GAE_Sprite_t* GAE_Sprite_create(const char* texturePath) {
 	GAE_Material_t* material = GAE_Material_create();
 
 	float vertexData[20] = { /*Position - 12 floats */
-		-1.0F, 1.0F, 0.0F,
+		0.0F, 1.0F, 0.0F,
 		1.0F, 1.0F, 0.0F,
-		1.0F, -1.0F, 0.0F,
-		-1.0F, -1.0F, 0.0F,
+		1.0F, 0.0F, 0.0F,
+		0.0F, 0.0F, 0.0F,
 		/* Tex Coords - 8 floats */
-		0.0F, 0.0F,
-		1.0F, 0.0F,
+		0.0F, 1.0F,
 		1.0F, 1.0F,
-		0.0F, 1.0F};
+		1.0F, 0.0F,
+		0.0F, 0.0F};
 
 	unsigned int vertexSize = 20 * sizeof(float);
 	unsigned short indexData[6] = { 0, 3, 2, 2, 1, 0 };

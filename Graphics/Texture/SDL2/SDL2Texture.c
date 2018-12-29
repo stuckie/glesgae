@@ -9,6 +9,7 @@
 #include "../../GraphicsSystem.h"
 #include "../../Renderer/SDL2/SDL2Renderer.h"
 #include "../../../Platform/Platform.h"
+#include "../../../External/stb/stb_image.h"
 
 SDL_Texture* loadTextureFromFile(GAE_Texture_t* texture);
 SDL_Texture* loadTextureFromBuffer(GAE_Texture_t* texture);
@@ -150,13 +151,44 @@ GAE_BOOL GAE_Texture_save(GAE_Texture_t* texture) {
 
 SDL_Texture* loadTextureFromFile(GAE_Texture_t* texture) {
 	GAE_SDL2_Texture_t* platform = (GAE_SDL2_Texture_t*)texture->platform;
-
 	GAE_File_t* file = texture->file;
-	SDL_Surface* img = SDL_LoadBMP_RW(SDL_RWFromMem((void*)file->buffer, (int)file->bufferSize), 1);
-	/*SDL_Texture* tex = IMG_LoadTexture_RW(platform->renderer, SDL_RWFromMem((void*)file->buffer, (int)file->bufferSize), 1);*/
-	SDL_Texture* tex = SDL_CreateTextureFromSurface(platform->renderer, img);
+
+	int oFormat, width, height, depth, pitch;
+    Uint32 rmask, gmask, bmask, amask;
+    int nFormat = STBI_rgb_alpha;
+    unsigned char* data = stbi_load_from_memory(file->buffer, file->bufferSize, &width, &height, &oFormat, nFormat);
+	SDL_Surface* surf = 0;
+	SDL_Texture* tex = 0;
+
+	#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+        int shift = (STBI_rgb == nFormat) ? 8 : 0;
+        rmask = 0xff000000 >> shift;
+        gmask = 0x00ff0000 >> shift;
+        bmask = 0x0000ff00 >> shift;
+        amask = 0x000000ff >> shift;
+    #else
+        rmask = 0x000000ff;
+        gmask = 0x0000ff00;
+        bmask = 0x00ff0000;
+        amask = (STBI_rgb == nFormat) ? 0 : 0xff000000;
+    #endif
+
+    if (STBI_rgb == nFormat) {
+        depth = 24;
+        pitch = 3 * width; /* 3 bytes per pixel * pixels per row */
+    } else {
+        depth = 32;
+        pitch = 4 * width;
+    }
+
+    surf = SDL_CreateRGBSurfaceFrom((void*)data, width, height, depth, pitch,
+                                                rmask, gmask, bmask, amask);
+
+	
+	tex = SDL_CreateTextureFromSurface(platform->renderer, surf);
 	SDL_QueryTexture(tex, &platform->format, &platform->access, (int*)&texture->width, (int*)&texture->height);
-	SDL_FreeSurface(img);
+	SDL_FreeSurface(surf);
+	stbi_image_free(data);
 
 	return tex;
 }
