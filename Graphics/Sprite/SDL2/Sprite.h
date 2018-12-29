@@ -8,8 +8,8 @@ struct SDL_Rect;
 
 typedef struct GAE_Sprite_s {
 	struct GAE_Texture_s* texture;
-	struct SDL_Rect* srcRect;
-	struct SDL_Rect* dstRect;
+	struct SDL_Rect* src;
+	struct SDL_Rect* dest;
 } GAE_Sprite_t;
 
 GAE_Sprite_t* GAE_Sprite_create(const char* texturePath);

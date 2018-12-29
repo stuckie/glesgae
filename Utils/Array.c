@@ -2,12 +2,10 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include <stdio.h>
-
 #include "Array.h"
 #include "../GAE_Types.h"
 
-GAE_Array_t* GAE_Array_create(const size_t size) {
+GAE_Array_t* GAE_Array_create(const unsigned int size) {
 	GAE_Array_t* array = (GAE_Array_t*)malloc(sizeof(GAE_Array_t));
 	array->data = 0;
 	array->allocated = 0U;
@@ -18,7 +16,7 @@ GAE_Array_t* GAE_Array_create(const size_t size) {
 }
 
 GAE_Array_t* GAE_Array_reserve(GAE_Array_t* array, const unsigned int amount) {
-	const size_t size = amount * array->size; /* work out size of memory we'll need */
+	const unsigned int size = amount * array->size; /* work out size of memory we'll need */
 
 	if (0 == array->allocated) { /* Empty array, just malloc it */
 		array->data = (GAE_BYTE*)malloc(size);
@@ -43,7 +41,7 @@ GAE_Array_t* GAE_Array_reserve(GAE_Array_t* array, const unsigned int amount) {
 
 GAE_Array_t* GAE_Array_push(GAE_Array_t* array, void* const data) {
 	if ((array->allocated - array->used) < array->size)
-		GAE_Array_reserve(array, GAE_Array_size(array) + 1U);
+		GAE_Array_reserve(array, GAE_Array_length(array) + 1U);
 
 	memcpy(&array->data[array->used], data, array->size);
 	array->used = array->used + array->size;
@@ -78,7 +76,7 @@ void* GAE_Array_get(GAE_Array_t* array, const unsigned int index) {
 	return &array->data[index * array->size];
 }
 
-unsigned int GAE_Array_size(GAE_Array_t* array) {
+unsigned int GAE_Array_length(GAE_Array_t* array) {
 	if (0 == array->used)
 		return 0;
 	else

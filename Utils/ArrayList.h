@@ -5,7 +5,7 @@
 #include "../GAE_Types.h"
 
 /* 
-An ArrayList is a list masquarading as an array.
+An ArrayList is an array masquarading as a list.
 Elements will be unordered and muddled about when adding/removing, so don't count on order staying the same.
 Use an Array if order is important. An ArrayList if order is not important, but contiguous memory is. Or a List if you're feeling brave.
 */
@@ -42,7 +42,7 @@ void* GAE_ArrayList_get(GAE_ArrayList_t* array, const unsigned int index);
 GAE_ArrayList_t* GAE_ArrayList_remove(GAE_ArrayList_t* array, const unsigned int index);
 
 /* Returns the length of this array in amount of elements with 0 being empty. */
-unsigned int GAE_ArrayList_size(GAE_ArrayList_t* array);
+unsigned int GAE_ArrayList_length(GAE_ArrayList_t* array);
 
 /* Deletes the Array and all memory it allocated. Any stray pointers will therefore be undefined. */
 void GAE_ArrayList_delete(GAE_ArrayList_t* array);

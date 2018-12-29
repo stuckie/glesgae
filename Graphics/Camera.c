@@ -117,15 +117,15 @@ GAE_Matrix4_t* GAE_Matrix4_createViewMatrix(GAE_Matrix4_t* matrix, GAE_Vector3_t
 	translation[12] = -(*eye)[0];	translation[13] = -(*eye)[1];	translation[14] = -(*eye)[2];	translation[15] = 1;
 	
 	/* Combine the orientation and translation to compute the view matrix*/
-	GAE_Matrix4_mul( &translation, &orientation );
+	GAE_Matrix4_mul(&translation, &orientation);
 	GAE_Matrix4_copy(matrix, &translation);
-	
+
 	return matrix;
 }
 
 GAE_Matrix4_t* GAE_Matrix4_create3dProjectionMatrix(GAE_Matrix4_t* projectionMatrix, const float nearClip, const float farClip, const float fov, const float aspectRatio) {
 	const float radians = fov / ((2.0F * 3.14F) / 180.0F);
-	const float size = nearClip * (float)tan(radians); 
+	const float size = nearClip * tanf(radians); 
 	const float left = -size;
 	const float right = size;
 	const float bottom = -size / aspectRatio;
@@ -181,7 +181,7 @@ GAE_Matrix4_t* GAE_Matrix4_create2dProjectionMatrix(GAE_Matrix4_t* projectionMat
 	(*projectionMatrix)[ROWCOL(3, 0, 4)] = x;
 	(*projectionMatrix)[ROWCOL(3, 1, 4)] = y;
 	(*projectionMatrix)[ROWCOL(3, 2, 4)] = z;
-	(*projectionMatrix)[ROWCOL(3 , 3, 4)] = 1.0F;
+	(*projectionMatrix)[ROWCOL(3, 3, 4)] = 1.0F;
 
 	return projectionMatrix;
 }

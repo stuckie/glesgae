@@ -43,7 +43,7 @@ GAE_ArrayList_t* GAE_ArrayList_reserve(GAE_ArrayList_t* array, const unsigned in
 
 GAE_ArrayList_t* GAE_ArrayList_push(GAE_ArrayList_t* array, void* const data) {
 	if ((array->allocated - array->used) < array->size)
-		GAE_ArrayList_reserve(array, GAE_ArrayList_size(array) + 1U);
+		GAE_ArrayList_reserve(array, GAE_ArrayList_length(array) + 1U);
 
 	memcpy(&array->data[array->used], data, array->size);
 	array->used = array->used + array->size;
@@ -79,7 +79,7 @@ void* GAE_ArrayList_get(GAE_ArrayList_t* array, const unsigned int index) {
 }
 
 GAE_ArrayList_t* GAE_ArrayList_remove(GAE_ArrayList_t* array, const unsigned int index) {
-	const unsigned int size = GAE_ArrayList_size(array);
+	const unsigned int size = GAE_ArrayList_length(array);
 	void* temp = GAE_ArrayList_get(array, size - 1U);
 	void* current = GAE_ArrayList_get(array, index);
 	
@@ -90,7 +90,7 @@ GAE_ArrayList_t* GAE_ArrayList_remove(GAE_ArrayList_t* array, const unsigned int
 	return array;
 }
 
-unsigned int GAE_ArrayList_size(GAE_ArrayList_t* array) {
+unsigned int GAE_ArrayList_length(GAE_ArrayList_t* array) {
 	if (0 == array->used)
 		return 0;
 	else

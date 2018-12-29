@@ -102,7 +102,7 @@ void* GAE_Heap_get(GAE_Heap_t* heap, const unsigned int index) {
 }
 
 unsigned int GAE_Heap_size(GAE_Heap_t* heap) {
-	return GAE_Array_size(heap->info);
+	return GAE_Array_length(heap->info);
 }
 
 GAE_Heap_t* GAE_Heap_freeIndex(GAE_Heap_t* heap, const unsigned int index) {

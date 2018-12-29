@@ -3,7 +3,7 @@
 #if defined(GLX) || defined(GLES1) || defined(GLES2)
 
 #include <assert.h>
-#include <stdio.h>
+#include <stdlib.h>
 
 #include "../File/File.h"
 #include "../Utils/HashString.h"

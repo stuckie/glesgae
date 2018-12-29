@@ -9,7 +9,7 @@
 #include "../../Utils/Array.h"
 
 #include <stdlib.h>
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 GAE_KeyType_t convertKey(SDL_Keycode key);
 

@@ -5,7 +5,7 @@
 #include "../../Utils/Map.h"
 #include "../../Utils/Array.h"
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 void handleWindowEvent(SDL_Event* event, GAE_EventSystem_t* system);
 void handleTextEditingEvent(SDL_Event* event, GAE_EventSystem_t* system);
@@ -143,22 +143,22 @@ void GAE_EventSystem_update(GAE_EventSystem_t* system) {
 			break;
 		}
 	}
-
+	
 	GAE_EventSystem_updateTriggers(system);
 }
 
 void GAE_EventSystem_delete(GAE_EventSystem_t* system) {
-	unsigned int observerSize = GAE_Map_size(system->observers);
-	unsigned int triggerSize = GAE_Map_size(system->triggers);
+	unsigned int observerSize = GAE_Map_length(system->observers);
+	unsigned int triggerSize = GAE_Map_length(system->triggers);
 
 	while (0 < observerSize) {
 		GAE_Array_delete((GAE_Array_t*)GAE_Map_pop(system->observers));
-		observerSize = GAE_Map_size(system->observers);
+		observerSize = GAE_Map_length(system->observers);
 	}
 
 	while (0 < triggerSize) {
 		GAE_Array_delete((GAE_Array_t*)GAE_Map_pop(system->triggers));
-		triggerSize = GAE_Map_size(system->triggers);
+		triggerSize = GAE_Map_length(system->triggers);
 	}
 
 	GAE_Map_delete(system->observers);
@@ -184,7 +184,7 @@ void sendEvent(GAE_HashString_t type, SDL_Event* sdlEvent, GAE_EventSystem_t* sy
 	GAE_Map_push(params, (void*)&id, (void*)sdlEvent);
 	event = GAE_Event_create(type, params);
 
-	GAE_EventSystem_sendEvent(system, type, event);
+	GAE_EventSystem_sendEvent(system, event);
 	GAE_Event_delete(event);
 }
 
@@ -193,7 +193,7 @@ void sendSimpleEvent(GAE_HashString_t type, GAE_EventSystem_t* system) {
 	GAE_Map_t* params = 0;
 
 	event = GAE_Event_create(type, params);
-	GAE_EventSystem_sendEvent(system, type, event);
+	GAE_EventSystem_sendEvent(system, event);
 	GAE_Event_delete(event);
 }
 
@@ -222,7 +222,7 @@ void handleWindowEvent(SDL_Event* sdlEvent, GAE_EventSystem_t* system) {
 			GAE_Map_push(params, (void*)&id, (void*)(&sdlEvent->window.data2));
 			event = GAE_Event_create(type, params);
 
-			GAE_EventSystem_sendEvent(system, type, event);
+			GAE_EventSystem_sendEvent(system, event);
 			GAE_Event_delete(event);
 		}
 		break;
@@ -240,7 +240,7 @@ void handleWindowEvent(SDL_Event* sdlEvent, GAE_EventSystem_t* system) {
 			GAE_Map_push(params, (void*)&id, (void*)(&sdlEvent->window.data2));
 			event = GAE_Event_create(type, params);
 
-			GAE_EventSystem_sendEvent(system, type, event);
+			GAE_EventSystem_sendEvent(system, event);
 			GAE_Event_delete(event);
 		}
 		break;
@@ -263,7 +263,7 @@ void handleWindowEvent(SDL_Event* sdlEvent, GAE_EventSystem_t* system) {
 			GAE_Map_push(params, (void*)&id, (void*)(&sdlEvent->window.windowID));
 			event = GAE_Event_create(type, params);
 
-			GAE_EventSystem_sendEvent(system, type, event);
+			GAE_EventSystem_sendEvent(system, event);
 			GAE_Event_delete(event);
 		}
 		break;
@@ -277,7 +277,7 @@ void handleWindowEvent(SDL_Event* sdlEvent, GAE_EventSystem_t* system) {
 			GAE_Map_push(params, (void*)&id, (void*)(&sdlEvent->window.windowID));
 			event = GAE_Event_create(type, params);
 
-			GAE_EventSystem_sendEvent(system, type, event);
+			GAE_EventSystem_sendEvent(system, event);
 			GAE_Event_delete(event);
 		}
 		break;
@@ -291,7 +291,7 @@ void handleWindowEvent(SDL_Event* sdlEvent, GAE_EventSystem_t* system) {
 			GAE_Map_push(params, (void*)&id, (void*)(&sdlEvent->window.windowID));
 			event = GAE_Event_create(type, params);
 
-			GAE_EventSystem_sendEvent(system, type, event);
+			GAE_EventSystem_sendEvent(system, event);
 			GAE_Event_delete(event);
 		}
 		break;
@@ -305,7 +305,7 @@ void handleWindowEvent(SDL_Event* sdlEvent, GAE_EventSystem_t* system) {
 			GAE_Map_push(params, (void*)&id, (void*)(&sdlEvent->window.windowID));
 			event = GAE_Event_create(type, params);
 
-			GAE_EventSystem_sendEvent(system, type, event);
+			GAE_EventSystem_sendEvent(system, event);
 			GAE_Event_delete(event);
 		}
 		break;
@@ -319,7 +319,7 @@ void handleWindowEvent(SDL_Event* sdlEvent, GAE_EventSystem_t* system) {
 			GAE_Map_push(params, (void*)&id, (void*)(&sdlEvent->window.windowID));
 			event = GAE_Event_create(type, params);
 
-			GAE_EventSystem_sendEvent(system, type, event);
+			GAE_EventSystem_sendEvent(system, event);
 			GAE_Event_delete(event);
 		}
 		break;
@@ -361,7 +361,7 @@ void handleUserEvent(SDL_Event* sdlEvent, GAE_EventSystem_t* system) {
 	GAE_Map_push(params, (void*)&id, sdlEvent->user.data2);
 	event = GAE_Event_create(type, params);
 
-	GAE_EventSystem_sendEvent(system, type, event);
+	GAE_EventSystem_sendEvent(system, event);
 	GAE_Event_delete(event);
 }
 
@@ -380,7 +380,7 @@ void handleDropEvent(SDL_Event* sdlEvent, GAE_EventSystem_t* system) {
 	GAE_Map_push(params, (void*)&id, (void*)(&sdlEvent->drop.file));
 	event = GAE_Event_create(type, params);
 
-	GAE_EventSystem_sendEvent(system, type, event);
+	GAE_EventSystem_sendEvent(system, event);
 	SDL_free(sdlEvent->drop.file);
 	GAE_Event_delete(event);
 }

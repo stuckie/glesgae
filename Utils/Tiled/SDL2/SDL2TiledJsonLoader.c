@@ -2,7 +2,7 @@
 #include "../../../Utils/Array.h"
 #include "../../../Graphics/Renderer/Renderer.h"
 #include "../../../Graphics/Sprite.h"
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 GAE_Tiled_t* GAE_TiledParser_draw(GAE_Tiled_t* tilemap, GAE_Renderer_t* renderer, const unsigned int layerId) {
 	unsigned int y = 0U;
@@ -38,8 +38,8 @@ GAE_Tiled_t* GAE_TiledParser_draw(GAE_Tiled_t* tilemap, GAE_Renderer_t* renderer
 			dst.w = dstWidth;
 			dst.h = dstHeight;
 
-			tileset->image->srcRect = &src;
-			tileset->image->dstRect = &dst;
+			tileset->image->src = &src;
+			tileset->image->dest = &dst;
 			GAE_Renderer_drawSprite(renderer, tileset->image);
 		}
 	}

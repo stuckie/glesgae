@@ -1,7 +1,6 @@
 #include "Matrix.h"
 
 #include <math.h>
-#include <stdio.h>
 #include <string.h>
 
 #define ROWCOL(x,y,width) (x * width + y)
@@ -81,8 +80,10 @@ GAE_Matrix4_t* GAE_Matrix4_transpose(GAE_Matrix4_t* matrix) {
 		for (col = 0U; col < 4U; ++col)
 			transpose[ROWCOL(row, col, 4U)] = (*matrix)[ROWCOL(col, row, 4U)];
 	}
+
+	for (row = 0U; row < 16U; ++row)
+		(*matrix)[row] = transpose[row];
 	
-	matrix = &transpose;
 	return matrix;
 }
 
@@ -182,7 +183,7 @@ GAE_Matrix4_t* GAE_Matrix4_mul(GAE_Matrix4_t* matrix, GAE_Matrix4_t* const rhs) 
 		for (col = 0U; col < 4U; ++col) {
 			newElement = 0.0F;
 			for (index = 0U; index < 4U; ++index)
-				newElement += *matrix[ROWCOL(row, index, 4U)] * (*rhs)[ROWCOL(index, col, 4U)];
+				newElement += (*matrix)[ROWCOL(row, index, 4U)] * (*rhs)[ROWCOL(index, col, 4U)];
 			(*matrix)[ROWCOL(row, col, 4U)] = newElement;
 		}
 	}
@@ -265,6 +266,36 @@ GAE_Matrix3_t* GAE_Matrix3_setToIdentity(GAE_Matrix3_t* matrix) {
 
 GAE_Matrix3_t* GAE_Matrix3_setToZero(GAE_Matrix3_t* matrix) {
 	(*matrix)[0] = (*matrix)[1] = (*matrix)[2] = (*matrix)[3] = (*matrix)[4] = (*matrix)[5] = (*matrix)[6] = (*matrix)[7] = (*matrix)[8] = 0.0F;
+
+	return matrix;
+}
+
+GAE_Matrix3_t* GAE_Matrix3_createXRotation(GAE_Matrix3_t* matrix, const float deg) {
+	const float rad = GAE_DEG2RAD(deg);
+
+	(*matrix)[0] = 1; (*matrix)[1] = 0; 		(*matrix)[2] = 0;
+	(*matrix)[3] = 0; (*matrix)[4] = cos(rad); 	(*matrix)[5] = -sin(rad);
+	(*matrix)[6] = 0; (*matrix)[7] = sin(rad);	(*matrix)[8] = cos(rad);
+
+	return matrix;
+}
+
+GAE_Matrix3_t* GAE_Matrix3_createYRotation(GAE_Matrix3_t* matrix, const float deg) {
+	const float rad = GAE_DEG2RAD(deg);
+
+	(*matrix)[0] = cos(rad); 	(*matrix)[1] = 0; 	(*matrix)[2] = sin(rad);
+	(*matrix)[3] = 0; 			(*matrix)[4] = 1; 	(*matrix)[5] = 0;
+	(*matrix)[6] = -sin(rad); 	(*matrix)[7] = 0;	(*matrix)[8] = cos(rad);
+
+	return matrix;
+}
+
+GAE_Matrix3_t* GAE_Matrix3_createZRotation(GAE_Matrix3_t* matrix, const float deg) {
+	const float rad = GAE_DEG2RAD(deg);
+
+	(*matrix)[0] = cos(rad); 	(*matrix)[1] = -sin(rad); 	(*matrix)[2] = 0;
+	(*matrix)[3] = sin(rad); 	(*matrix)[4] = cos(rad); 	(*matrix)[5] = 0;
+	(*matrix)[6] = 0; 			(*matrix)[7] = 0;			(*matrix)[8] = 1;
 
 	return matrix;
 }

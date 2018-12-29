@@ -1,7 +1,6 @@
 #ifndef _MAP_H_
 #define _MAP_H_
 
-#include <stdlib.h>
 #include "../GAE_Types.h"
 
 typedef GAE_BOOL (*GAE_Map_compare_t)(void* const keyA, void* const keyB);
@@ -13,7 +12,7 @@ typedef struct GAE_Map_s {
 } GAE_Map_t;
 
 /* Creates a new Map to store elements of the given size. */
-GAE_Map_t* GAE_Map_create(const size_t keySize, const size_t dataSize, GAE_Map_compare_t compare);
+GAE_Map_t* GAE_Map_create(const unsigned int keySize, const unsigned int dataSize, GAE_Map_compare_t compare);
 
 /* Creates a contiguous chunk of memory for the specified amount of Array elements. */
 GAE_Map_t* GAE_Map_reserve(GAE_Map_t* map, const unsigned int amount);
@@ -37,7 +36,7 @@ void* GAE_Map_ids(GAE_Map_t* map);
 GAE_Map_t* GAE_Map_remove(GAE_Map_t* map, void* const id);
 
 /* Returns the length of this Map in amount of elements with 0 being empty. */
-unsigned int GAE_Map_size(GAE_Map_t* map);
+unsigned int GAE_Map_length(GAE_Map_t* map);
 
 /* Deletes the Map and all memory it allocated. Any stray pointers will therefore be undefined. */
 void GAE_Map_delete(GAE_Map_t* map);

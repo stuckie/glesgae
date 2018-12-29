@@ -6,7 +6,7 @@
 #include "List.h"
 #include "../GAE_Types.h"
 
-GAE_SingleList_t* GAE_SingleList_create(const size_t size) {
+GAE_SingleList_t* GAE_SingleList_create(const unsigned int size) {
 	GAE_SingleList_t* list = (GAE_SingleList_t*)malloc(sizeof(GAE_SingleList_t));
 	list->begin = 0;
 	list->length = 0U;
@@ -64,9 +64,9 @@ GAE_SingleList_t* GAE_SingleList_remove(GAE_SingleList_t* list, GAE_SingleListNo
 
 	assert(node);
 	if (prev == node) { /* special case - the first node is the one we're removing */
+		list->begin = node->next;
 		free(node->data);
 		free(node);
-		list->begin = 0;
 	}
 	else {
 		while (prev->next != node) { /* search for the previous node */
@@ -86,7 +86,7 @@ GAE_SingleList_t* GAE_SingleList_remove(GAE_SingleList_t* list, GAE_SingleListNo
 	return list;
 }
 
-unsigned int GAE_SingleList_size(GAE_SingleList_t* list) {
+unsigned int GAE_SingleList_length(GAE_SingleList_t* list) {
 	return list->length;
 }
 
@@ -105,12 +105,9 @@ void* GAE_SingleList_pop(GAE_SingleList_t* list) {
 		list->begin = 0;
 	}
 	else {
-		while (0 != node->next->next) /* need to look ahead by two */
-			node = node->next;
-
-		data = node->next->data;
-		free(node->next);
-		node->next = 0;
+		list->begin = node->next;
+		data = node->data;
+		free(node);
 	}
 
 	assert(0 < list->length);
@@ -122,72 +119,136 @@ void* GAE_SingleList_pop(GAE_SingleList_t* list) {
 
 void GAE_SingleList_delete(GAE_SingleList_t* list) {
 	GAE_SingleListNode_t* node = list->begin;
-	GAE_SingleListNode_t* next = 0;
-	void* data = 0;
+	GAE_SingleListNode_t* prev = 0;
 
 	while (0 != node) {
-		data = node->data;
-		node = next;
-		next = node->next;
-		free(data);
-		free(node);
+		free(node->data);
+		prev = node;
+		node = node->next;
+		free(prev);
 	}
 
 	free(list);
 }
 
-#if 0
 
-GAE_DoubleList_t* GAE_DoubleList_create(void) {
-	GAE_DoubleList_t* list = malloc(sizeof(GAE_DoubleList_t));
+GAE_DoubleList_t* GAE_DoubleList_create(const unsigned int size) {
+	GAE_DoubleList_t* list = (GAE_DoubleList_t*)malloc(sizeof(GAE_DoubleList_t));
 	list->begin = 0;
 	list->end = 0;
-	list->size = 0U;
+	list->length = 0U;
+	list->size = size;
 
 	return list;
 }
 
-GAE_DoubleList_t* GAE_DoubleList_push(GAE_DoubleList_t* list, void* data, const size_t size) {
-	GAE_DoubleListNode_t* node = malloc(sizeof(GAE_DoubleListNode_t));
+GAE_DoubleList_t* GAE_DoubleList_push(GAE_DoubleList_t* list, void* data) {
+	GAE_DoubleListNode_t* prev = list->end;
+	GAE_DoubleListNode_t* node = (GAE_DoubleListNode_t*)malloc(sizeof(GAE_DoubleListNode_t));
+	assert(node);
 
-	node->prev = list->end;
+	prev->next = node;
+	node->prev = prev;
+
+	node->data = malloc(list->size);
+	assert(node->data);
+
+	memcpy(node->data, data, list->size);
 	node->next = 0;
 
-	node->data = malloc(size);
-	assert(node->data);
-	memcpy(node->data, data, size);
-
-	list->end = node;
-
-	if (0 == list->begin)
-		list->begin = node;
+	++list->length;
 
 	return list;
 }
 
-GAE_DoubleList_t* GAE_DoubleList_add(GAE_DoubleList_t* list, GAE_DoubleListNode_t* node, void* data, const size_t size) {
-	GAE_DoubleListNode_t* newNode = malloc(sizeof(GAE_DoubleListNode_t));
-	
-	newNode->prev = node;
-	newNode->next = node->next;
-	
-	newNode->data = malloc(size);
-	assert(newNode->data);
-	memcpy(newNode->data, data, size);
+GAE_DoubleList_t* GAE_DoubleList_add(GAE_DoubleList_t* list, GAE_DoubleListNode_t* node, void* data) {
+	GAE_DoubleListNode_t* newNode = (GAE_DoubleListNode_t*)malloc(sizeof(GAE_DoubleListNode_t));
+	assert(node);
+	assert(newNode);
 
-	node->next->prev = newNode;
+	newNode->data = malloc(list->size);
+	assert(newNode->data);
+
+	memcpy(newNode->data, data, list->size);
+	newNode->next = node->next;
 	node->next = newNode;
 
+	newNode->next->prev = newNode;
+	newNode->prev = node;
+
+	++list->length;
+
 	return list;
 }
 
-
 GAE_DoubleList_t* GAE_DoubleList_remove(GAE_DoubleList_t* list, GAE_DoubleListNode_t* node) {
+	GAE_DoubleListNode_t* prev = list->begin;
 
+	assert(node);
+	if (prev == node) { /* special case - the first node is the one we're removing */
+		list->begin = node->next;
+		node->prev = 0;
+		free(node->data);
+		free(node);
+	}
+	else {
+		prev->next = node->next; 	/* plug behind */
+		node->prev = prev;			/* plug infront */
+
+		free(node->data);
+		free(node);
+	}
+
+	assert(0 < list->length);
+	if (0 < list->length)
+		--list->length;
+
+	return list;
 }
 
-unsigned int GAE_DoubleList_size(GAE_DoubleList_t* list);
-void* GAE_DoubleList_pop(GAE_DoubleList_t* list);
-void GAE_SingleList_delete(GAE_DoubleList_t* list);
+unsigned int GAE_DoubleList_length(GAE_DoubleList_t* list) {
+	return list->length;
+}
 
-#endif
+void* GAE_DoubleList_pop(GAE_DoubleList_t* list) {
+	GAE_DoubleListNode_t* node = list->begin;
+	void* data = 0;
+
+	if (0 == node) {
+		assert(0 == list->length);
+		return node;
+	}
+
+	if (0 == node->next) { /* there's only one node in this list */
+		data = node->data;
+		free(node);
+		list->begin = 0;
+	}
+	else {
+		list->begin = node->next;
+		node->next->prev = 0;
+
+		data = node->data;
+		free(node);
+	}
+
+	assert(0 < list->length);
+	if (0 < list->length)
+		--list->length;
+
+	return data;
+}
+
+void GAE_DoubleList_delete(GAE_DoubleList_t* list) {
+	GAE_DoubleListNode_t* node = list->begin;
+	GAE_DoubleListNode_t* prev = node;
+
+	while (0 != node) {
+		free(node->data);
+		prev = node;
+		node = node->next;
+		free(prev);
+	}
+
+	free(list);
+}

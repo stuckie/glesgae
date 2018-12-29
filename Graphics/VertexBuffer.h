@@ -64,7 +64,7 @@ typedef enum GAE_VertexBuffer_FormatType_e {
 typedef struct GAE_VertexBuffer_Format_s {
 	GAE_VertexBuffer_FormatType type;
 	unsigned int size;
-	unsigned int offset;
+	void* offset;
 } GAE_VertexBuffer_Format_t;
 
 typedef struct GAE_VertexBuffer_s {

@@ -1,6 +1,7 @@
 #include "VertexBuffer.h"
 
 #include <string.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <assert.h>
 
@@ -21,7 +22,7 @@
 GAE_VertexBuffer_Format_t GAE_VertexBuffer_Format_create(const GAE_VertexBuffer_FormatType type, unsigned int offset) {
 	GAE_VertexBuffer_Format_t format;
 	format.type = type;
-	format.offset = offset;
+	format.offset = (void*)(uintptr_t)offset;
 
 	switch (type) {
 		case GAE_VERTEXBUFFER_FORMAT_CUSTOM_2F:

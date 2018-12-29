@@ -21,7 +21,10 @@ double getCurrentTime(const struct timespec* time);
 GAE_Clock_t* GAE_Clock_create(void) {
 	GAE_Clock_t* clock = malloc(sizeof(GAE_Clock_t));
 	GAE_Clock_Linux_t* linuxClock = malloc(sizeof(GAE_Clock_Linux_t));
+
 	struct timespec time;
+	time.tv_sec = -1;
+	time.tv_nsec = 0;
 
 	clock->deltaTime = 0.0F;
 	clock->currentTime = 0.0F;
@@ -33,7 +36,6 @@ GAE_Clock_t* GAE_Clock_create(void) {
 	linuxClock->currentTime = linuxClock->startTime;
 	linuxClock->currentDelta = 0.0;
 	linuxClock->pausedTime = 0.0;
-
 
 	return clock;
 }
@@ -47,7 +49,10 @@ void GAE_Clock_delete(GAE_Clock_t* clock) {
 GAE_Clock_t* GAE_Clock_reset(GAE_Clock_t* clock) {
 	GAE_Clock_Linux_t* linuxClock = (GAE_Clock_Linux_t*)clock->platformData;
 	struct timespec time;
+	time.tv_sec = -1;
+	time.tv_nsec = 0;
 
+	clock_gettime(CLOCK_MONOTONIC, &time);
 	linuxClock->startTime = getCurrentTime(&time);
 	linuxClock->currentTime = linuxClock->startTime;
 
@@ -56,7 +61,10 @@ GAE_Clock_t* GAE_Clock_reset(GAE_Clock_t* clock) {
 
 GAE_Clock_t* GAE_Clock_update(GAE_Clock_t* clock) {
 	GAE_Clock_Linux_t* linuxClock = (GAE_Clock_Linux_t*)clock->platformData;
+	
 	struct timespec time;
+	time.tv_sec = -1;
+	time.tv_nsec = 0;
 
 	clock_gettime(CLOCK_MONOTONIC, &time);
 	linuxClock->currentTime = getCurrentTime(&time);
@@ -70,7 +78,10 @@ GAE_Clock_t* GAE_Clock_update(GAE_Clock_t* clock) {
 
 GAE_Clock_t* GAE_Clock_pause(GAE_Clock_t* clock) {
 	GAE_Clock_Linux_t* linuxClock = (GAE_Clock_Linux_t*)clock->platformData;
+	
 	struct timespec time;
+	time.tv_sec = -1;
+	time.tv_nsec = 0;
 
 	clock_gettime(CLOCK_MONOTONIC, &time);
 	linuxClock->pausedTime = getCurrentTime(&time);
@@ -82,7 +93,10 @@ GAE_Clock_t* GAE_Clock_pause(GAE_Clock_t* clock) {
 
 GAE_Clock_t* GAE_Clock_resume(GAE_Clock_t* clock) {
 	GAE_Clock_Linux_t* linuxClock = (GAE_Clock_Linux_t*)clock->platformData;
+	
 	struct timespec time;
+	time.tv_sec = -1;
+	time.tv_nsec = 0;
 
 	clock_gettime(CLOCK_MONOTONIC, &time);
 	linuxClock->currentTime = getCurrentTime(&time);
@@ -96,4 +110,3 @@ GAE_Clock_t* GAE_Clock_resume(GAE_Clock_t* clock) {
 double getCurrentTime(const struct timespec* time) {
   return ((double)(time->tv_sec) + (double)(time->tv_nsec * 0.000000001));
 }
-

@@ -1,0 +1,14 @@
+CHANGELOG
+---------
+
+29th December 2018
+
+Pulled over changes from the Arcade Badgers System version of GLESGAE.
+Added comments to various functions to help figure out what they actually do.
+Fixed Group so it actually works properly.
+Implemented missing Double Linked List functionality.
+Updated CMake files.
+Removed old Makefiles.
+Started on new (and working) example
+Fixed VertexBuffer issues and Sprite issues ( was deleting Texture... silly.. )
+Getting into a position to where it's ready to be worked on again

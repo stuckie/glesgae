@@ -41,19 +41,26 @@ GAE_Group_t* GAE_Group_add(GAE_Group_t* group, void* ptr) {
 GAE_Group_t* GAE_Group_remove(GAE_Group_t* group, void* ptr) {
 	GAE_GroupItem_t* begin = group->begin;
 	GAE_GroupItem_t* item = begin;
+	GAE_GroupItem_t* prev = begin;
+	GAE_BOOL isFound = GAE_FALSE;
 	
-	if (item->ptr == ptr) { /* special case - the first node is the one we're removing */
+	if (ptr == item->ptr) { /* special case - the first node is the one we're removing */
+		group->begin = item->next;
 		free(item);
-		group->begin = 0;
 	}
 	else {
-		while (item->next->ptr != ptr) { /* search for the previous node */
+		while (0 != item) { /* search for next node */
+			prev = item;
 			item = item->next;
-			assert(item); /* ensure it's a valid pointer, incase we're in the wrong list */
+			if (ptr == item->ptr) { 		/* found it */
+				prev->next = item->next; 	/* plug the hole */
+				free(item);
+				isFound = GAE_TRUE;
+				break;
+			}
 		}
-
-		item->next = item->next->next; /* plug the gap */
-		free(item);
+		if (GAE_FALSE == isFound)			/* didn't find it */
+			return group;					/* just return */
 	}
 
 	assert(0 < group->length);
@@ -67,7 +74,7 @@ GAE_GroupItem_t* GAE_Group_begin(GAE_Group_t* group) {
 	return group->begin;
 }
 
-unsigned int GAE_Group_size(GAE_Group_t* group) {
+unsigned int GAE_Group_length(GAE_Group_t* group) {
 	return group->length;
 }
 

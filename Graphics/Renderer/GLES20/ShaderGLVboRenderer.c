@@ -38,7 +38,7 @@ void GAE_Renderer_delete(GAE_Renderer_t* renderer) {
 	renderer = 0;
 }
 
-GAE_Renderer_t* GAE_Renderer_drawSprite(GAE_Renderer_t* renderer, GAE_Sprite_t* sprite) {
+GAE_Renderer_t* GAE_Renderer_drawSprite(GAE_Renderer_t* renderer, GAE_Sprite_t* const sprite) {
 	return GAE_Renderer_drawMesh(renderer, sprite->mesh, &sprite->transform);
 }
 
@@ -81,10 +81,10 @@ GAE_Renderer_t* GAE_Renderer_drawMesh(GAE_Renderer_t* renderer, GAE_Mesh_t* cons
 				}
 			}
 		}
-		
+
 		setupAttributes(renderer, vertexBuffer);
 	}
-
+	
 	if (renderer->lastIndexBuffer != indexBuffer) {
 		renderer->lastIndexBuffer = indexBuffer;
 		if (0 == indexBuffer->vboId) {
@@ -115,7 +115,7 @@ GAE_Renderer_t* GAE_Renderer_drawMesh(GAE_Renderer_t* renderer, GAE_Mesh_t* cons
 			}
 		}
 	}
-	
+
 	switch (indexBuffer->type) {
 		case GAE_INDEXBUFFER_INDEX_FLOAT:
 			glDrawElements(GL_TRIANGLES, indexBuffer->count, GL_FLOAT, 0);
@@ -143,61 +143,61 @@ void setupAttributes(GAE_Renderer_t* renderer, GAE_VertexBuffer_t* vertexBuffer)
 		itr = meshFormatBegin + index;
 		switch (itr->type) {
 			case GAE_VERTEXBUFFER_FORMAT_POSITION_2F:
-				glVertexAttribPointer(state->a_position, 2U, GL_FLOAT, GL_FALSE, vertexBuffer->stride, (GLvoid*)&itr->offset);
+				glVertexAttribPointer(state->a_position, 2U, GL_FLOAT, GL_FALSE, vertexBuffer->stride, itr->offset);
 				break;
 			case GAE_VERTEXBUFFER_FORMAT_POSITION_3F:
-				glVertexAttribPointer(state->a_position, 3U, GL_FLOAT, GL_FALSE, vertexBuffer->stride, (GLvoid*)&itr->offset);
+				glVertexAttribPointer(state->a_position, 3U, GL_FLOAT, GL_FALSE, vertexBuffer->stride, itr->offset);
 				break;
 			case GAE_VERTEXBUFFER_FORMAT_POSITION_4F:
-				glVertexAttribPointer(state->a_position, 4U, GL_FLOAT, GL_FALSE, vertexBuffer->stride, (GLvoid*)&itr->offset);
+				glVertexAttribPointer(state->a_position, 4U, GL_FLOAT, GL_FALSE, vertexBuffer->stride, itr->offset);
 				break;
 			case GAE_VERTEXBUFFER_FORMAT_POSITION_2S:
-				glVertexAttribPointer(state->a_position, 2U, GL_SHORT, GL_FALSE, vertexBuffer->stride, (GLvoid*)&itr->offset);
+				glVertexAttribPointer(state->a_position, 2U, GL_SHORT, GL_FALSE, vertexBuffer->stride, itr->offset);
 				break;
 			case GAE_VERTEXBUFFER_FORMAT_POSITION_3S:
-				glVertexAttribPointer(state->a_position, 3U, GL_SHORT, GL_FALSE, vertexBuffer->stride, (GLvoid*)&itr->offset);
+				glVertexAttribPointer(state->a_position, 3U, GL_SHORT, GL_FALSE, vertexBuffer->stride, itr->offset);
 				break;
 			case GAE_VERTEXBUFFER_FORMAT_POSITION_4S:
-				glVertexAttribPointer(state->a_position, 4U, GL_SHORT, GL_FALSE, vertexBuffer->stride, (GLvoid*)&itr->offset);
+				glVertexAttribPointer(state->a_position, 4U, GL_SHORT, GL_FALSE, vertexBuffer->stride, itr->offset);
 				break;
 			case GAE_VERTEXBUFFER_FORMAT_POSITION_2B:
-				glVertexAttribPointer(state->a_position, 2U, GL_BYTE, GL_FALSE, vertexBuffer->stride, (GLvoid*)&itr->offset);
+				glVertexAttribPointer(state->a_position, 2U, GL_BYTE, GL_FALSE, vertexBuffer->stride, itr->offset);
 				break;
 			case GAE_VERTEXBUFFER_FORMAT_POSITION_3B:
-				glVertexAttribPointer(state->a_position, 3U, GL_BYTE, GL_FALSE, vertexBuffer->stride, (GLvoid*)&itr->offset);
+				glVertexAttribPointer(state->a_position, 3U, GL_BYTE, GL_FALSE, vertexBuffer->stride, itr->offset);
 				break;
 			case GAE_VERTEXBUFFER_FORMAT_POSITION_4B:
-				glVertexAttribPointer(state->a_position, 4U, GL_BYTE, GL_FALSE, vertexBuffer->stride, (GLvoid*)&itr->offset);
+				glVertexAttribPointer(state->a_position, 4U, GL_BYTE, GL_FALSE, vertexBuffer->stride, itr->offset);
 				break;
 			case GAE_VERTEXBUFFER_FORMAT_NORMAL_3F:
-				glVertexAttribPointer(state->a_normal, 3U, GL_FLOAT, GL_FALSE, vertexBuffer->stride, (GLvoid*)&itr->offset);
+				glVertexAttribPointer(state->a_normal, 3U, GL_FLOAT, GL_FALSE, vertexBuffer->stride, itr->offset);
 				break;
 			case GAE_VERTEXBUFFER_FORMAT_NORMAL_3S:
-				glVertexAttribPointer(state->a_normal, 3U, GL_SHORT, GL_FALSE, vertexBuffer->stride, (GLvoid*)&itr->offset);
+				glVertexAttribPointer(state->a_normal, 3U, GL_SHORT, GL_FALSE, vertexBuffer->stride, itr->offset);
 				break;
 			case GAE_VERTEXBUFFER_FORMAT_NORMAL_3B:
-				glVertexAttribPointer(state->a_normal, 3U, GL_BYTE, GL_FALSE, vertexBuffer->stride, (GLvoid*)&itr->offset);
+				glVertexAttribPointer(state->a_normal, 3U, GL_BYTE, GL_FALSE, vertexBuffer->stride, itr->offset);
 				break;
 			case GAE_VERTEXBUFFER_FORMAT_COLOUR_4F:
-				glVertexAttribPointer(state->a_colour, 4U, GL_FLOAT, GL_FALSE, vertexBuffer->stride, (GLvoid*)&itr->offset);
+				glVertexAttribPointer(state->a_colour, 4U, GL_FLOAT, GL_FALSE, vertexBuffer->stride, itr->offset);
 				break;
 			case GAE_VERTEXBUFFER_FORMAT_COLOUR_3F:
-				glVertexAttribPointer(state->a_colour, 3U, GL_FLOAT, GL_FALSE, vertexBuffer->stride, (GLvoid*)&itr->offset);
+				glVertexAttribPointer(state->a_colour, 3U, GL_FLOAT, GL_FALSE, vertexBuffer->stride, itr->offset);
 				break;
 			case GAE_VERTEXBUFFER_FORMAT_COLOUR_4S:
-				glVertexAttribPointer(state->a_colour, 4U, GL_SHORT, GL_FALSE, vertexBuffer->stride, (GLvoid*)&itr->offset);
+				glVertexAttribPointer(state->a_colour, 4U, GL_SHORT, GL_FALSE, vertexBuffer->stride, itr->offset);
 				break;
 			case GAE_VERTEXBUFFER_FORMAT_COLOUR_3S:
-				glVertexAttribPointer(state->a_colour, 3U, GL_SHORT, GL_FALSE, vertexBuffer->stride, (GLvoid*)&itr->offset);
+				glVertexAttribPointer(state->a_colour, 3U, GL_SHORT, GL_FALSE, vertexBuffer->stride, itr->offset);
 				break;
 			case GAE_VERTEXBUFFER_FORMAT_COLOUR_4UB:
-				glVertexAttribPointer(state->a_colour, 4U, GL_UNSIGNED_BYTE, GL_FALSE, vertexBuffer->stride, (GLvoid*)&itr->offset);
+				glVertexAttribPointer(state->a_colour, 4U, GL_UNSIGNED_BYTE, GL_FALSE, vertexBuffer->stride, itr->offset);
 				break;
 			case GAE_VERTEXBUFFER_FORMAT_COLOUR_3UB:
-				glVertexAttribPointer(state->a_colour, 3U, GL_UNSIGNED_BYTE, GL_FALSE, vertexBuffer->stride, (GLvoid*)&itr->offset);
+				glVertexAttribPointer(state->a_colour, 3U, GL_UNSIGNED_BYTE, GL_FALSE, vertexBuffer->stride, itr->offset);
 				break;
 			case GAE_VERTEXBUFFER_FORMAT_TEXTURE_2F:
-				glVertexAttribPointer(state->a_texCoord0, 2U, GL_FLOAT, GL_FALSE, vertexBuffer->stride, (GLvoid*)&itr->offset);
+				glVertexAttribPointer(state->a_texCoord0, 2U, GL_FLOAT, GL_FALSE, vertexBuffer->stride, itr->offset);
 				break;
 			default:
 				break;

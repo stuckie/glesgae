@@ -46,12 +46,12 @@ GAE_StateStack_t* GAE_StateStack_replace(GAE_StateStack_t* stack, GAE_State_t* s
 }
 
 GAE_State_t* GAE_StateStack_get(GAE_StateStack_t* stack) {
-	return GAE_Array_get(stack->stack, GAE_Array_size(stack->stack) - 1U);
+	return GAE_Array_get(stack->stack, GAE_Array_length(stack->stack) - 1U);
 }
 
 GAE_BOOL GAE_StateStack_update(GAE_StateStack_t* stack, const float delta) {
 	GAE_BOOL status = GAE_FALSE;
-	GAE_State_t* state = GAE_Array_get(stack->stack, GAE_Array_size(stack->stack) - 1U);
+	GAE_State_t* state = GAE_Array_get(stack->stack, GAE_Array_length(stack->stack) - 1U);
 	
 	if (0 != state)
 		status = (*state->update)(delta, state->userData);

@@ -1,16 +1,13 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.7)
 cmake_policy(SET CMP0015 NEW)
 
 project(libglesgae)
 
+set(CMAKE_C_FLAGS "-Wall -Werror -Wpedantic -Wno-variadic-macros -Wcast-align -Wredundant-decls -Wextra -std=gnu89 -pedantic-errors")
+
 # Compile Options
-option(USE_SDL2 "Use SDL2 Bindings" ON)
+option(USE_SDL2 "Use SDL2 Bindings" OFF)
 option(USE_OGL "Use OpenGL Bindings" OFF)
-option(USE_D3D "Use D3D Bindings" OFF)
-option(USE_GLES1 "Use GLES1 Bindings" OFF)
-option(USE_GLES2 "Use GLES2 Bindings" OFF)
-option(USE_SDL "Use SDL1 Bindings" OFF)
-option(USE_SDLGL "Use SDL1 with platform GL" OFF)
 option(USE_SDL2GL "Use SDL2 with platform GL" OFF)
 
 IF(NOT CMAKE_BUILD_TYPE)
@@ -31,6 +28,9 @@ set(GLESGAE_BASE
 	States/StateStack.c
 	Time/Timer.c
 	Utils/Array.c
+	Utils/ArrayList.c
+	Utils/Group.c
+	Utils/Heap.c
 	Utils/HashString.c
 	Utils/List.c
 	Utils/Logger.c
@@ -53,12 +53,13 @@ if (USE_SDL2)
 		Platform/SDL2/SDL2Platform.c
 		Utils/Tiled/SDL2/SDL2TiledJsonLoader.c)
 	add_definitions(-DSDL2)
-	include_directories(../SDL2/prebuilt/include)
-	link_directories(../SDL2/prebuilt/lib)
+	find_package(SDL2 REQUIRED)
+	include_directories(${SDL2_INCLUDE_DIRS})
 endif (USE_SDL2)
 
 # OGL specifics
 if (USE_OGL)
+	remove_definitions(-DSDL2)
 	if (UNIX)
 		set(GLESGAE_RENDERER
 			Events/X11/X11EventSystem.c
@@ -73,10 +74,11 @@ if (USE_OGL)
 			Graphics/IndexBuffer.c
 			Graphics/Camera.c
 			Graphics/Context/GLX/GLee.c
-			Graphics/Context/GLXRenderContext.c
+			Graphics/Context/GLX/GLXRenderContext.c
 			Graphics/Renderer/GLES20/ShaderGLVboRenderer.c
 			Graphics/Sprite/3D/Sprite.c
 			Graphics/State/GLES2/GLES2State.c
+			Graphics/System/X11/X11GraphicsSystem.c
 			Graphics/Target/Buffer/OGL/BufferRenderTarget.c
 			Graphics/Target/Screen/OGL/ScreenRenderTarget.c
 			Graphics/Target/Texture/OGL/TextureRenderTarget.c
@@ -91,26 +93,6 @@ if (USE_OGL)
 		set(GLESGAE_RENDERER )
 	endif (UNIX)
 endif (USE_OGL)
-
-# D3D Specifics
-if (USE_D3D)
-	set(GLESGAE_RENDERER )
-endif (USE_D3D)
-
-# GLES 1 Specifics
-if (USE_GLES1)
-	set(GLESGAE_RENDERER )
-endif (USE_GLES1)
-
-# GLES 2 Specifics
-if (USE_GLES2)
-	set(GLESGAE_RENDERER )
-endif (USE_GLES2)
-
-# SDL Specifics
-if (USE_SDL)
-	set(GLESGAE_RENDERER )
-endif (USE_SDL)
 
 # SDL with GL Specifics
 if (USE_SDLGL)
@@ -142,7 +124,11 @@ add_library(glesgae STATIC
 	${GLESGAE_PLATFORM}
 	)
 
+add_custom_command(TARGET glesgae POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glesgae> ../lib/$<TARGET_FILE_NAME:glesgae>)
+
 # deal with link dependencies now
 if (USE_SDL2)
-	target_link_libraries(glesgae SDL2 SDL2main SDL2_image SDL2_net SDL2_ttf SDL2_mixer)
+	target_link_libraries(glesgae ${SDL2_LIBRARIES})
 endif (USE_SDL2)
+

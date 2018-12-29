@@ -190,7 +190,7 @@ GAE_RenderState_t* GAE_RenderState_updateUniforms(GAE_RenderState_t* state, GAE_
 	GAE_Shader_UniformUpdater_t* updater = 0;
 	GAE_HashString_t* idsBegin = (GAE_HashString_t*)GAE_Map_ids(platform->uniformUpdaters);
 	GAE_HashString_t* id = 0;
-	const unsigned int arraySize = GAE_Map_size(platform->uniformUpdaters);
+	const unsigned int arraySize = GAE_Map_length(platform->uniformUpdaters);
 	unsigned int index = 0;
 
 	while (index < arraySize) {
@@ -204,7 +204,7 @@ GAE_RenderState_t* GAE_RenderState_updateUniforms(GAE_RenderState_t* state, GAE_
 }
 
 GAE_RenderState_t* GAE_RenderState_updateTextures(GAE_RenderState_t* state, GAE_Material_t* const material) {
-	const unsigned int textureCount = GAE_Array_size(material->textures);
+	const unsigned int textureCount = GAE_Array_length(material->textures);
 	GAE_RenderState_GLES2_t* platform = (GAE_RenderState_GLES2_t*)state->platform;
 	unsigned int index = 0U;
 	GLenum currentUnit = GL_INVALID_VALUE;

@@ -2,7 +2,7 @@
 #define _SDL2_PLATFORM_H_
 
 #include "../../GAE_Types.h"
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 #define PLATFORM_MAIN					\
 GAE_Platform_t* GAE_PLATFORM;				\

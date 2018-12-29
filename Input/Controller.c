@@ -1,6 +1,7 @@
 #include "Controller.h"
 
 #include <string.h>
+#include <stdlib.h>
 #include "../Utils/Array.h"
 
 const GAE_KeyType_t GAE_KEY_A 						= 0U;
@@ -136,8 +137,6 @@ void GAE_Pad_delete(GAE_Pad_t* pad) {
 	free(pad);
 	pad = 0;
 }
-
-#include <stdio.h>
 
 GAE_Pointer_t* GAE_Pointer_create(const unsigned int axes, const unsigned int buttons) {
 	GAE_Pointer_t* pointer = (GAE_Pointer_t*)malloc(sizeof(GAE_Pointer_t));

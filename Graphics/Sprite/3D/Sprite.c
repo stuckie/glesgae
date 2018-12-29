@@ -38,15 +38,15 @@ GAE_Sprite_t* GAE_Sprite_create(const char* texturePath) {
 	GAE_Material_t* material = GAE_Material_create();
 
 	float vertexData[20] = { /*Position - 12 floats */
-		0.0F, 480.0F, 0.0F,
-		800.0F, 480.0F, 0.0F,
-		800.0F, 0.0F, 0.0F,
-		0.0F, 0.0F, 0.0F,
+		-1.0F, 1.0F, 0.0F,
+		1.0F, 1.0F, 0.0F,
+		1.0F, -1.0F, 0.0F,
+		-1.0F, -1.0F, 0.0F,
 		/* Tex Coords - 8 floats */
-		0.0F, 1.0F,
-		1.0F, 1.0F,
+		0.0F, 0.0F,
 		1.0F, 0.0F,
-		0.0F, 0.0F};
+		1.0F, 1.0F,
+		0.0F, 1.0F};
 
 	unsigned int vertexSize = 20 * sizeof(float);
 	unsigned short indexData[6] = { 0, 3, 2, 2, 1, 0 };
@@ -63,7 +63,7 @@ GAE_Sprite_t* GAE_Sprite_create(const char* texturePath) {
 
 	GAE_Texture_load(texture, GAE_FALSE);
 	GAE_Material_addTexture(material, texture);
-	GAE_Texture_delete(texture);
+	/*GAE_Texture_delete(texture);*/
 
 	GAE_File_setBuffer(vShader, (GAE_BYTE*)vSource, strlen(vSource), GAE_FILE_BUFFER_OWNED, 0);
 	GAE_File_setBuffer(fShader, (GAE_BYTE*)fSource, strlen(fSource), GAE_FILE_BUFFER_OWNED, 0);

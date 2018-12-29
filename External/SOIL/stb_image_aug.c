@@ -86,6 +86,8 @@
   #endif
 #endif
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmisleading-indentation" /* for the case macros */
 
 /* implementation: */
 typedef unsigned char uint8;
@@ -3709,3 +3711,5 @@ int stbi_write_tga(char const *filename, int x, int y, int comp, void *data)
 #ifndef STBI_NO_DDS
 #include "stbi_DDS_aug_c.h"
 #endif
+
+#pragma GCC diagnostic pop

@@ -12,4 +12,12 @@ typedef struct GAE_RenderState_s {
 	void* platform;
 } GAE_RenderState_t;
 
+#if defined(GLX)
+#include "GLES2/GLES2State.h"
+#elif defined(ANDROID)
+#include "GLES2/GLES2State.h"
+#elif defined(PANDORA)
+#include "GLES2/GLES2State.h"
+#endif
+
 #endif

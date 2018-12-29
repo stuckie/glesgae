@@ -6,5 +6,5 @@
 *.exe
 *.o
 *.so
-build-linux
+build
 lib

@@ -3,7 +3,7 @@
 #include "../../Renderer/SDL2/SDL2Renderer.h"
 #include "../../Window/RenderWindow.h"
 #include <stdlib.h>
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 GAE_RenderContext_t* GAE_RenderContext_create(void) {
 	GAE_RenderContext_t* context = malloc(sizeof(GAE_RenderContext_t));

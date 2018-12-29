@@ -1,12 +1,13 @@
 #include "../EventSystem.h"
 #include "../Event.h"
-#include "../Graphics/Window/X11/X11RenderWindow.h"
+#include "../../Graphics/Window/X11/X11RenderWindow.h"
 
-#include "../Utils/Map.h"
-#include "../Utils/Array.h"
+#include "../../Utils/Map.h"
+#include "../../Utils/Array.h"
 
 #include <X11/Xlib.h>
-#include <stdio.h>
+#include <assert.h>
+#include <stdlib.h>
 
 typedef struct GAE_X11_EventSystem_s {
 	GAE_X11_RenderWindow_t* window;
@@ -37,8 +38,13 @@ GAE_EventSystem_t* GAE_EventSystem_create(void) {
 	return system;
 }
 
+void GAE_X11_EventSystem_Bind_Window(GAE_EventSystem_t* commonSystem, GAE_RenderWindow_t* window) {
+	GAE_X11_EventSystem_t* system = (GAE_X11_EventSystem_t*)commonSystem->userData;
+	system->window = (GAE_X11_RenderWindow_t*)window->platform;
+}
+
 void GAE_EventSystem_update(GAE_EventSystem_t* commonSystem) {
-	GAE_X11_EventSystem_t* system = commonSystem->userData;
+	GAE_X11_EventSystem_t* system = (GAE_X11_EventSystem_t*)commonSystem->userData;
 	GAE_X11_RenderWindow_t* window = system->window;
 	
 	Window rootReturn;
@@ -50,6 +56,8 @@ void GAE_EventSystem_update(GAE_EventSystem_t* commonSystem) {
 	unsigned int maskReturn;
 
 	XEvent xEvent;
+
+	assert(window);
 
 	if (1 == XQueryPointer(window->display, window->window
 									, &rootReturn, &childReturn
@@ -109,17 +117,17 @@ void GAE_EventSystem_update(GAE_EventSystem_t* commonSystem) {
 }
 
 void GAE_EventSystem_delete(GAE_EventSystem_t* system) {
-	unsigned int observerSize = GAE_Map_size(system->observers);
-	unsigned int triggerSize = GAE_Map_size(system->triggers);
+	unsigned int observerSize = GAE_Map_length(system->observers);
+	unsigned int triggerSize = GAE_Map_length(system->triggers);
 
 	while (0 < observerSize) {
 		GAE_Array_delete((GAE_Array_t*)GAE_Map_pop(system->observers));
-		observerSize = GAE_Map_size(system->observers);
+		observerSize = GAE_Map_length(system->observers);
 	}
 
 	while (0 < triggerSize) {
 		GAE_Array_delete((GAE_Array_t*)GAE_Map_pop(system->triggers));
-		triggerSize = GAE_Map_size(system->triggers);
+		triggerSize = GAE_Map_length(system->triggers);
 	}
 
 	GAE_Map_delete(system->observers);
@@ -149,7 +157,7 @@ void sendPointerEvent(GAE_EventSystem_t* system, const int pointerX, const int p
 	GAE_Map_push(params, (void*)&id, (void*)&pointerY);
 	event = GAE_Event_create(type, params);
 	
-	GAE_EventSystem_sendEvent(system, type, event);
+	GAE_EventSystem_sendEvent(system, event);
 	GAE_Event_delete(event);
 }
 
@@ -165,7 +173,7 @@ void sendResizeEvent(GAE_EventSystem_t* system, const int width, const int heigh
 	GAE_Map_push(params, (void*)&id, (void*)&height);
 	event = GAE_Event_create(type, params);
 	
-	GAE_EventSystem_sendEvent(system, type, event);
+	GAE_EventSystem_sendEvent(system, event);
 	GAE_Event_delete(event);
 }
 
@@ -179,7 +187,7 @@ void sendKeyPressEvent(GAE_EventSystem_t* system, const KeySym key) {
 	GAE_Map_push(params, (void*)&id, (void*)&key);
 	event = GAE_Event_create(type, params);
 	
-	GAE_EventSystem_sendEvent(system, type, event);
+	GAE_EventSystem_sendEvent(system, event);
 	GAE_Event_delete(event);
 }
 
@@ -193,7 +201,7 @@ void sendKeyReleaseEvent(GAE_EventSystem_t* system, const KeySym key) {
 	GAE_Map_push(params, (void*)&id, (void*)&key);
 	event = GAE_Event_create(type, params);
 	
-	GAE_EventSystem_sendEvent(system, type, event);
+	GAE_EventSystem_sendEvent(system, event);
 	GAE_Event_delete(event);
 }
 
@@ -207,7 +215,7 @@ void sendButtonReleaseEvent(GAE_EventSystem_t* system, const unsigned int button
 	GAE_Map_push(params, (void*)&id, (void*)&button);
 	event = GAE_Event_create(type, params);
 	
-	GAE_EventSystem_sendEvent(system, type, event);
+	GAE_EventSystem_sendEvent(system, event);
 	GAE_Event_delete(event);
 }
 
@@ -221,7 +229,7 @@ void sendButtonPressEvent(GAE_EventSystem_t* system, const unsigned int button) 
 	GAE_Map_push(params, (void*)&id, (void*)&button);
 	event = GAE_Event_create(type, params);
 	
-	GAE_EventSystem_sendEvent(system, type, event);
+	GAE_EventSystem_sendEvent(system, event);
 	GAE_Event_delete(event);
 }
 
@@ -232,7 +240,7 @@ void sendWindowClosedEvent(GAE_EventSystem_t* system) {
 
 	event = GAE_Event_create(type, params);
 	
-	GAE_EventSystem_sendEvent(system, type, event);
+	GAE_EventSystem_sendEvent(system, event);
 	GAE_Event_delete(event);
 }
 
@@ -243,6 +251,6 @@ void sendAppDestroyedEvent(GAE_EventSystem_t* system) {
 
 	event = GAE_Event_create(type, params);
 	
-	GAE_EventSystem_sendEvent(system, type, event);
+	GAE_EventSystem_sendEvent(system, event);
 	GAE_Event_delete(event);
 }

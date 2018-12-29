@@ -3,7 +3,7 @@
 #include "../Utils/Map.h"
 
 #include <assert.h>
-#include <stdio.h>
+#include <stdlib.h>
 
 void GAE_EventSystem_registerObserver(GAE_EventSystem_t* system, const GAE_EventType_t type, GAE_EventObserver_t observer, void* userData) {
 	GAE_Array_t* observerArray = 0;
@@ -31,7 +31,7 @@ void GAE_EventSystem_deregisterObserver(GAE_EventSystem_t* system, const GAE_Eve
 	observerArray = (GAE_Array_t*)GAE_Map_get(system->observers, (void*)&type);
 	assert(observerArray);
 
-	arraySize = GAE_Array_size(observerArray);
+	arraySize = GAE_Array_length(observerArray);
 	begin = (GAE_EventObserverInfo_t*)GAE_Array_get(observerArray, 0U);
 	for (index = 0U; index < arraySize; ++index) {
 		if (observer == ((GAE_EventObserverInfo_t*)GAE_Array_get(observerArray, index))->observer) {
@@ -68,7 +68,7 @@ void GAE_EventSystem_deregisterTrigger(GAE_EventSystem_t* system, const GAE_Even
 	assert(triggerArray);
 
 	begin = (GAE_EventTriggerInfo_t*)GAE_Array_get(triggerArray, 0U);
-	arraySize = GAE_Array_size(triggerArray);
+	arraySize = GAE_Array_length(triggerArray);
 	for (index = 0U; index < arraySize; ++index) {
 		if (trigger == ((GAE_EventTriggerInfo_t*)GAE_Array_get(triggerArray, index))->trigger) {
 			*(begin + index) = *(begin + (arraySize - 1U));
@@ -77,8 +77,8 @@ void GAE_EventSystem_deregisterTrigger(GAE_EventSystem_t* system, const GAE_Even
 	}
 }
 
-void GAE_EventSystem_sendEvent(GAE_EventSystem_t* system, const GAE_EventType_t type, GAE_Event_t* const event) {
-	GAE_Array_t* observerArray = (GAE_Array_t*)GAE_Map_get(system->observers, (void*)&type);
+void GAE_EventSystem_sendEvent(GAE_EventSystem_t* system, GAE_Event_t* const event) {
+	GAE_Array_t* observerArray = (GAE_Array_t*)GAE_Map_get(system->observers, (void*)&event->type);
 	unsigned int arraySize = 0U;
 	GAE_EventObserverInfo_t* observerInfo = 0;
 	unsigned int index = 0;
@@ -86,8 +86,7 @@ void GAE_EventSystem_sendEvent(GAE_EventSystem_t* system, const GAE_EventType_t 
 	if (0 == observerArray)
 		return;
 
-	arraySize = GAE_Array_size(observerArray);
-	assert(type == event->type); /* Sanity Check */
+	arraySize = GAE_Array_length(observerArray);
 	while (index < arraySize) {
 		observerInfo = (GAE_EventObserverInfo_t*)GAE_Array_get(observerArray, index);
 		assert(observerInfo);
@@ -100,7 +99,7 @@ void GAE_EventSystem_updateTriggers(GAE_EventSystem_t* system) {
 	/* Outside Array */
 	GAE_Array_t* triggerArrayBegin = (GAE_Array_t*)GAE_Map_begin(system->triggers);
 	GAE_Array_t* triggerArray = triggerArrayBegin;
-	const unsigned int triggerTypeCount = GAE_Map_size(system->triggers);
+	const unsigned int triggerTypeCount = GAE_Map_length(system->triggers);
 	unsigned int typeIndex = 0U;
 
 	/* Inside Array */
@@ -116,7 +115,7 @@ void GAE_EventSystem_updateTriggers(GAE_EventSystem_t* system) {
 			assert(triggerInfo);
 			event = (*triggerInfo->trigger)(triggerInfo->userData);
 			if (0 != event)
-				GAE_EventSystem_sendEvent(system, event->type, event);
+				GAE_EventSystem_sendEvent(system, event);
 
 			++triggerIndex;
 			triggerInfo = (GAE_EventTriggerInfo_t*)GAE_Array_get(triggerArray, triggerIndex);

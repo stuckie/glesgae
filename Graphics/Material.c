@@ -3,6 +3,8 @@
 #include "Texture.h"
 #include "../Utils/Array.h"
 
+#include <stdlib.h>
+
 GAE_Material_t* GAE_Material_create(void) {
 	GAE_Material_t* material = malloc(sizeof(GAE_Material_t));
 

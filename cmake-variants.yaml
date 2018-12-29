@@ -1,0 +1,30 @@
+buildType:
+  default: debug
+  choices:
+    debug:
+      short: Debug
+      long: Emit debug information
+      buildType: Debug
+    release:
+      short: Release
+      long: Optimize generated code
+      buildType: Release
+
+engine:
+  default: sdl2
+  choices:
+    ogl:
+      short: OpenGL
+      long: OpenGL rendering
+      settings:
+        USE_OGL: true
+    sdl2:
+      short: SDL2
+      long: SDL2 rendering
+      settings:
+        USE_SDL2: true
+    sdl2gl:
+      short: SDL2GL
+      long: SDL2 + OpenGL rendering
+      settings:
+        USE_SDL2GL: true

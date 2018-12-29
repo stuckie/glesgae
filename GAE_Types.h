@@ -7,6 +7,10 @@ extern const unsigned int GAE_INVALID;
 #define GAE_TRUE 1
 #define GAE_FALSE 0
 
+#define GAE_PI 3.1415926535
+#define GAE_DEG2RAD(x) (x * GAE_PI / 180.0)
+#define GAE_RAD2DEG(x) (x * 180.0 / GAE_PI)
+
 typedef unsigned int GAE_HashString_t;
 typedef unsigned int GAE_EntityId_t;
 typedef GAE_HashString_t GAE_ComponentType_t;

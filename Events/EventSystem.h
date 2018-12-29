@@ -37,19 +37,28 @@ typedef struct GAE_EventSystem_s {
 /* Platform specific create function - binds to the specified Window for window events */
 GAE_EventSystem_t* GAE_EventSystem_create(void);
 
-/* Platform specific update function */
+/* Update the Platform specific Event System */
 void GAE_EventSystem_update(GAE_EventSystem_t* system);
 
-/* Update all triggers - called by update */
+/* Update the triggers - to be called via the platform specific update */
 void GAE_EventSystem_updateTriggers(GAE_EventSystem_t* system);
 
 /* Platform specific delete function */
 void GAE_EventSystem_delete(GAE_EventSystem_t* system);
 
+/* Register an Observer of the given Event Type on the requested system, and pass the userDatum when it is triggered */
 void GAE_EventSystem_registerObserver(GAE_EventSystem_t* system, const GAE_EventType_t type, GAE_EventObserver_t observer, void* userData);
+
+/* Deregister this observer from the given Event Type on this system */
 void GAE_EventSystem_deregisterObserver(GAE_EventSystem_t* system, const GAE_EventType_t type, GAE_EventObserver_t observer);
+
+/* Register a Trigger of the given Event Type on the requested system, and pass the userDatum when it is triggered */
 void GAE_EventSystem_registerTrigger(GAE_EventSystem_t* system, const GAE_EventType_t type, GAE_EventTrigger_t trigger, void* userData);
+
+/* Deregister this trigger from the given Event Type on this system */
 void GAE_EventSystem_deregisterTrigger(GAE_EventSystem_t* system, const GAE_EventType_t type, GAE_EventTrigger_t trigger);
-void GAE_EventSystem_sendEvent(GAE_EventSystem_t* system, const GAE_EventType_t type, GAE_Event_t* const event);
+
+/* Send an Event to this Event System */
+void GAE_EventSystem_sendEvent(GAE_EventSystem_t* system, GAE_Event_t* const event);
 
 #endif

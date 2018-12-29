@@ -1,5 +1,5 @@
-#include "../../GraphicsSystem.h"
 #include "../../Renderer/Renderer.h"
+#include "../../GraphicsSystem.h"
 #include "../../Sprite.h"
 
 #include <stdlib.h>
@@ -13,9 +13,17 @@ GAE_GraphicsSystem_t* GAE_GraphicsSystem_create() {
 	return system;
 }
 
+GAE_GraphicsSystem_t* GAE_GraphicsSystem_clear(GAE_GraphicsSystem_t* system) {
+	return system;
+}
+
 GAE_GraphicsSystem_t* GAE_GraphicsSystem_drawSprite(GAE_GraphicsSystem_t* system, GAE_Sprite_t* const sprite) {
 	GAE_Renderer_drawSprite(system->renderer, sprite);
 
+	return system;
+}
+
+GAE_GraphicsSystem_t* GAE_GraphicsSystem_present(GAE_GraphicsSystem_t* system) {
 	return system;
 }
 

@@ -2,8 +2,7 @@
 
 #include <assert.h>
 #include <stdlib.h>
-#include "SDL.h"
-#include "SDL_image.h"
+#include "SDL2/SDL.h"
 
 #include "../../../Utils/HashString.h"
 #include "../../../File/File.h"
@@ -153,8 +152,11 @@ SDL_Texture* loadTextureFromFile(GAE_Texture_t* texture) {
 	GAE_SDL2_Texture_t* platform = (GAE_SDL2_Texture_t*)texture->platform;
 
 	GAE_File_t* file = texture->file;
-	SDL_Texture* tex = IMG_LoadTexture_RW(platform->renderer, SDL_RWFromMem((void*)file->buffer, (int)file->bufferSize), 1);
+	SDL_Surface* img = SDL_LoadBMP_RW(SDL_RWFromMem((void*)file->buffer, (int)file->bufferSize), 1);
+	/*SDL_Texture* tex = IMG_LoadTexture_RW(platform->renderer, SDL_RWFromMem((void*)file->buffer, (int)file->bufferSize), 1);*/
+	SDL_Texture* tex = SDL_CreateTextureFromSurface(platform->renderer, img);
 	SDL_QueryTexture(tex, &platform->format, &platform->access, (int*)&texture->width, (int*)&texture->height);
+	SDL_FreeSurface(img);
 
 	return tex;
 }

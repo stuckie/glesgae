@@ -35,7 +35,8 @@
 
 #ifdef GLX
 /* useless crappy code.... */
-#pragma GCC diagnostic ignored "-pedantic"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
 
 #ifdef _MSC_VER
 	#pragma optimize( "g", off )
@@ -18172,5 +18173,7 @@ GLEE_EXTERN GLboolean GLeeInit( void )
     __GLeeExtList_clean(&extensionNames);
     return GL_TRUE;
 }
+
+#pragma GCC diagnostic pop
 
 #endif

@@ -37,6 +37,10 @@ GAE_Matrix3_t* GAE_Matrix3_setUpVector(GAE_Matrix3_t* matrix, GAE_Vector3_t* con
 GAE_Matrix3_t* GAE_Matrix3_setToIdentity(GAE_Matrix3_t* matrix);
 GAE_Matrix3_t* GAE_Matrix3_setToZero(GAE_Matrix3_t* matrix);
 
+GAE_Matrix3_t* GAE_Matrix3_createXRotation(GAE_Matrix3_t* matrix, const float deg);
+GAE_Matrix3_t* GAE_Matrix3_createYRotation(GAE_Matrix3_t* matrix, const float deg);
+GAE_Matrix3_t* GAE_Matrix3_createZRotation(GAE_Matrix3_t* matrix, const float deg);
+
 GAE_Matrix3_t* GAE_Matrix3_add(GAE_Matrix3_t* matrix, GAE_Matrix3_t* const rhs);
 GAE_Matrix3_t* GAE_Matrix3_sub(GAE_Matrix3_t* matrix, GAE_Matrix3_t* const rhs);
 GAE_Matrix3_t* GAE_Matrix3_mul(GAE_Matrix3_t* matrix, GAE_Matrix3_t* const rhs);

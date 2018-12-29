@@ -7,7 +7,7 @@
 #include <assert.h>
 #include <stdio.h>
 
-GAE_Map_t* GAE_Map_create(const size_t keySize, const size_t dataSize, GAE_Map_compare_t compare) {
+GAE_Map_t* GAE_Map_create(const unsigned int keySize, const unsigned int dataSize, GAE_Map_compare_t compare) {
 	GAE_Map_t* map = malloc(sizeof(GAE_Map_t));
 	assert(map);
 
@@ -45,7 +45,7 @@ void* GAE_Map_pop(GAE_Map_t* map) {
 void* GAE_Map_get(GAE_Map_t* map, void* const id) {
 	void* found = 0;
 	unsigned int index = 0U;
-	const unsigned int size = GAE_Array_size(map->ids);
+	const unsigned int size = GAE_Array_length(map->ids);
 
 	while (index < size) {
 		found = GAE_Array_get(map->ids, index);
@@ -58,17 +58,23 @@ void* GAE_Map_get(GAE_Map_t* map, void* const id) {
 }
 
 void* GAE_Map_begin(GAE_Map_t* map) {
-	return GAE_Array_get(map->values, 0);
+	if (0 < GAE_Array_length(map->values))
+		return GAE_Array_get(map->values, 0);
+	else
+		return 0;
 }
 
 void* GAE_Map_ids(GAE_Map_t* map) {
-	return GAE_Array_get(map->ids, 0);
+	if (0 < GAE_Array_length(map->ids))
+		return GAE_Array_get(map->ids, 0);
+	else
+		return 0;
 }
 
 GAE_Map_t* GAE_Map_remove(GAE_Map_t* map, void* const id) {
 	void* found = 0;
 	unsigned int index = 0U;
-	const unsigned int size = GAE_Array_size(map->ids);
+	const unsigned int size = GAE_Array_length(map->ids);
 	void* current = 0;
 	void* temp = 0;
 
@@ -96,8 +102,8 @@ GAE_Map_t* GAE_Map_remove(GAE_Map_t* map, void* const id) {
 	return map;
 }
 
-unsigned int GAE_Map_size(GAE_Map_t* map) {
-	return GAE_Array_size(map->ids);
+unsigned int GAE_Map_length(GAE_Map_t* map) {
+	return GAE_Array_length(map->ids);
 }
 
 void GAE_Map_delete(GAE_Map_t* map) {

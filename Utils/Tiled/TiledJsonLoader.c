@@ -225,7 +225,7 @@ GAE_Tiled_Terrain_t* handleTerrains(jsmntok_t* tokens, char* string) {
 		}
 	}
 
-	if (0 == terrain->name) {
+	if (0 == strlen(terrain->name)) {
 		free (terrain);
 		terrain = 0;
 	}
@@ -553,7 +553,7 @@ GAE_Array_t* parseData(jsmntok_t* token, char* string) {
 
 
 GAE_Tiled_Tileset_t* getTileset(GAE_Tiled_t* tilemap, const unsigned int tileId) {
-	const unsigned int tilesetCount = GAE_Array_size(tilemap->tilesets);
+	const unsigned int tilesetCount = GAE_Array_length(tilemap->tilesets);
 	unsigned int index = 0U;
 	
 	if (tilesetCount == 1U)

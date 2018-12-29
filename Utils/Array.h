@@ -1,18 +1,17 @@
 #ifndef _ARRAY_H_
 #define _ARRAY_H_
 
-#include <stdlib.h>
 #include "../GAE_Types.h"
 
 typedef struct GAE_Array_s {
-	GAE_BYTE* data;	/* array data */
-	size_t allocated;		/* how much is allocated in array */
-	size_t used;			/* how much is used out of allocated array */
-	size_t size;			/* size of each element */
+	GAE_BYTE* data;			/* array data */
+	unsigned int allocated;		/* how much is allocated in array */
+	unsigned int used;			/* how much is used out of allocated array */
+	unsigned int size;			/* size of each element */
 } GAE_Array_t;
 
 /* Creates a new Array. */
-GAE_Array_t* GAE_Array_create(const size_t size);
+GAE_Array_t* GAE_Array_create(const unsigned int size);
 
 /* Creates a contiguous chunk of memory for the specified amount of Array elements. */
 GAE_Array_t* GAE_Array_reserve(GAE_Array_t* array, const unsigned int amount);
@@ -33,7 +32,7 @@ void* GAE_Array_pop(GAE_Array_t* array);
 void* GAE_Array_get(GAE_Array_t* array, const unsigned int index);
 
 /* Returns the length of this array in amount of elements with 0 being empty. */
-unsigned int GAE_Array_size(GAE_Array_t* array);
+unsigned int GAE_Array_length(GAE_Array_t* array);
 
 /* Deletes the Array and all memory it allocated. Any stray pointers will therefore be undefined. */
 void GAE_Array_delete(GAE_Array_t* array);

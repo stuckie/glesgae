@@ -1,7 +1,7 @@
 #include "SDL2Renderer.h"
 
 #include <stdlib.h>
-#include "SDL.h"
+#include "SDL2/SDL.h"
 #include "../../Window/RenderWindow.h"
 #include "../../Sprite.h"
 #include "../../Texture.h"
@@ -19,6 +19,7 @@ GAE_Renderer_t* GAE_SDL2Renderer_create(GAE_RenderWindow_t* const window, const 
 
 	return renderer;
 }
+
 GAE_Renderer_t* GAE_Renderer_drawMesh(GAE_Renderer_t* renderer, struct GAE_Mesh_s* const mesh, GAE_Matrix4_t* const transform) {
 	GAE_UNUSED(mesh);
 	GAE_UNUSED(transform);
@@ -28,7 +29,7 @@ GAE_Renderer_t* GAE_Renderer_drawMesh(GAE_Renderer_t* renderer, struct GAE_Mesh_
 
 GAE_Renderer_t* GAE_Renderer_drawSprite(GAE_Renderer_t* renderer, GAE_Sprite_t* const sprite) {
 	GAE_SDL2_Texture_t* sdlTexture = (GAE_SDL2_Texture_t*)sprite->texture->platform;
-	SDL_RenderCopy(renderer->renderer, sdlTexture->texture, sprite->srcRect, sprite->dstRect);
+	SDL_RenderCopy(renderer->renderer, sdlTexture->texture, sprite->src, sprite->dest);
 
 	return renderer;
 }
