@@ -18,7 +18,7 @@ void handleAppEvent(SDL_Event* event, GAE_EventSystem_t* system);
 void sendEvent(GAE_HashString_t type, SDL_Event* event, GAE_EventSystem_t* system);
 
 GAE_EventSystem_t* GAE_EventSystem_create(void) {
-	GAE_EventSystem_t* system = malloc(sizeof(GAE_EventSystem_t));
+	GAE_EventSystem_t* system = (GAE_EventSystem_t*)malloc(sizeof(GAE_EventSystem_t));
 
 	system->observers = GAE_Map_create(sizeof(GAE_HashString_t), sizeof(GAE_Array_t), GAE_HashString_compare);
 	system->triggers = GAE_Map_create(sizeof(GAE_HashString_t), sizeof(GAE_Array_t), GAE_HashString_compare);

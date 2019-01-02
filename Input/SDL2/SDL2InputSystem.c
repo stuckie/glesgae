@@ -42,7 +42,7 @@ void GAE_InputSystem_getEvent(GAE_Event_t* const event, void* userData) {
 	SDL_Event* sdlEvent = (SDL_Event*)GAE_Map_begin(event->params);
 
 	if (GAE_EVENT_KEYBOARD == event->type) {
-		switch(sdlEvent->type) {
+		switch (sdlEvent->type) {
 			case SDL_KEYUP:
 				system->keyboard->keys[convertKey(sdlEvent->key.keysym.sym)] = GAE_FALSE;
 			break;
@@ -50,6 +50,36 @@ void GAE_InputSystem_getEvent(GAE_Event_t* const event, void* userData) {
 				system->keyboard->keys[convertKey(sdlEvent->key.keysym.sym)] = GAE_TRUE;
 			break;
 			default:
+			break;
+		}
+	}
+
+	if (GAE_EVENT_MOUSE_MOTION == event->type) {
+		switch (sdlEvent->type) {
+			case SDL_MOUSEMOTION: {
+				float* x = (float*)GAE_Array_get(system->pointer->axes, 0U);
+				float* y = (float*)GAE_Array_get(system->pointer->axes, 1U);
+
+				*x = sdlEvent->motion.x;
+				*y = sdlEvent->motion.y;
+			}
+			break;
+		}
+	}
+	
+	if (GAE_EVENT_MOUSE_BUTTON == event->type) {
+		switch (sdlEvent->type) {
+			case SDL_MOUSEBUTTONDOWN: {
+				float* button = (float*)GAE_Array_get(system->pointer->buttons, sdlEvent->button.which);
+				
+				*button = 1.0F;
+			}
+			break;
+			case SDL_MOUSEBUTTONUP: {
+				float* button = (float*)GAE_Array_get(system->pointer->buttons, sdlEvent->button.which);
+				
+				*button = 0.0F;
+			}
 			break;
 		}
 	}

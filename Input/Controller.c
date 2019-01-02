@@ -141,15 +141,20 @@ void GAE_Pad_delete(GAE_Pad_t* pad) {
 GAE_Pointer_t* GAE_Pointer_create(const unsigned int axes, const unsigned int buttons) {
 	GAE_Pointer_t* pointer = (GAE_Pointer_t*)malloc(sizeof(GAE_Pointer_t));
 	unsigned int index = 0U;
-	float depressed = 0.0F;
 
 	pointer->axes = GAE_Array_create(sizeof(float));
-	for (index = 0U; index < axes; ++index)
-		GAE_Array_push(pointer->axes, (void*)&depressed);
+	for (index = 0U; index < axes; ++index) {
+		float* value = (float*)malloc(sizeof(float));
+		*value = 0.0F;
+		GAE_Array_push(pointer->axes, value);
+	}
 
 	pointer->buttons = GAE_Array_create(sizeof(float));
-	for (index = 0U; index < buttons; ++index)
-		GAE_Array_push(pointer->buttons, (void*)&depressed);
+	for (index = 0U; index < buttons; ++index) {
+		float* value = (float*)malloc(sizeof(float));
+		*value = 0.0F;
+		GAE_Array_push(pointer->buttons, value);
+	}
 
 	return pointer;
 }

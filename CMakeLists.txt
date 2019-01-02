@@ -25,6 +25,7 @@ set(GLESGAE_BASE
 	Input/Controller.c
 	Maths/Matrix.c
 	Maths/Vector.c
+	States/State.c
 	States/StateStack.c
 	Time/Timer.c
 	Utils/Array.c

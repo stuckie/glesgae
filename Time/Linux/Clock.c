@@ -19,8 +19,8 @@ typedef struct GAE_Clock_Linux_s {
 double getCurrentTime(const struct timespec* time);
 
 GAE_Clock_t* GAE_Clock_create(void) {
-	GAE_Clock_t* clock = malloc(sizeof(GAE_Clock_t));
-	GAE_Clock_Linux_t* linuxClock = malloc(sizeof(GAE_Clock_Linux_t));
+	GAE_Clock_t* clock = (GAE_Clock_t*)malloc(sizeof(GAE_Clock_t));
+	GAE_Clock_Linux_t* linuxClock = (GAE_Clock_Linux_t*)malloc(sizeof(GAE_Clock_Linux_t));
 
 	struct timespec time;
 	time.tv_sec = -1;
