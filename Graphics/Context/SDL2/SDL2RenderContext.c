@@ -20,6 +20,7 @@ void GAE_RenderContext_delete(GAE_RenderContext_t* context) {
 }
 
 GAE_RenderContext_t* GAE_RenderContext_init(GAE_RenderContext_t* context) {
+	SDL_RenderClear(context->renderer->renderer);
 	return context;
 }
 
@@ -29,7 +30,6 @@ GAE_RenderContext_t* GAE_RenderContext_shutdown(GAE_RenderContext_t* context) {
 
 GAE_RenderContext_t* GAE_RenderContext_update(GAE_RenderContext_t* context) {
 	SDL_RenderPresent(context->renderer->renderer);
-	SDL_RenderClear(context->renderer->renderer); /* clear for next frame */
 
 	return context;
 }

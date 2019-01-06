@@ -9,6 +9,7 @@ set(CMAKE_C_FLAGS "-Wall -Werror -Wpedantic -Wno-variadic-macros -Wcast-align -W
 option(USE_SDL2 "Use SDL2 Bindings" OFF)
 option(USE_OGL "Use OpenGL Bindings" OFF)
 option(USE_SDL2GL "Use SDL2 with platform GL" OFF)
+option(USE_EMSCRIPTEN "Use Emscripten" OFF)
 
 IF(NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
@@ -58,6 +59,26 @@ if (USE_SDL2)
 	find_package(SDL2 REQUIRED)
 	include_directories(${SDL2_INCLUDE_DIRS})
 endif (USE_SDL2)
+
+# Emscripten specifics
+if (USE_EMSCRIPTEN)
+	set(GLESGAE_RENDERER
+		Events/SDL2/SDL2Events.c
+		Events/SDL2/SDL2EventSystem.c
+		Graphics/Texture.c
+		Graphics/Context/SDL2/SDL2RenderContext.c
+		Graphics/Renderer/SDL2/SDL2Renderer.c
+		Graphics/System/SDL2/SDL2GraphicsSystem.c
+		Graphics/Sprite/SDL2/Sprite.c
+		Graphics/Target/Texture/SDL2/TextureRenderTarget.c
+		Graphics/Texture/SDL2/SDL2Texture.c
+		Graphics/Window/SDL2/SDL2RenderWindow.c
+		Input/SDL2/SDL2InputSystem.c
+		Platform/SDL2/SDL2Platform.c
+		Utils/Tiled/SDL2/SDL2TiledJsonLoader.c)
+	add_definitions(-DSDL2)
+	add_definitions(-s USE_SDL=2)
+endif (USE_EMSCRIPTEN)
 
 # OGL specifics
 if (USE_OGL)

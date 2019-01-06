@@ -4,8 +4,8 @@
 #include <string.h>
 
 GAE_RenderWindow_t* GAE_RenderWindow_create(char* const name, const unsigned int width, const unsigned int height, const unsigned int bpp, const GAE_BOOL fullscreen) {
-	GAE_RenderWindow_t* window = malloc(sizeof(GAE_RenderWindow_t));
-	GAE_SDL2_RenderWindow_t* sdlWindow = malloc(sizeof(GAE_SDL2_RenderWindow_t));
+	GAE_RenderWindow_t* window = (GAE_RenderWindow_t*)malloc(sizeof(GAE_RenderWindow_t));
+	GAE_SDL2_RenderWindow_t* sdlWindow = (GAE_SDL2_RenderWindow_t*)malloc(sizeof(GAE_SDL2_RenderWindow_t));
 
 	window->name = name;
 	window->width = width;

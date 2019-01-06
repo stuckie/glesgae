@@ -8,15 +8,18 @@
 #include <string.h>
 
 GAE_Sprite_t* GAE_Sprite_create(const char* texturePath) {
-	GAE_Sprite_t* sprite = malloc(sizeof(GAE_Sprite_t));
+	GAE_Sprite_t* sprite = (GAE_Sprite_t*)malloc(sizeof(GAE_Sprite_t));
 
 	GAE_File_t* textureFile = GAE_File_create(texturePath);
 	GAE_Texture_t* texture = GAE_Texture_createFromFile(textureFile);
 
-	SDL_Rect* src = malloc(sizeof(SDL_Rect));
-	SDL_Rect* dest = malloc(sizeof(SDL_Rect));
+	if (GAE_FALSE == GAE_Texture_load(texture, GAE_FALSE)) {
+		GAE_Sprite_delete(sprite);
+		return 0;
+	}
 
-	GAE_Texture_load(texture, GAE_FALSE);
+	SDL_Rect* src = (SDL_Rect*)malloc(sizeof(SDL_Rect));
+	SDL_Rect* dest = (SDL_Rect*)malloc(sizeof(SDL_Rect));
 
 	sprite->texture = texture;
 

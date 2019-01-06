@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 GAE_Platform_t* GAE_Platform_create(void) {
-	GAE_Platform_t* platform = malloc(sizeof(GAE_Platform_t));
+	GAE_Platform_t* platform = (GAE_Platform_t*)malloc(sizeof(GAE_Platform_t));
 
 	platform->graphicsSystem = 0;
 	platform->eventSystem = 0;
