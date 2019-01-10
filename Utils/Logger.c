@@ -41,13 +41,17 @@ GAE_Logger_t* GAE_Logger_setFile(GAE_Logger_t* logger, const char* fileName, con
 	char header[FILE_BUFFER_SIZE];
 	time_t rawTime;
 
+	if (0 == logger) return logger;
 	time(&rawTime);
 	assert(256 > (strlen(fileName) + strlen(ctime(&rawTime)) + 5));
-	sprintf(fullFileName, "%s %s.log", ctime(&rawTime), fileName);
+	if (fileType == GAE_LOG_FILE_HTML)
+		sprintf(fullFileName, "%s %s.html", ctime(&rawTime), fileName);
+	else
+		sprintf(fullFileName, "%s %s.log", ctime(&rawTime), fileName);
 
 	logger->fileType = fileType;
 
-	assert(0 != logger->file);
+	assert(0 == logger->file);
 	logger->file = GAE_File_create(fullFileName);
 	assert(logger->file);
 	GAE_File_open(logger->file, GAE_FILE_OPEN_APPEND, GAE_FILE_ASCII, 0);
@@ -60,6 +64,8 @@ GAE_Logger_t* GAE_Logger_setFile(GAE_Logger_t* logger, const char* fileName, con
 /* Closes the file this Logger is dealing with */
 GAE_Logger_t* GAE_Logger_closeFile(GAE_Logger_t* logger) {
 	char footer[FILE_BUFFER_SIZE];
+	if (0 == logger) return logger;
+
 	setFileFooter(footer, logger->fileType);
 	GAE_Logger_log(logger, GAE_LOG_TYPE_VERBATIM, GAE_LOG_OUTPUT_FILE, "%s", footer);
 	GAE_File_close(logger->file, GAE_FILE_CLOSE_DELETE_DATA, 0);
@@ -76,6 +82,7 @@ GAE_Logger_t* GAE_Logger_log(GAE_Logger_t* logger, const GAE_LOG_TYPE type, cons
 	GAE_LOG_OUTPUT logOutput = logger->output;
 	char text[TERMINAL_BUFFER_SIZE];
 	va_list args;
+	if (0 == logger) return logger;
 
 	va_start(args, string);
 	vsprintf(text, string, args); /* potential buffer overflow */
@@ -110,9 +117,10 @@ GAE_Logger_t* GAE_Logger_log(GAE_Logger_t* logger, const GAE_LOG_TYPE type, cons
 }
 
 void GAE_Logger_delete(GAE_Logger_t* logger) {
+	if (0 == logger) return;
+
 	if (0 != logger->file) {
-		GAE_File_close(logger->file, GAE_FILE_CLOSE_DELETE_DATA, 0);
-		GAE_File_delete(logger->file);
+		GAE_Logger_closeFile(logger);
 	}
 
 	free(logger);
@@ -130,21 +138,21 @@ void logToTerm(const GAE_LOG_TYPE type, const char* text) {
 			#if defined(ANDROID)
 				ANDROID_DEBUG("%s", text);
 			#else
-				printf("[DEBUG]%s[DEBUG]%s", timeString, text);
+				printf("[DEBUG]%s\n[DEBUG]%s", timeString, text);
 			#endif
 			break;
 		case GAE_LOG_TYPE_INFO:
 			#if defined(ANDROID)
 				ANDROID_INFO("%s", text);
 			#else
-				printf("[INFO]%s[INFO]%s", timeString, text);
+				printf("[INFO]%s\n[INFO]%s", timeString, text);
 			#endif
 			break;
 		case GAE_LOG_TYPE_ERROR:
 			#if defined(ANDROID)
 				ANDROID_ERROR("%s", text);
 			#else
-				printf("[ERROR]%s[ERROR]%s", timeString, text);
+				printf("[ERROR]%s\n[ERROR]%s", timeString, text);
 			#endif
 			break;
 		case GAE_LOG_TYPE_VERBATIM:
@@ -171,13 +179,13 @@ void logToFile(GAE_Logger_t* logger, const GAE_LOG_TYPE type, const char* text) 
 		case GAE_LOG_FILE_TEXT:
 			switch (type) {
 				case GAE_LOG_TYPE_DEBUG:
-					sprintf(finalText, "[DEBUG]%s[DEBUG]%s", timeString, text);
+					sprintf(finalText, "[DEBUG]%s\n[DEBUG]%s", timeString, text);
 					break;
 				case GAE_LOG_TYPE_INFO:
-					sprintf(finalText, "[INFO]%s[INFO]%s", timeString, text);
+					sprintf(finalText, "[INFO]%s\n[INFO]%s", timeString, text);
 					break;
 				case GAE_LOG_TYPE_ERROR:
-					sprintf(finalText, "[ERROR]%s[ERROR]%s", timeString, text);
+					sprintf(finalText, "[ERROR]%s\n[ERROR]%s", timeString, text);
 					break;
 				default:
 					break;

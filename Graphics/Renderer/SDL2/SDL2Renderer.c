@@ -3,7 +3,8 @@
 #include <stdlib.h>
 #include "SDL2/SDL.h"
 #include "../../Window/RenderWindow.h"
-#include "../../Sprite.h"
+#include "../../Sprite/Frame.h"
+#include "../../Sprite/Sprite.h"
 #include "../../Texture.h"
 #include "../../../GAE_Types.h"
 
@@ -12,7 +13,7 @@ GAE_Renderer_t* GAE_Renderer_create(GAE_RenderWindow_t* const window) { /* defau
 }
 
 GAE_Renderer_t* GAE_SDL2Renderer_create(GAE_RenderWindow_t* const window, const int index, const unsigned int flags) {
-	GAE_Renderer_t* renderer = malloc(sizeof(GAE_Renderer_t));
+	GAE_Renderer_t* renderer = (GAE_Renderer_t*)malloc(sizeof(GAE_Renderer_t));
 	GAE_SDL2_RenderWindow_t* sdlWindow = (GAE_SDL2_RenderWindow_t*)window->platform;
 
 	renderer->renderer = SDL_CreateRenderer(sdlWindow->window, index, flags);
@@ -28,8 +29,9 @@ GAE_Renderer_t* GAE_Renderer_drawMesh(GAE_Renderer_t* renderer, struct GAE_Mesh_
 }
 
 GAE_Renderer_t* GAE_Renderer_drawSprite(GAE_Renderer_t* renderer, GAE_Sprite_t* const sprite) {
-	GAE_SDL2_Texture_t* sdlTexture = (GAE_SDL2_Texture_t*)sprite->texture->platform;
-	SDL_RenderCopy(renderer->renderer, sdlTexture->texture, sprite->src, sprite->dest);
+	GAE_Frame_t* frame = GAE_Sprite_getFrame(sprite);
+	GAE_SDL2_Texture_t* sdlTexture = (GAE_SDL2_Texture_t*)frame->texture->platform;
+	SDL_RenderCopy(renderer->renderer, sdlTexture->texture, (SDL_Rect*)frame->rect, (SDL_Rect*)sprite->dest);
 
 	return renderer;
 }

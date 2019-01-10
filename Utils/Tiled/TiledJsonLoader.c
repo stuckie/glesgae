@@ -2,7 +2,7 @@
 
 #include "../../File/File.h"
 #include "../../External/jsmn/jsmn.h"
-#include "../../Graphics/Sprite.h"
+#include "../../Graphics/Texture.h"
 #include "../Map.h"
 #include "../Array.h"
 
@@ -470,7 +470,7 @@ void parseTilesetKey(jsmntok_t* token, char* string, const KEY key, GAE_Tiled_Ti
 		}
 		break;
 		case KEY_IMAGE: {
-			tilesetParser->image = GAE_Sprite_create(json_token_tostr(string, token));			
+			tilesetParser->image = GAE_Texture_create(json_token_tostr(string, token));			
 		}
 		break;
 		case KEY_TERRAINS: {

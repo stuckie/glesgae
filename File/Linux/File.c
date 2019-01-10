@@ -4,8 +4,8 @@
 #include <stdlib.h>
 
 GAE_File_t* GAE_File_create(const char* filePath) {
-	GAE_File_t* file = malloc(sizeof(GAE_File_t));
-	GAE_PlatformFile_t* platform = malloc(sizeof(GAE_PlatformFile_t));
+	GAE_File_t* file = (GAE_File_t*)malloc(sizeof(GAE_File_t));
+	GAE_PlatformFile_t* platform = (GAE_PlatformFile_t*)malloc(sizeof(GAE_PlatformFile_t));
 
 	strncpy(file->filePath, filePath, sizeof(file->filePath));
 	file->buffer = 0;
@@ -195,8 +195,8 @@ GAE_File_t* GAE_File_read(GAE_File_t* file, const unsigned long amount, GAE_FILE
 	if (0 != file->buffer)
 		free(file->buffer);
 	
-	file->buffer = malloc(file->bufferSize + 1U);
-	memset(file->buffer, '\0', file->bufferSize);
+	file->buffer = (GAE_BYTE*)malloc(file->bufferSize + 1U);
+	memset(file->buffer, '\0', file->bufferSize + 1U);
 	if (0 == file->buffer) {
 		if (0 != status)
 			*status = GAE_FILE_READ_ERROR;
@@ -314,7 +314,7 @@ GAE_File_t* GAE_File_setBuffer(GAE_File_t* file, unsigned char* buffer, const un
 	
 	switch(type) {
 		case GAE_FILE_BUFFER_COPY: {
-			file->buffer = malloc(size);
+			file->buffer = (GAE_BYTE*)malloc(size);
 			if (0 == file->buffer) {
 				if (0 != status)
 					*status = GAE_FALSE;
@@ -357,7 +357,7 @@ GAE_File_t* GAE_FILE_newBuffer(GAE_File_t* file, const unsigned long size, GAE_B
 	if (file->owned == GAE_TRUE)
 		free(file->buffer);
 	
-	file->buffer = malloc(size);
+	file->buffer = (GAE_BYTE*)malloc(size);
 	file->owned = GAE_TRUE;
 	file->bufferSize = size;
 	file->readPosition = 0U;

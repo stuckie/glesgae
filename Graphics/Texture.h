@@ -18,6 +18,7 @@ typedef struct GAE_Texture_s {
 	void* platform;
 } GAE_Texture_t;
 
+GAE_Texture_t* GAE_Texture_create(const char* path);
 GAE_Texture_t* GAE_Texture_createFromFile(struct GAE_File_s* const image);
 GAE_Texture_t* GAE_Texture_createFromBuffer(struct GAE_File_s* const buffer, const unsigned int width, const unsigned int height);
 void GAE_Texture_delete(GAE_Texture_t* texture);

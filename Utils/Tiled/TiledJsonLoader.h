@@ -43,7 +43,7 @@ typedef struct GAE_Tiled_Tileset_s {
 	unsigned int imageHeight;
 	unsigned int margin;
 	char name[128];
-	struct GAE_Sprite_s* image;
+	struct GAE_Texture_s* image;
 	struct GAE_Map_s* properties;
 	struct GAE_Array_s* terrains;
 	struct GAE_Array_s* tiles;

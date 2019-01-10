@@ -23,8 +23,11 @@ set(GLESGAE_BASE
 	Events/Event.c
 	Events/EventSystem.c
 	External/jsmn/jsmn.c
+	Graphics/Sprite/Frame.c
+	Graphics/Sprite/Sprite.c
 	Input/Controller.c
 	Maths/Matrix.c
+	Maths/Rect.c
 	Maths/Vector.c
 	States/State.c
 	States/StateStack.c
@@ -48,7 +51,6 @@ if (USE_SDL2)
 		Graphics/Context/SDL2/SDL2RenderContext.c
 		Graphics/Renderer/SDL2/SDL2Renderer.c
 		Graphics/System/SDL2/SDL2GraphicsSystem.c
-		Graphics/Sprite/SDL2/Sprite.c
 		Graphics/Target/Texture/SDL2/TextureRenderTarget.c
 		Graphics/Texture/SDL2/SDL2Texture.c
 		Graphics/Window/SDL2/SDL2RenderWindow.c
@@ -69,7 +71,6 @@ if (USE_EMSCRIPTEN)
 		Graphics/Context/SDL2/SDL2RenderContext.c
 		Graphics/Renderer/SDL2/SDL2Renderer.c
 		Graphics/System/SDL2/SDL2GraphicsSystem.c
-		Graphics/Sprite/SDL2/Sprite.c
 		Graphics/Target/Texture/SDL2/TextureRenderTarget.c
 		Graphics/Texture/SDL2/SDL2Texture.c
 		Graphics/Window/SDL2/SDL2RenderWindow.c
@@ -96,7 +97,6 @@ if (USE_OGL)
 			Graphics/Context/GLX/GLee.c
 			Graphics/Context/GLX/GLXRenderContext.c
 			Graphics/Renderer/GLES20/ShaderGLVboRenderer.c
-			Graphics/Sprite/3D/Sprite.c
 			Graphics/State/GLES2/GLES2State.c
 			Graphics/System/X11/X11GraphicsSystem.c
 			Graphics/Target/Buffer/OGL/BufferRenderTarget.c

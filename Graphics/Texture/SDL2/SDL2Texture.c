@@ -10,13 +10,14 @@
 #include "../../Renderer/SDL2/SDL2Renderer.h"
 #include "../../../Platform/Platform.h"
 #include "../../../External/stb/stb_image.h"
+#include "../../../Utils/Logger.h"
 
 SDL_Texture* loadTextureFromFile(GAE_Texture_t* texture);
 SDL_Texture* loadTextureFromBuffer(GAE_Texture_t* texture);
 
 GAE_Texture_t* GAE_Texture_createFromFile(GAE_File_t* const image) {
-	GAE_Texture_t* texture = malloc(sizeof(GAE_Texture_t));
-	GAE_SDL2_Texture_t* platform = malloc(sizeof(GAE_SDL2_Texture_t));
+	GAE_Texture_t* texture = (GAE_Texture_t*)malloc(sizeof(GAE_Texture_t));
+	GAE_SDL2_Texture_t* platform = (GAE_SDL2_Texture_t*)malloc(sizeof(GAE_SDL2_Texture_t));
 
 	texture->file = image;
 	texture->width = 0U;
@@ -34,8 +35,8 @@ GAE_Texture_t* GAE_Texture_createFromFile(GAE_File_t* const image) {
 }
 
 GAE_Texture_t* GAE_Texture_createFromBuffer(GAE_File_t* const buffer, const unsigned int width, const unsigned int height) {
-	GAE_Texture_t* texture = malloc(sizeof(GAE_Texture_t));
-	GAE_SDL2_Texture_t* platform = malloc(sizeof(GAE_SDL2_Texture_t));
+	GAE_Texture_t* texture = (GAE_Texture_t*)malloc(sizeof(GAE_Texture_t));
+	GAE_SDL2_Texture_t* platform = (GAE_SDL2_Texture_t*)malloc(sizeof(GAE_SDL2_Texture_t));
 
 	texture->file = buffer;
 	texture->width = width;
@@ -52,8 +53,8 @@ GAE_Texture_t* GAE_Texture_createFromBuffer(GAE_File_t* const buffer, const unsi
 }
 
 GAE_Texture_t* GAE_Texture_createFromSurface(SDL_Renderer* renderer, SDL_Surface* surface) {
-	GAE_Texture_t* texture = malloc(sizeof(GAE_Texture_t));
-	GAE_SDL2_Texture_t* platform = malloc(sizeof(GAE_SDL2_Texture_t));
+	GAE_Texture_t* texture = (GAE_Texture_t*)malloc(sizeof(GAE_Texture_t));
+	GAE_SDL2_Texture_t* platform = (GAE_SDL2_Texture_t*)malloc(sizeof(GAE_SDL2_Texture_t));
 
 	texture->file = 0;
 	texture->width = 0;
@@ -89,7 +90,7 @@ GAE_BOOL GAE_Texture_load(GAE_Texture_t* texture, const GAE_BOOL retainData) {
 	GAE_FILE_READ_STATUS readStatus;
 
 	if (0 != platform->texture) {
-		/*Application::getInstance()->getLogger()->log("Texture already loaded: " + mFile->getFilePath() + "\n", Logger::LOG_TYPE_ERROR);*/
+		GAE_Logger_log(GAE_PLATFORM->logger, GAE_LOG_TYPE_ERROR, GAE_LOG_OUTPUT_DEFAULT, "Texture already loaded: %s\n", file->filePath);
 		return GAE_FALSE;
 	}
 	
@@ -99,13 +100,13 @@ GAE_BOOL GAE_Texture_load(GAE_Texture_t* texture, const GAE_BOOL retainData) {
 				GAE_File_open(texture->file, GAE_FILE_OPEN_READ, GAE_FILE_BINARY, &openStatus);
 				if (GAE_FILE_ERROR == openStatus) {
 					GAE_File_close(texture->file, GAE_FILE_CLOSE_DELETE_DATA, NULL);
-					/*Application::getInstance()->getLogger()->log("Failed to open Texture: " + mFile->getFilePath() + "\n", Logger::LOG_TYPE_ERROR);*/
+					GAE_Logger_log(GAE_PLATFORM->logger, GAE_LOG_TYPE_ERROR, GAE_LOG_OUTPUT_DEFAULT, "Failed to open Texture: %s\n", file->filePath);
 					return GAE_FALSE;
 				}
 				GAE_File_read(texture->file, GAE_FILE_READ_ALL, &readStatus);
 				if (GAE_FILE_READ_ERROR == readStatus) {
 					GAE_File_close(texture->file, GAE_FILE_CLOSE_DELETE_DATA, NULL);
-					/*Application::getInstance()->getLogger()->log("Failed to read Texture: " + mFile->getFilePath() + "\n", Logger::LOG_TYPE_ERROR);*/
+					GAE_Logger_log(GAE_PLATFORM->logger, GAE_LOG_TYPE_ERROR, GAE_LOG_OUTPUT_DEFAULT, "Failed to read Texture: %s\n", file->filePath);
 					return GAE_FALSE;
 				}
 			}
@@ -113,14 +114,14 @@ GAE_BOOL GAE_Texture_load(GAE_Texture_t* texture, const GAE_BOOL retainData) {
 			platform->texture = loadTextureFromFile(texture);
 
 			if (0 == platform->texture) {
-				/*Application::getInstance()->getLogger()->log("Texture loading error: '" + mFile->getFilePath() + "' " + toString(mWidth) + ", " + toString(mHeight) + " : " + toString(channels) + " - " + std::string(SOIL_last_result()) + "\n", Logger::LOG_TYPE_ERROR);*/
+				GAE_Logger_log(GAE_PLATFORM->logger, GAE_LOG_TYPE_ERROR, GAE_LOG_OUTPUT_DEFAULT, "Texture loading error: %s\n", file->filePath);
 				GAE_File_close(texture->file, GAE_FILE_CLOSE_DELETE_DATA, NULL);
 				return GAE_FALSE;
 			}
 			
 			retainData ? GAE_File_close(texture->file, GAE_FILE_CLOSE_RETAIN_DATA, &openStatus) : GAE_File_close(texture->file, GAE_FILE_CLOSE_DELETE_DATA, &openStatus);
 			if (GAE_FILE_ERROR == openStatus) {
-				/*Application::getInstance()->getLogger()->log("Failed to close Texture: " + mFile->getFilePath() + "\n", Logger::LOG_TYPE_ERROR);*/
+				GAE_Logger_log(GAE_PLATFORM->logger, GAE_LOG_TYPE_ERROR, GAE_LOG_OUTPUT_DEFAULT, "Failed to close Texture: %s\n", file->filePath);
 				return GAE_FALSE;
 			}
 			break;
@@ -132,7 +133,7 @@ GAE_BOOL GAE_Texture_load(GAE_Texture_t* texture, const GAE_BOOL retainData) {
 				GAE_File_delete(texture->file);
 
 			if (0 == platform->texture) {
-				/*Application::getInstance()->getLogger()->log("Texture creation error: " + std::string(SOIL_last_result()) + "\n", Logger::LOG_TYPE_ERROR);*/
+				GAE_Logger_log(GAE_PLATFORM->logger, GAE_LOG_TYPE_ERROR, GAE_LOG_OUTPUT_DEFAULT, "Texture creation error: %s\n", file->filePath);
 				return GAE_FALSE;
 			}
 
@@ -206,12 +207,12 @@ SDL_Texture* loadTextureFromBuffer(GAE_Texture_t* texture) {
 			imageSize = texture->width * texture->height * 4;
 			break;
 		default:
-			/*Application::getInstance()->getLogger()->log("Invalid Texture Format specified\n", Logger::LOG_TYPE_ERROR);*/
+			GAE_Logger_log(GAE_PLATFORM->logger, GAE_LOG_TYPE_ERROR, GAE_LOG_OUTPUT_DEFAULT, "Invalid Texture Format specified\n");
 			return tex;
 	}
 	
 	if (imageSize != texture->file->bufferSize) {
-		/*Application::getInstance()->getLogger()->log("Expected size of: " + toString(imageSize) + ", buffer size is: " + toString(mFile->getBufferSize()) + "\n", Logger::LOG_TYPE_ERROR);*/
+		GAE_Logger_log(GAE_PLATFORM->logger, GAE_LOG_TYPE_ERROR, GAE_LOG_OUTPUT_DEFAULT, "Texture: Expected size of: %d, buffer size is %d\n", imageSize, texture->file->bufferSize);
 		return tex;
 	}
 	
