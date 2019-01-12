@@ -253,6 +253,7 @@ GAE_File_t* GAE_File_write(GAE_File_t* file, GAE_FILE_WRITE_STATUS* status) {
 	}
 	
 	written = fwrite(file->buffer, 1, file->bufferSize, platform->file);
+	fflush(platform->file);
 	if ((unsigned long)(written) == file->bufferSize) {
 		if (0 != status)
 			*status = GAE_FILE_WRITE_OK;
@@ -303,7 +304,7 @@ GAE_File_t* GAE_FILE_setReadPosition(GAE_File_t* file, const unsigned long readP
 }
 
 GAE_File_t* GAE_File_setBuffer(GAE_File_t* file, unsigned char* buffer, const unsigned long size, const GAE_FILE_BUFFER_TYPE type, GAE_BOOL* status) {
-	if (file->fileStatus == GAE_FILE_OPEN) {
+	if (file->openMode == GAE_FILE_OPEN_READ) {
 		if (0 != status)
 			*status = GAE_FALSE;
 		return file;

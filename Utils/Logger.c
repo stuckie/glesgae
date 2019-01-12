@@ -138,21 +138,21 @@ void logToTerm(const GAE_LOG_TYPE type, const char* text) {
 			#if defined(ANDROID)
 				ANDROID_DEBUG("%s", text);
 			#else
-				printf("[DEBUG]%s\n[DEBUG]%s", timeString, text);
+				printf("[DEBUG]%s[DEBUG]%s\n", timeString, text);
 			#endif
 			break;
 		case GAE_LOG_TYPE_INFO:
 			#if defined(ANDROID)
 				ANDROID_INFO("%s", text);
 			#else
-				printf("[INFO]%s\n[INFO]%s", timeString, text);
+				printf("[INFO]%s[INFO]%s\n", timeString, text);
 			#endif
 			break;
 		case GAE_LOG_TYPE_ERROR:
 			#if defined(ANDROID)
 				ANDROID_ERROR("%s", text);
 			#else
-				printf("[ERROR]%s\n[ERROR]%s", timeString, text);
+				printf("[ERROR]%s[ERROR]%s\n", timeString, text);
 			#endif
 			break;
 		case GAE_LOG_TYPE_VERBATIM:
@@ -172,37 +172,39 @@ void logToFile(GAE_Logger_t* logger, const GAE_LOG_TYPE type, const char* text) 
 	char* timeString;
 	char finalText[FILE_BUFFER_SIZE];
 	
-	timeString = ctime(&rawTime);
 	time(&rawTime);
+	timeString = ctime(&rawTime);
 	
 	switch (logger->fileType) {
 		case GAE_LOG_FILE_TEXT:
 			switch (type) {
 				case GAE_LOG_TYPE_DEBUG:
-					sprintf(finalText, "[DEBUG]%s\n[DEBUG]%s", timeString, text);
+					sprintf(finalText, "[DEBUG]%s[DEBUG]%s\n", timeString, text);
 					break;
 				case GAE_LOG_TYPE_INFO:
-					sprintf(finalText, "[INFO]%s\n[INFO]%s", timeString, text);
+					sprintf(finalText, "[INFO]%s[INFO]%s\n", timeString, text);
 					break;
 				case GAE_LOG_TYPE_ERROR:
-					sprintf(finalText, "[ERROR]%s\n[ERROR]%s", timeString, text);
+					sprintf(finalText, "[ERROR]%s[ERROR]%s\n", timeString, text);
 					break;
 				default:
+                    sprintf(finalText, "%s\n", text);
 					break;
 			}
 			break;
 		case GAE_LOG_FILE_HTML:
 			switch (type) {
 				case GAE_LOG_TYPE_DEBUG:
-					sprintf(finalText, "\t<div id=\"DEBUG\">[%s] %s</div>", timeString, text);
+					sprintf(finalText, "\t<div id=\"DEBUG\">[%s] %s</div>\n", timeString, text);
 					break;
 				case GAE_LOG_TYPE_INFO:
-					sprintf(finalText, "\t<div id=\"INFO\">[%s] %s</div>", timeString, text);
+					sprintf(finalText, "\t<div id=\"INFO\">[%s] %s</div>\n", timeString, text);
 					break;
 				case GAE_LOG_TYPE_ERROR:
-					sprintf(finalText, "\t<div id=\"ERROR\">[%s] %s</div>", timeString, text);
+					sprintf(finalText, "\t<div id=\"ERROR\">[%s] %s</div>\n", timeString, text);
 					break;
 				default:
+                    sprintf(finalText, "%s\n", text);
 					break;
 			}
 			break;
@@ -214,8 +216,9 @@ void logToFile(GAE_Logger_t* logger, const GAE_LOG_TYPE type, const char* text) 
 	}
 	
 	assert(logger->file);
-	GAE_File_setBuffer(logger->file, (GAE_BYTE*)finalText, FILE_BUFFER_SIZE, GAE_FILE_BUFFER_OWNED, 0);
+	GAE_File_setBuffer(logger->file, (GAE_BYTE*)finalText, strnlen(finalText, FILE_BUFFER_SIZE), GAE_FILE_BUFFER_NOT_OWNED, 0);
 	GAE_File_write(logger->file, 0);
+
 }
 
 void setFileHeader(char* header, const GAE_LOG_FILETYPE fileType) {
