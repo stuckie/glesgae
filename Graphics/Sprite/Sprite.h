@@ -13,7 +13,7 @@ typedef struct GAE_Sprite_s {
 } GAE_Sprite_t;
 
 /* Create a new Sprite object */
-GAE_Sprite_t* GAE_Sprite_create();
+GAE_Sprite_t* GAE_Sprite_create(int width, int height);
 
 /* Add a frame to the given Sprite - takes ownership of it and deletes it in Sprite_delete */
 GAE_Sprite_t* GAE_Sprite_addFrame(GAE_Sprite_t* sprite, struct GAE_Frame_s* frame);

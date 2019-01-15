@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+//TODO: examine realloc usage, as I'm not cleaning up nicely.
+
 #define JSON_TOKENS 256
 char* KEYS[] = { "height", "layers", "data", "name", "opacity", "type", "visible", "width", "x", "y", "orientation", "properties", "tileheight", "tilesets", "firstgid", "image", "imageheight", "imagewidth", "margin", "spacing", "tilewidth", "version", "terrains", "tiles", "tileoffset", "tile", "terrain", "tileproperties", "transparentcolor" };
 typedef enum KEY_e { KEY_HEIGHT, KEY_LAYERS, KEY_DATA, KEY_NAME, KEY_OPACITY, KEY_TYPE, KEY_VISIBLE, KEY_WIDTH, KEY_X, KEY_Y, KEY_ORIENTATION, KEY_PROPERTIES, KEY_TILEHEIGHT, KEY_TILESETS, KEY_FIRSTGID, KEY_IMAGE, KEY_IMAGEHEIGHT, KEY_IMAGEWIDTH, KEY_MARGIN, KEY_SPACING, KEY_TILEWIDTH, KEY_VERSION, KEY_TERRAINS, KEY_TILES, KEY_TILEOFFSET, KEY_TILE, KEY_TERRAIN, KEY_TILEPROPERTIES, KEY_TRANSPARENTCOLOR, KEY_MAX } KEY;
@@ -396,12 +398,9 @@ void parseLayerKey(jsmntok_t* token, char* string, const KEY key, GAE_Tiled_Laye
 		break;
 		case KEY_NAME: {
 			char* name = json_token_tostr(string, token);
-			unsigned int length = strlen(name);
 
-			if (127 > length)
-				length = 127;
-
-			strncpy(layerParser->name, name, length);
+			strncpy(layerParser->name, name, 127);
+			layerParser->name[strnlen(name, 128)] = '\0';
 		}
 		break;
 		case KEY_OPACITY: {
@@ -410,12 +409,9 @@ void parseLayerKey(jsmntok_t* token, char* string, const KEY key, GAE_Tiled_Laye
 		break;
 		case KEY_TYPE: {
 			char* type = json_token_tostr(string, token);
-			unsigned int length = strlen(type);
 
-			if (127 > length)
-				length = 127;
-
-			strncpy(layerParser->type, type, length);
+			strncpy(layerParser->type, type, 127);
+			layerParser->type[strnlen(type, 128)] = '\0';
 		}
 		break;
 		case KEY_VISIBLE: {
@@ -485,12 +481,8 @@ void parseTilesetKey(jsmntok_t* token, char* string, const KEY key, GAE_Tiled_Ti
 		break;
 		case KEY_NAME: {
 			char* name = json_token_tostr(string, token);
-			unsigned int length = strlen(name);
-
-			if (127 > length)
-				length = 127;
-
-			strncpy(tilesetParser->name, name, length);
+			strncpy(tilesetParser->name, name, 127);
+			tilesetParser->name[strnlen(name, 128)] = '\0';
 		}
 		break;
 		default:
@@ -502,12 +494,8 @@ void parseTerrainKey(jsmntok_t* token, char* string, const KEY key, GAE_Tiled_Te
 	switch (key) {
 		case KEY_NAME: {
 			char* name = json_token_tostr(string, token);
-			unsigned int length = strlen(name);
-
-			if (127 > length)
-				length = 127;
-
-			strncpy(terrainParser->name, name, length);
+			strncpy(terrainParser->name, name, 127);
+			terrainParser->name[strnlen(name, 128)] = '\0';
 			printf("Terrain: %s\n", terrainParser->name);
 		}
 		break;

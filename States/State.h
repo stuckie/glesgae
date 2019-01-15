@@ -3,9 +3,7 @@
 
 #include "../GAE_Types.h"
 
-struct GAE_Platform_s;
-
-typedef GAE_BOOL (*GAE_State_update_t)(struct GAE_Platform_s* _platform, void* _userData);
+typedef GAE_BOOL (*GAE_State_update_t)(void* _userData);
 
 typedef struct GAE_State_s {
 	GAE_HashString_t id;

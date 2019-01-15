@@ -44,8 +44,10 @@ typedef enum GAE_FILE_CLOSE_MODE_e {
 ,	GAE_FILE_CLOSE_DELETE_DATA
 } GAE_FILE_CLOSE_MODE;
 
+#define GAE_FILE_MAX_FILEPATH 1023
+
 typedef struct GAE_File_s {
-	char filePath[1024];
+	char filePath[GAE_FILE_MAX_FILEPATH + 1];
 	GAE_BYTE* buffer;
 	unsigned long readPosition;
 	unsigned long bufferSize;

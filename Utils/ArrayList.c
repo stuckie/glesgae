@@ -51,6 +51,10 @@ GAE_ArrayList_t* GAE_ArrayList_push(GAE_ArrayList_t* array, void* const data) {
 	return array;
 }
 
+void* GAE_ArrayList_peek(GAE_ArrayList_t* array) {
+	return &array->data[array->used - array->size];
+}
+
 void* GAE_ArrayList_begin(GAE_ArrayList_t* array) {
 	return array->data;
 }

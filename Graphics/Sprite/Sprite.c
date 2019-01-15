@@ -6,13 +6,13 @@
 
 #include <math.h>
 
-GAE_Sprite_t* GAE_Sprite_create()
+GAE_Sprite_t* GAE_Sprite_create(int width, int height)
 {
     GAE_Sprite_t* sprite = (GAE_Sprite_t*)malloc(sizeof(GAE_Sprite_t));
     sprite->frames = GAE_ArrayList_create(sizeof(GAE_Frame_t*)); /* Yes, pointer */
     sprite->animSpeed = 0.0F;
     sprite->currentFrame = 0.0F;
-    sprite->dest = GAE_Rect_create(0, 0, 0, 0);
+    sprite->dest = GAE_Rect_create(0, 0, width, height);
 
     return sprite;
 }

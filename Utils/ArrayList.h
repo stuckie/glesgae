@@ -35,6 +35,9 @@ void* GAE_ArrayList_end(GAE_ArrayList_t* array);
 /* Returns a copy of the last element and removes it from the array. This element should be freed after use. */
 void* GAE_ArrayList_pop(GAE_ArrayList_t* array);
 
+/* Returns the last element from the array. This element should NOT be freed after use. */
+void* GAE_ArrayList_peek(GAE_ArrayList_t* array);
+
 /* Returns an indexed value of the array. This element should NOT be freed after use. */
 void* GAE_ArrayList_get(GAE_ArrayList_t* array, const unsigned int index);
 

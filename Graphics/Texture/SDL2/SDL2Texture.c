@@ -65,6 +65,8 @@ GAE_Texture_t* GAE_Texture_createFromSurface(SDL_Renderer* renderer, SDL_Surface
 	assert(platform->texture);
 	SDL_QueryTexture(platform->texture, &platform->format, &platform->access, (int*)&texture->width, (int*)&texture->height);
 
+	texture->platform = platform;
+
 	return texture;
 }
 

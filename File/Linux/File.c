@@ -7,7 +7,8 @@ GAE_File_t* GAE_File_create(const char* filePath) {
 	GAE_File_t* file = (GAE_File_t*)malloc(sizeof(GAE_File_t));
 	GAE_PlatformFile_t* platform = (GAE_PlatformFile_t*)malloc(sizeof(GAE_PlatformFile_t));
 
-	strncpy(file->filePath, filePath, sizeof(file->filePath));
+	strncpy(file->filePath, filePath, GAE_FILE_MAX_FILEPATH);
+	file->filePath[strnlen(filePath, GAE_FILE_MAX_FILEPATH)] = '\0';
 	file->buffer = 0;
 	file->readPosition = 0U;
 	file->bufferSize = 0U;

@@ -27,6 +27,7 @@ set(GLESGAE_BASE
 	Graphics/Sprite/Sprite.c
 	Input/Controller.c
 	Maths/Matrix.c
+	Maths/Point.c
 	Maths/Rect.c
 	Maths/Vector.c
 	States/State.c

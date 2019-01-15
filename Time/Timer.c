@@ -3,13 +3,13 @@
 
 #include <stdlib.h>
 
-GAE_Timer_t* GAE_Timer_create()
+GAE_Timer_t* GAE_Timer_create(GAE_Clock_t* const clock)
 {
 	GAE_Timer_t* timer = (GAE_Timer_t*)malloc(sizeof(GAE_Timer_t));
 	timer->currentTime = 0.0F;
 	timer->deltaTime = 0.0F;
 	timer->isPaused = GAE_FALSE;
-	timer->lastTime = 0.0F;
+	timer->lastTime = clock->deltaTime;
 	timer->scale = 1.0F;
 
 	return timer;
@@ -17,14 +17,13 @@ GAE_Timer_t* GAE_Timer_create()
 
 GAE_Timer_t* GAE_Timer_update(GAE_Timer_t* timer, GAE_Clock_t* const clock)
 {
-	const float clockTime = clock->deltaTime * timer->scale;
 	if (GAE_FALSE == timer->isPaused)
-		timer->deltaTime = clockTime - timer->lastTime;
+		timer->deltaTime = clock->deltaTime - timer->lastTime;
 	else
 		timer->deltaTime = 0.0F;
 
-	timer->lastTime = clockTime;
-	timer->currentTime += timer->deltaTime;
+	timer->lastTime = clock->deltaTime;
+	timer->currentTime += timer->deltaTime  * timer->scale;
 
 	return timer;
 }
