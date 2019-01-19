@@ -19,5 +19,5 @@ void GAE_Frame_delete(GAE_Frame_t* frame)
 
     GAE_Rect_delete(frame->rect);
     free(frame);
-    frame = 0;
 }
+

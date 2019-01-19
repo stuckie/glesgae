@@ -1,6 +1,8 @@
 #ifndef _GLESGAE_TYPES_H_
 #define _GLESGAE_TYPES_H_
 
+#include <stdint.h>
+
 extern const unsigned int GAE_INVALID;
 
 #define GAE_UNUSED(x) {(void)(x);}

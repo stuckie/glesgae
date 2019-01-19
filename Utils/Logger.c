@@ -6,10 +6,11 @@
 #include <stdarg.h>
 #include <string.h>
 #include <time.h>
+
+#include "../Buffer/Buffer.h"
 #include "../File/File.h"
 
-#define TERMINAL_BUFFER_SIZE 512
-#define FILE_BUFFER_SIZE 1024
+#define BUFFER_SIZE 1024
 
 #if defined(ANDROID)
 	#include <android/log.h>
@@ -31,6 +32,7 @@ GAE_Logger_t* GAE_Logger_create() {
 	logger->type = GAE_LOG_TYPE_VERBATIM;
 	logger->fileType = GAE_LOG_FILE_UNOPENED;
 	logger->file = 0;
+	logger->buffer = GAE_Buffer_create(BUFFER_SIZE);
 
 	return logger;
 }
@@ -38,7 +40,7 @@ GAE_Logger_t* GAE_Logger_create() {
 /* Set the file the Logger deals with */
 GAE_Logger_t* GAE_Logger_setFile(GAE_Logger_t* logger, const char* fileName, const GAE_LOG_FILETYPE fileType) {
 	char fullFileName[256];
-	char header[FILE_BUFFER_SIZE];
+	char header[BUFFER_SIZE];
 	time_t rawTime;
 
 	if (0 == logger) return logger;
@@ -52,9 +54,8 @@ GAE_Logger_t* GAE_Logger_setFile(GAE_Logger_t* logger, const char* fileName, con
 	logger->fileType = fileType;
 
 	assert(0 == logger->file);
-	logger->file = GAE_File_create(fullFileName);
+	logger->file = GAE_File_create(fullFileName, GAE_FILE_OPEN_APPEND, GAE_FILE_ASCII, 0);
 	assert(logger->file);
-	GAE_File_open(logger->file, GAE_FILE_OPEN_APPEND, GAE_FILE_ASCII, 0);
 	setFileHeader(header, fileType);
 	GAE_Logger_log(logger, GAE_LOG_TYPE_VERBATIM, GAE_LOG_OUTPUT_FILE, "%s", header);
 
@@ -63,12 +64,11 @@ GAE_Logger_t* GAE_Logger_setFile(GAE_Logger_t* logger, const char* fileName, con
 
 /* Closes the file this Logger is dealing with */
 GAE_Logger_t* GAE_Logger_closeFile(GAE_Logger_t* logger) {
-	char footer[FILE_BUFFER_SIZE];
+	char footer[BUFFER_SIZE];
 	if (0 == logger) return logger;
 
 	setFileFooter(footer, logger->fileType);
 	GAE_Logger_log(logger, GAE_LOG_TYPE_VERBATIM, GAE_LOG_OUTPUT_FILE, "%s", footer);
-	GAE_File_close(logger->file, GAE_FILE_CLOSE_DELETE_DATA, 0);
 	GAE_File_delete(logger->file);
 	logger->file = 0;
 	logger->fileType = GAE_LOG_FILE_UNOPENED;
@@ -80,7 +80,7 @@ GAE_Logger_t* GAE_Logger_closeFile(GAE_Logger_t* logger) {
 GAE_Logger_t* GAE_Logger_log(GAE_Logger_t* logger, const GAE_LOG_TYPE type, const GAE_LOG_OUTPUT output, const char* string, ... ) {
 	GAE_LOG_TYPE logType = logger->type;
 	GAE_LOG_OUTPUT logOutput = logger->output;
-	char text[TERMINAL_BUFFER_SIZE];
+	char text[BUFFER_SIZE];
 	va_list args;
 	if (0 == logger) return logger;
 
@@ -122,6 +122,8 @@ void GAE_Logger_delete(GAE_Logger_t* logger) {
 	if (0 != logger->file) {
 		GAE_Logger_closeFile(logger);
 	}
+
+	GAE_Buffer_delete(logger->buffer);
 
 	free(logger);
 }
@@ -170,7 +172,7 @@ void logToTerm(const GAE_LOG_TYPE type, const char* text) {
 void logToFile(GAE_Logger_t* logger, const GAE_LOG_TYPE type, const char* text) {
 	time_t rawTime;
 	char* timeString;
-	char finalText[FILE_BUFFER_SIZE];
+	char finalText[BUFFER_SIZE];
 	
 	time(&rawTime);
 	timeString = ctime(&rawTime);
@@ -216,8 +218,9 @@ void logToFile(GAE_Logger_t* logger, const GAE_LOG_TYPE type, const char* text) 
 	}
 	
 	assert(logger->file);
-	GAE_File_setBuffer(logger->file, (GAE_BYTE*)finalText, strnlen(finalText, FILE_BUFFER_SIZE), GAE_FILE_BUFFER_NOT_OWNED, 0);
-	GAE_File_write(logger->file, 0);
+	GAE_Buffer_clear(logger->buffer);
+	GAE_Buffer_write_string(logger->buffer, finalText);
+	GAE_File_write(logger->file, logger->buffer, 0);
 
 }
 
@@ -258,3 +261,4 @@ void setFileFooter(char* footer, const GAE_LOG_FILETYPE fileType) {
 			break;
 	}
 }
+

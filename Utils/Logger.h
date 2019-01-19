@@ -2,6 +2,7 @@
 #define _LOGGER_H_
 
 struct GAE_File_s;
+struct GAE_Buffer_s;
 
 typedef enum GAE_LOG_OUTPUT_e {
 	GAE_LOG_OUTPUT_FILE
@@ -31,6 +32,7 @@ typedef struct GAE_Logger_s {
 	GAE_LOG_FILETYPE fileType;
 
 	struct GAE_File_s* file;
+	struct GAE_Buffer_s* buffer;
 } GAE_Logger_t;
 
 /* Create a new Logger construct */

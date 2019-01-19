@@ -440,3 +440,4 @@ AAssetManager* getAssetManager(void) {
 	ANDROID_INFO("Found AssetManager");
 	return AAssetManager_fromJava(jniEnv, assets);
 }
+

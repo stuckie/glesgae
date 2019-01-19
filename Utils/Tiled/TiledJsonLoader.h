@@ -3,7 +3,7 @@
 
 #include "../../GAE_Types.h"
 
-struct GAE_File_s;
+struct GAE_Buffer_s;
 struct GAE_Map_s;
 struct GAE_Array_s;
 struct GAE_Texture_s;
@@ -66,10 +66,10 @@ typedef struct GAE_Tiled_s {
 	struct GAE_Array_s* tilesets;
 } GAE_Tiled_t;
 
-GAE_Tiled_t* GAE_TiledParser_create(struct GAE_File_s* const file);
-unsigned int GAE_TiledParser_getTileId(GAE_Tiled_t* tilemap, const unsigned int x, const unsigned int y, const unsigned int layerId);
-GAE_Tiled_Tileset_t* getTileset(GAE_Tiled_t* tilemap, const unsigned int tileId);
-GAE_Tiled_t* GAE_TiledParser_draw(GAE_Tiled_t* tilemap, struct GAE_Renderer_s* renderer, const unsigned int layerId);
+GAE_Tiled_t* GAE_TiledParser_create(struct GAE_Buffer_s* const buffer);
+unsigned int GAE_TiledParser_getTileId(GAE_Tiled_t* const tilemap, const unsigned int x, const unsigned int y, const unsigned int layerId);
+GAE_Tiled_Tileset_t* getTileset(GAE_Tiled_t* const tilemap, const unsigned int tileId);
+GAE_Tiled_t* GAE_TiledParser_draw(GAE_Tiled_t* const tilemap, struct GAE_Renderer_s* renderer, const unsigned int layerId);
 void GAE_TiledParser_delete(GAE_Tiled_t* tiledParser);
 
 #endif

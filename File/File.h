@@ -28,35 +28,40 @@ typedef enum GAE_FILE_READ_STATUS_e {
 ,	GAE_FILE_READ_EOF
 } GAE_FILE_READ_STATUS;
 
-typedef enum GAE_FILE_BUFFER_TYPE_e {
-	GAE_FILE_BUFFER_COPY
-,	GAE_FILE_BUFFER_OWNED
-,	GAE_FILE_BUFFER_NOT_OWNED
-} GAE_FILE_BUFFER_TYPE;
-
 typedef enum GAE_FILE_WRITE_STATUS_e {
 	GAE_FILE_WRITE_OK
 ,	GAE_FILE_WRITE_ERROR
 } GAE_FILE_WRITE_STATUS;
 
-typedef enum GAE_FILE_CLOSE_MODE_e {
-	GAE_FILE_CLOSE_RETAIN_DATA
-,	GAE_FILE_CLOSE_DELETE_DATA
-} GAE_FILE_CLOSE_MODE;
-
-#define GAE_FILE_MAX_FILEPATH 1023
-
 typedef struct GAE_File_s {
-	char filePath[GAE_FILE_MAX_FILEPATH + 1];
-	GAE_BYTE* buffer;
 	unsigned long readPosition;
-	unsigned long bufferSize;
 	unsigned long fileSize;
-	GAE_FILE_STATUS fileStatus;
+	
 	GAE_FILE_OPEN_MODE openMode;
-	GAE_BOOL owned;
+	GAE_FILE_STATUS fileStatus;
+	GAE_FILE_MODE fileMode;
+	
 	void* platformFile;
 } GAE_File_t;
+
+struct GAE_Buffer_s;
+
+static const unsigned int GAE_FILE_READ_ALL = (unsigned int)-1;
+
+/* Create a new File construct */
+GAE_File_t* GAE_File_create(const char* const filePath, const GAE_FILE_OPEN_MODE openMode, const GAE_FILE_MODE fileMode, GAE_FILE_STATUS* status);
+
+/* Delete a File construct */
+void GAE_File_delete(GAE_File_t* file);
+
+/* Read into a Buffer the specified amount */
+GAE_File_t* GAE_File_read(GAE_File_t* file, struct GAE_Buffer_s* buffer, const unsigned long amount, GAE_FILE_READ_STATUS* status);
+
+/* Write to file the specified Buffer */
+GAE_File_t* GAE_File_write(GAE_File_t* file, struct GAE_Buffer_s* const buffer, GAE_FILE_WRITE_STATUS* status);
+
+/* Seek the position */
+GAE_File_t* GAE_File_seek(GAE_File_t* file, const unsigned long position, GAE_FILE_READ_STATUS* status);
 
 #endif
 

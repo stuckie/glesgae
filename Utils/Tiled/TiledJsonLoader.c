@@ -1,16 +1,16 @@
 #include "TiledJsonLoader.h"
 
-#include "../../File/File.h"
+#include "../../Buffer/Buffer.h"
 #include "../../External/jsmn/jsmn.h"
+#include "../../File/File.h"
 #include "../../Graphics/Texture.h"
 #include "../Map.h"
 #include "../Array.h"
 
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-//TODO: examine realloc usage, as I'm not cleaning up nicely.
 
 #define JSON_TOKENS 256
 char* KEYS[] = { "height", "layers", "data", "name", "opacity", "type", "visible", "width", "x", "y", "orientation", "properties", "tileheight", "tilesets", "firstgid", "image", "imageheight", "imagewidth", "margin", "spacing", "tilewidth", "version", "terrains", "tiles", "tileoffset", "tile", "terrain", "tileproperties", "transparentcolor" };
@@ -38,16 +38,9 @@ GAE_BOOL StringCompare(void* A, void* B) {
 	return !strncmp(a, b, strlen(a)); /*strncmp returns 0 if they match*/
 }
 
-GAE_Tiled_t* GAE_TiledParser_create(struct GAE_File_s* const file) {
-	GAE_FILE_STATUS openStatus;
-	GAE_FILE_READ_STATUS readStatus;
-	jsmntok_t* tokens = 0;
-
-	GAE_File_open(file, GAE_FILE_OPEN_READ, GAE_FILE_ASCII, &openStatus);
-	GAE_File_read(file, GAE_FILE_READ_ALL, &readStatus);
-	tokens = jsonTokenise((char*)file->buffer);
-
-	return handleMap(tokens, (char*)file->buffer);
+GAE_Tiled_t* GAE_TiledParser_create(GAE_Buffer_t* const buffer) {
+	jsmntok_t* tokens = jsonTokenise((char*)buffer->data);
+	return handleMap(tokens, (char*)buffer->data);
 }
 
 void GAE_TiledParser_delete(GAE_Tiled_t* tiledParser) {
@@ -66,7 +59,11 @@ jsmntok_t* jsonTokenise(const char* js) {
 
 	while (ret == JSMN_ERROR_NOMEM) { /* Not enough tokens allocated, allocate some more */
 		numTokens = numTokens * 2 + 1;
-		tokens = realloc(tokens, sizeof(jsmntok_t) * numTokens);
+		jsmntok_t* more = (jsmntok_t*)realloc(tokens, sizeof(jsmntok_t) * numTokens);
+		if (0 != more) {
+			free(tokens);
+			tokens = more;
+		}
 		ret = jsmn_parse(&parser, js, tokens, numTokens);
 	}
 
@@ -466,7 +463,17 @@ void parseTilesetKey(jsmntok_t* token, char* string, const KEY key, GAE_Tiled_Ti
 		}
 		break;
 		case KEY_IMAGE: {
-			tilesetParser->image = GAE_Texture_create(json_token_tostr(string, token));			
+			const char* path = json_token_tostr(string, token);
+			GAE_File_t* file = GAE_File_create(path, GAE_FILE_OPEN_READ, GAE_FILE_BINARY, 0);
+			GAE_Buffer_t* data = GAE_Buffer_create(file->fileSize);
+			GAE_File_read(file, data, GAE_FILE_READ_ALL, 0);
+			GAE_File_delete(file);
+			
+			GAE_Texture_t* texture =  GAE_Texture_create();
+			GAE_Texture_load(texture, data, GAE_TEXTURE_FROM_FILE, GAE_TEXTURE_FROM_FILE);
+			GAE_Buffer_delete(data);
+			
+			tilesetParser->image = texture;
 		}
 		break;
 		case KEY_TERRAINS: {
@@ -540,7 +547,7 @@ GAE_Array_t* parseData(jsmntok_t* token, char* string) {
 }
 
 
-GAE_Tiled_Tileset_t* getTileset(GAE_Tiled_t* tilemap, const unsigned int tileId) {
+GAE_Tiled_Tileset_t* getTileset(GAE_Tiled_t* const tilemap, const unsigned int tileId) {
 	const unsigned int tilesetCount = GAE_Array_length(tilemap->tilesets);
 	unsigned int index = 0U;
 	
@@ -556,7 +563,7 @@ GAE_Tiled_Tileset_t* getTileset(GAE_Tiled_t* tilemap, const unsigned int tileId)
 	return NULL;
 }
 
-unsigned int GAE_TiledParser_getTileId(GAE_Tiled_t* tilemap, const unsigned int x, const unsigned int y, const unsigned int layerId) {
+unsigned int GAE_TiledParser_getTileId(GAE_Tiled_t* const tilemap, const unsigned int x, const unsigned int y, const unsigned int layerId) {
 	GAE_Tiled_Layer_t* layer = (GAE_Tiled_Layer_t*)GAE_Array_get(tilemap->layers, layerId);
 	return *(unsigned int*)GAE_Array_get(layer->data, y * layer->width + x) - 1U;
 }

@@ -17,4 +17,4 @@ GAE_BOOL GAE_HashString_compare(void* const A, void* const B) {
 	return *a==*b;
 }
 
-const GAE_HashString_t GAE_INVALID_HASHSTRING = (GAE_HashString_t)(-931176343); /*GAE_HashString_create("INVALID_HASHSTRING");*/
+//const GAE_HashString_t GAE_INVALID_HASHSTRING = (GAE_HashString_t)(-931176343); /*GAE_HashString_create("INVALID_HASHSTRING");*/

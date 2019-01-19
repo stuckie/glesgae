@@ -20,6 +20,7 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 # Default, platform agnostic code
 set(GLESGAE_BASE
 	GAE_Types.c
+	Buffer/Buffer.c
 	Events/Event.c
 	Events/EventSystem.c
 	External/jsmn/jsmn.c

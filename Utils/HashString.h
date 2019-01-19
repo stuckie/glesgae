@@ -6,6 +6,6 @@
 GAE_HashString_t GAE_HashString_create(const char* string);
 GAE_BOOL GAE_HashString_compare(void* const A, void* const B);
 
-extern const GAE_HashString_t GAE_INVALID_HASHSTRING;
+#define GAE_INVALID_HASHSTRING (GAE_HashString_t)(-931176343)
 
 #endif
