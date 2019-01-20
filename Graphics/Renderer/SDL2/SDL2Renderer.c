@@ -36,6 +36,14 @@ GAE_Renderer_t* GAE_Renderer_drawSprite(GAE_Renderer_t* renderer, GAE_Sprite_t* 
 	return renderer;
 }
 
+GAE_Renderer_t* GAE_Renderer_blitTexture(GAE_Renderer_t* renderer, GAE_Texture_t* const texture, struct GAE_Rect_s* src, struct GAE_Rect_s* dst)
+{
+	GAE_SDL2_Texture_t* sdlTexture = (GAE_SDL2_Texture_t*)texture->platform;
+	SDL_RenderCopy(renderer->renderer, sdlTexture->texture, (SDL_Rect*)src, (SDL_Rect*)dst);
+	
+	return renderer;
+}
+
 void GAE_Renderer_delete(GAE_Renderer_t* renderer) {
 	SDL_DestroyRenderer(renderer->renderer);
 

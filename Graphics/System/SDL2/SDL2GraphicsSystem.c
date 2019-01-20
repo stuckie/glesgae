@@ -19,6 +19,12 @@ GAE_GraphicsSystem_t* GAE_GraphicsSystem_drawSprite(GAE_GraphicsSystem_t* system
 	return system;
 }
 
+GAE_GraphicsSystem_t* GAE_GraphicsSystem_blitTexture(GAE_GraphicsSystem_t* system, struct GAE_Texture_s* const texture, struct GAE_Rect_s* src, struct GAE_Rect_s* dst) {
+	GAE_Renderer_blitTexture(system->renderer, texture, src, dst);
+	
+	return system;
+}
+
 void GAE_GraphicsSystem_delete(GAE_GraphicsSystem_t* system) {
 	free(system);
 	system = 0;
