@@ -59,11 +59,10 @@ jsmntok_t* jsonTokenise(const char* js) {
 
 	while (ret == JSMN_ERROR_NOMEM) { /* Not enough tokens allocated, allocate some more */
 		numTokens = numTokens * 2 + 1;
-		jsmntok_t* more = (jsmntok_t*)realloc(tokens, sizeof(jsmntok_t) * numTokens);
-		if (0 != more) {
-			free(tokens);
-			tokens = more;
-		}
+		free(tokens);
+		tokens = (jsmntok_t*)malloc(sizeof(jsmntok_t) * numTokens);
+
+		jsmn_init(&parser);
 		ret = jsmn_parse(&parser, js, tokens, numTokens);
 	}
 
