@@ -86,7 +86,7 @@ GAE_VertexBuffer_Format_t GAE_VertexBuffer_Format_create(const GAE_VertexBuffer_
 }
 
 GAE_VertexBuffer_t* GAE_VertexBuffer_create(GAE_BYTE* const data, const unsigned int size, const GAE_VertexBuffer_Type type) {
-	GAE_VertexBuffer_t* buffer = (GAE_VertexBuffer_t*)malloc(sizeof(GAE_VertexBuffer_t));
+	GAE_VertexBuffer_t* buffer = malloc(sizeof(GAE_VertexBuffer_t));
 	GAE_VertexBuffer_Format_t invalidFormat;
 	unsigned int index = 0U;
 	

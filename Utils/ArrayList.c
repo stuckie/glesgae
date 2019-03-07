@@ -8,7 +8,7 @@
 #include "../GAE_Types.h"
 
 GAE_ArrayList_t* GAE_ArrayList_create(const size_t size) {
-	GAE_ArrayList_t* array = (GAE_ArrayList_t*)malloc(sizeof(GAE_ArrayList_t));
+	GAE_ArrayList_t* array = malloc(sizeof(GAE_ArrayList_t));
 	array->data = 0;
 	array->allocated = 0U;
 	array->used = 0;
@@ -21,15 +21,15 @@ GAE_ArrayList_t* GAE_ArrayList_reserve(GAE_ArrayList_t* array, const unsigned in
 	const size_t size = amount * array->size; /* work out size of memory we'll need */
 
 	if (0 == array->allocated) { /* Empty array, just malloc it */
-		array->data = (GAE_BYTE*)malloc(size);
+		array->data = malloc(size);
 		assert(array->data);
 	}
 	else if (size > array->allocated) { /* we're expanding the array */
-		array->data = (GAE_BYTE*)realloc(array->data, size);
+		array->data = realloc(array->data, size);
 		assert(array->data);
 	}
 	else if (size > array->used) { /* length is less than capacity.. see if we can shrink it */
-		array->data = (GAE_BYTE*)realloc(array->data, size);
+		array->data = realloc(array->data, size);
 		assert(array->data);
 	}
 	else { /* array can't be shrunk */

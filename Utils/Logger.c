@@ -27,7 +27,7 @@ void logToTerm(const GAE_LOG_TYPE type, const char* string);
 
 /* Create a new Logger construct */
 GAE_Logger_t* GAE_Logger_create() {
-	GAE_Logger_t* logger = (GAE_Logger_t*)malloc(sizeof(GAE_Logger_t));
+	GAE_Logger_t* logger = malloc(sizeof(GAE_Logger_t));
 	logger->output = GAE_LOG_OUTPUT_TERMINAL;
 	logger->type = GAE_LOG_TYPE_VERBATIM;
 	logger->fileType = GAE_LOG_FILE_UNOPENED;

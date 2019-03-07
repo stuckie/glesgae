@@ -16,6 +16,9 @@ typedef struct GAE_Buffer_s {
 /* Create a new empty buffer with given size */
 GAE_Buffer_t* GAE_Buffer_create(const unsigned int size);
 
+/* Create a new buffer using the given buffer data */
+GAE_Buffer_t* GAE_Buffer_createWith(GAE_BYTE* data, const unsigned int size);
+
 /* Delete a buffer */
 void GAE_Buffer_delete(GAE_Buffer_t* buffer);
 

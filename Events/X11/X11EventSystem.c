@@ -121,12 +121,12 @@ void GAE_EventSystem_delete(GAE_EventSystem_t* system) {
 	unsigned int triggerSize = GAE_Map_length(system->triggers);
 
 	while (0 < observerSize) {
-		GAE_Array_delete((GAE_Array_t*)GAE_Map_pop(system->observers));
+		GAE_Array_destroy((GAE_Array_t*)GAE_Map_pop(system->observers));
 		observerSize = GAE_Map_length(system->observers);
 	}
 
 	while (0 < triggerSize) {
-		GAE_Array_delete((GAE_Array_t*)GAE_Map_pop(system->triggers));
+		GAE_Array_destroy((GAE_Array_t*)GAE_Map_pop(system->triggers));
 		triggerSize = GAE_Map_length(system->triggers);
 	}
 

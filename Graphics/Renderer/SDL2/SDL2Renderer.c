@@ -13,7 +13,7 @@ GAE_Renderer_t* GAE_Renderer_create(GAE_RenderWindow_t* const window) { /* defau
 }
 
 GAE_Renderer_t* GAE_SDL2Renderer_create(GAE_RenderWindow_t* const window, const int index, const unsigned int flags) {
-	GAE_Renderer_t* renderer = (GAE_Renderer_t*)malloc(sizeof(GAE_Renderer_t));
+	GAE_Renderer_t* renderer = malloc(sizeof(GAE_Renderer_t));
 	GAE_SDL2_RenderWindow_t* sdlWindow = (GAE_SDL2_RenderWindow_t*)window->platform;
 
 	renderer->renderer = SDL_CreateRenderer(sdlWindow->window, index, flags);

@@ -13,7 +13,7 @@ void GAE_EventSystem_registerObserver(GAE_EventSystem_t* system, const GAE_Event
 	if (0 == observerArray) {
 		observerArray = GAE_Array_create(sizeof(GAE_EventObserverInfo_t));
 		GAE_Map_push(system->observers, (void*)&type, observerArray);
-		GAE_Array_delete(observerArray);
+		GAE_Array_destroy(observerArray);
 		observerArray = (GAE_Array_t*)GAE_Map_get(system->observers, (void*)&type);
 	}
 
@@ -49,7 +49,7 @@ void GAE_EventSystem_registerTrigger(GAE_EventSystem_t* system, const GAE_EventT
 	if (0 == triggerArray) {
 		triggerArray = GAE_Array_create(sizeof(GAE_EventTriggerInfo_t));
 		GAE_Map_push(system->triggers, (void*)&type, triggerArray);
-		GAE_Array_delete(triggerArray);
+		GAE_Array_destroy(triggerArray);
 		triggerArray = (GAE_Array_t*)GAE_Map_get(system->triggers, (void*)&type);
 	}
 

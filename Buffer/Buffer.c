@@ -6,14 +6,26 @@
 /* Create a new empty buffer with optional size */
 GAE_Buffer_t* GAE_Buffer_create(const unsigned int size)
 {
-	GAE_Buffer_t* buffer = (GAE_Buffer_t*)malloc(sizeof(GAE_Buffer_t));
+	GAE_Buffer_t* buffer = malloc(sizeof(GAE_Buffer_t));
 	
 	if (0 < size)
-		buffer->data = (GAE_BYTE*)malloc(size);
+		buffer->data = malloc(size);
 		
 	buffer->length = size;
 	buffer->index = 0;
 
+	return buffer;
+}
+
+/* Create a buffer with the given data */
+GAE_Buffer_t* GAE_Buffer_createWith(GAE_BYTE* data, const unsigned int size)
+{
+	GAE_Buffer_t* buffer = malloc(sizeof(GAE_Buffer_t));
+	
+	buffer->data = data;
+	buffer->length = size;
+	buffer->index = 0;
+	
 	return buffer;
 }
 
@@ -89,6 +101,6 @@ GAE_Buffer_t* GAE_Buffer_write(GAE_Buffer_t* buffer, GAE_BYTE* const values, con
 /* Write a string */
 GAE_Buffer_t* GAE_Buffer_write_string(GAE_Buffer_t* buffer, const char* const string)
 {
-	return GAE_Buffer_write(buffer, (GAE_BYTE*)string, strnlen(string, GAE_BUFFER_MAX_STRING));
+	return GAE_Buffer_write(buffer, (GAE_BYTE*)string, strlen(string));
 }
 

@@ -1,6 +1,72 @@
 CHANGELOG
 ---------
 
+7th March 2019
+Added stb_ogg for OGG support
+Added SoundSystem and Sound with WAV and streaming OGG support
+Bit messy and could do with tidying up though, but it's a start
+
+2nd March 2019
+Added Touch support
+Various malloc cleanups
+Switched to "destroy" instead of "delete" for some things
+
+27th February 2019
+
+Updated stb_image to latest version, and removed the gcc pragmas as gnu99 compiles it cleanly anyway
+Added mojoAL - https://hg.icculus.org/icculus/mojoAL/ - for audio support
+
+25th February 2019
+
+Various cleanups and retargeted C99 ( well, gnu99 )
+Would have gone with ansi/c90 but stb_image uses C++ style comments, and would rather not modify things I don't necessarily need to
+
+21st January 2019
+
+Actually fixed Tiled Loader's realloc hiccup.
+
+20th January 2019
+
+Passthrough for blitting Textures directly - useful for Text rendering
+
+19th January 2019
+
+Separated File out to Buffer API so it can be used for other things.
+Fixed realloc hiccup with the Tiled Loader that valgrind found.
+
+15th January 2019
+
+Another big update.
+Added Point constructs and macros for min, max, lerp and clamp as they come in handy.
+Fixed colour typo.
+Accidentally set CMAKE to compile with GCC 6.x and it found some issues, so fixed them.
+Realised that GAE_PLATFORM is effectively a singleton, so got rid of passing it around everywhere.
+Cleaned up StateStack a bit, as it was a bit messy.. I think I had two different ideas for it.
+Added a PEEK to the ArrayList
+
+12th January 2019
+
+Fixed logging....
+
+10th January 2019
+
+Nice big set of updates to make it a bit more usable.
+Added animation support to Sprite via Frame-like API.
+Fixed a memory bug in File from valgrind.
+Fixed issue brought about by my hamfisted addition of Emscripten support.
+
+
+6th January 2019
+
+Various malloc clean-ups, though I suspect that Visual Studio Code is set to C++ mode and telling me porkies.
+Initial Emscripten support.
+
+2nd January 2019
+
+Added mouse support for SDL 2 and fixed mouse support in general
+Updated state to take entire platform struct as well as user datum
+Added missing State/Timer create/delete
+
 29th December 2018
 
 Pulled over changes from the Arcade Badgers System version of GLESGAE.

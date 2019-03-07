@@ -16,8 +16,8 @@ SDL_Texture* loadTextureFromFile(GAE_Texture_t* texture, GAE_Buffer_t* const buf
 SDL_Texture* loadTextureFromBuffer(GAE_Texture_t* texture, GAE_Buffer_t* const buffer);
 
 GAE_Texture_t* GAE_Texture_create() {
-	GAE_Texture_t* texture = (GAE_Texture_t*)malloc(sizeof(GAE_Texture_t));
-	GAE_SDL2_Texture_t* platform = (GAE_SDL2_Texture_t*)malloc(sizeof(GAE_SDL2_Texture_t));
+	GAE_Texture_t* texture = malloc(sizeof(GAE_Texture_t));
+	GAE_SDL2_Texture_t* platform = malloc(sizeof(GAE_SDL2_Texture_t));
 
 	texture->width = GAE_TEXTURE_FROM_FILE;
 	texture->height = GAE_TEXTURE_FROM_FILE;
@@ -33,8 +33,8 @@ GAE_Texture_t* GAE_Texture_create() {
 }
 
 GAE_Texture_t* GAE_Texture_createFromSurface(SDL_Renderer* renderer, SDL_Surface* surface) {
-	GAE_Texture_t* texture = (GAE_Texture_t*)malloc(sizeof(GAE_Texture_t));
-	GAE_SDL2_Texture_t* platform = (GAE_SDL2_Texture_t*)malloc(sizeof(GAE_SDL2_Texture_t));
+	GAE_Texture_t* texture = malloc(sizeof(GAE_Texture_t));
+	GAE_SDL2_Texture_t* platform = malloc(sizeof(GAE_SDL2_Texture_t));
 
 	texture->width = 0;
 	texture->height = 0;

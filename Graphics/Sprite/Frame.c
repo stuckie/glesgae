@@ -6,7 +6,7 @@
 
 GAE_Frame_t* GAE_Frame_create(GAE_Texture_t* texture, int x, int y, int w, int h)
 {
-    GAE_Frame_t* frame = (GAE_Frame_t*)malloc(sizeof(GAE_Frame_t));
+    GAE_Frame_t* frame = malloc(sizeof(GAE_Frame_t));
     frame->texture = texture;
     frame->rect = GAE_Rect_create(x, y, w, h);
     

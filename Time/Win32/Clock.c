@@ -14,8 +14,8 @@ typedef struct GAE_Clock_Win32_s {
 double getCurrentTime(GAE_Clock_Win32_t* const clock);
 
 GAE_Clock_t* GAE_Clock_create(void) {
-	GAE_Clock_t* clock = (GAE_Clock_t*)malloc(sizeof(GAE_Clock_t));
-	GAE_Clock_Win32_t* win32Clock = (GAE_Clock_Win32_t*)malloc(sizeof(GAE_Clock_Win32_t));
+	GAE_Clock_t* clock = malloc(sizeof(GAE_Clock_t));
+	GAE_Clock_Win32_t* win32Clock = malloc(sizeof(GAE_Clock_Win32_t));
 	LARGE_INTEGER li;
 
 	clock->deltaTime = 0.0F;

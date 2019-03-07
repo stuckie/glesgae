@@ -7,7 +7,7 @@
 #include "../GAE_Types.h"
 
 GAE_SingleList_t* GAE_SingleList_create(const unsigned int size) {
-	GAE_SingleList_t* list = (GAE_SingleList_t*)malloc(sizeof(GAE_SingleList_t));
+	GAE_SingleList_t* list = malloc(sizeof(GAE_SingleList_t));
 	list->begin = 0;
 	list->length = 0U;
 	list->size = size;
@@ -18,7 +18,7 @@ GAE_SingleList_t* GAE_SingleList_create(const unsigned int size) {
 GAE_SingleList_t* GAE_SingleList_push(GAE_SingleList_t* list, void* data) {
 	GAE_SingleListNode_t* node = list->begin;
 	if (0 == node) { /* empty list */
-		node = (GAE_SingleListNode_t*)malloc(sizeof(GAE_SingleListNode_t));
+		node = malloc(sizeof(GAE_SingleListNode_t));
 		assert(node);
 		list->begin = node;
 	}
@@ -26,7 +26,7 @@ GAE_SingleList_t* GAE_SingleList_push(GAE_SingleList_t* list, void* data) {
 		while (0 != node->next) /* Find next free node */
 			node = node->next;
 
-		node->next = (GAE_SingleListNode_t*)malloc(sizeof(GAE_SingleListNode_t));
+		node->next = malloc(sizeof(GAE_SingleListNode_t));
 		assert(node);
 		node = node->next;
 	}
@@ -43,7 +43,7 @@ GAE_SingleList_t* GAE_SingleList_push(GAE_SingleList_t* list, void* data) {
 }
 
 GAE_SingleList_t* GAE_SingleList_add(GAE_SingleList_t* list, GAE_SingleListNode_t* node, void* data) {
-	GAE_SingleListNode_t* newNode = (GAE_SingleListNode_t*)malloc(sizeof(GAE_SingleListNode_t));
+	GAE_SingleListNode_t* newNode = malloc(sizeof(GAE_SingleListNode_t));
 	assert(node);
 	assert(newNode);
 
@@ -133,7 +133,7 @@ void GAE_SingleList_delete(GAE_SingleList_t* list) {
 
 
 GAE_DoubleList_t* GAE_DoubleList_create(const unsigned int size) {
-	GAE_DoubleList_t* list = (GAE_DoubleList_t*)malloc(sizeof(GAE_DoubleList_t));
+	GAE_DoubleList_t* list = malloc(sizeof(GAE_DoubleList_t));
 	list->begin = 0;
 	list->end = 0;
 	list->length = 0U;
@@ -144,7 +144,7 @@ GAE_DoubleList_t* GAE_DoubleList_create(const unsigned int size) {
 
 GAE_DoubleList_t* GAE_DoubleList_push(GAE_DoubleList_t* list, void* data) {
 	GAE_DoubleListNode_t* prev = list->end;
-	GAE_DoubleListNode_t* node = (GAE_DoubleListNode_t*)malloc(sizeof(GAE_DoubleListNode_t));
+	GAE_DoubleListNode_t* node = malloc(sizeof(GAE_DoubleListNode_t));
 	assert(node);
 
 	prev->next = node;
@@ -162,7 +162,7 @@ GAE_DoubleList_t* GAE_DoubleList_push(GAE_DoubleList_t* list, void* data) {
 }
 
 GAE_DoubleList_t* GAE_DoubleList_add(GAE_DoubleList_t* list, GAE_DoubleListNode_t* node, void* data) {
-	GAE_DoubleListNode_t* newNode = (GAE_DoubleListNode_t*)malloc(sizeof(GAE_DoubleListNode_t));
+	GAE_DoubleListNode_t* newNode = malloc(sizeof(GAE_DoubleListNode_t));
 	assert(node);
 	assert(newNode);
 

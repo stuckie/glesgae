@@ -107,7 +107,7 @@ unsigned int GAE_Map_length(GAE_Map_t* map) {
 }
 
 void GAE_Map_delete(GAE_Map_t* map) {
-	GAE_Array_delete(map->ids);
-	GAE_Array_delete(map->values);
+	GAE_Array_destroy(map->ids);
+	GAE_Array_destroy(map->values);
 	free(map);
 }

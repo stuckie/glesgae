@@ -4,6 +4,9 @@
 #include "../../Events/SDL2/SDL2Events.h"
 #include "../../Events/EventSystem.h"
 #include "../../Events/Event.h"
+#include "../../Graphics/GraphicsSystem.h"
+#include "../../Graphics/Window/RenderWindow.h"
+#include "../../Platform/Platform.h"
 #include "../../Utils/List.h"
 #include "../../Utils/Map.h"
 #include "../../Utils/Array.h"
@@ -14,7 +17,7 @@
 GAE_KeyType_t convertKey(SDL_Keycode key);
 
 GAE_InputSystem_t* GAE_InputSystem_create(GAE_EventSystem_t* eventSystem) {
-	GAE_InputSystem_t* system = (GAE_InputSystem_t*)malloc(sizeof(GAE_InputSystem_t));
+	GAE_InputSystem_t* system = malloc(sizeof(GAE_InputSystem_t));
 
 	system->eventSystem = eventSystem;
 	system->keyboard = 0;
@@ -37,6 +40,7 @@ void GAE_InputSystem_delete(GAE_InputSystem_t* system) {
 	system = 0;
 }
 
+/* TODO: hardcode all events as const hashstrings so we can replace this with a switch table */
 void GAE_InputSystem_getEvent(GAE_Event_t* const event, void* userData) {
 	GAE_InputSystem_t* system = (GAE_InputSystem_t*)userData;
 	SDL_Event* sdlEvent = (SDL_Event*)GAE_Map_begin(event->params);
@@ -54,7 +58,7 @@ void GAE_InputSystem_getEvent(GAE_Event_t* const event, void* userData) {
 		}
 	}
 
-	if (GAE_EVENT_MOUSE_MOTION == event->type) {
+	else if (GAE_EVENT_MOUSE_MOTION == event->type) {
 		switch (sdlEvent->type) {
 			case SDL_MOUSEMOTION: {
 				float* x = (float*)GAE_Array_get(system->pointer->axes, 0U);
@@ -67,7 +71,7 @@ void GAE_InputSystem_getEvent(GAE_Event_t* const event, void* userData) {
 		}
 	}
 	
-	if (GAE_EVENT_MOUSE_BUTTON == event->type) {
+	else if (GAE_EVENT_MOUSE_BUTTON == event->type) {
 		switch (sdlEvent->type) {
 			case SDL_MOUSEBUTTONDOWN: {
 				float* button = (float*)GAE_Array_get(system->pointer->buttons, sdlEvent->button.which);
@@ -80,6 +84,43 @@ void GAE_InputSystem_getEvent(GAE_Event_t* const event, void* userData) {
 				
 				*button = 0.0F;
 			}
+			break;
+		}
+	}
+		
+	else if (GAE_EVENT_TOUCH == event->type) {
+		const unsigned int width = GAE_PLATFORM->graphicsSystem->window->width;
+		const unsigned int height = GAE_PLATFORM->graphicsSystem->window->height;
+		switch (sdlEvent->type) {
+			case SDL_FINGERDOWN: {
+				float* button = (float*)GAE_Array_get(system->pointer->buttons, 0);
+				
+				float* x = (float*)GAE_Array_get(system->pointer->axes, 0U);
+				float* y = (float*)GAE_Array_get(system->pointer->axes, 1U);
+
+				*x = sdlEvent->tfinger.x * width;
+				*y = sdlEvent->tfinger.y * height;
+				*button = 1.0F;
+			};
+			break;
+			case SDL_FINGERUP: {
+				float* button = (float*)GAE_Array_get(system->pointer->buttons, 0);
+				
+				float* x = (float*)GAE_Array_get(system->pointer->axes, 0U);
+				float* y = (float*)GAE_Array_get(system->pointer->axes, 1U);
+
+				*x = sdlEvent->tfinger.x * width;
+				*y = sdlEvent->tfinger.y * height;
+				*button = 0.0F;
+			};
+			break;
+			case SDL_FINGERMOTION: {				
+				float* x = (float*)GAE_Array_get(system->pointer->axes, 0U);
+				float* y = (float*)GAE_Array_get(system->pointer->axes, 1U);
+
+				*x = sdlEvent->tfinger.x * width;
+				*y = sdlEvent->tfinger.y * height;
+			};
 			break;
 		}
 	}
@@ -105,6 +146,7 @@ GAE_InputSystem_t* GAE_InputSystem_newPad(GAE_InputSystem_t* system) {
 GAE_InputSystem_t* GAE_InputSystem_newPointer(GAE_InputSystem_t* system) {
 	if (0 == system->pointer) {
 		system->pointer = GAE_Pointer_create(2U, 5U);
+		GAE_EventSystem_registerObserver(system->eventSystem, GAE_EVENT_TOUCH, GAE_InputSystem_getEvent, (void*)system);
 		GAE_EventSystem_registerObserver(system->eventSystem, GAE_EVENT_MOUSE_MOTION, GAE_InputSystem_getEvent, (void*)system);
 		GAE_EventSystem_registerObserver(system->eventSystem, GAE_EVENT_MOUSE_BUTTON, GAE_InputSystem_getEvent, (void*)system);
 	}

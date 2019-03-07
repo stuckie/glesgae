@@ -91,7 +91,7 @@ const GAE_KeyType_t GAE_KEY_ARROW_LEFT				= 75U;
 const GAE_KeyType_t GAE_KEY_ARROW_RIGHT				= 76U;
 
 GAE_Keyboard_t* GAE_Keyboard_create(void) {
-	GAE_Keyboard_t* keyboard = (GAE_Keyboard_t*)malloc(sizeof(GAE_Keyboard_t));
+	GAE_Keyboard_t* keyboard = malloc(sizeof(GAE_Keyboard_t));
 	memset(keyboard->keys, 0, GAE_MAX_KEYS * sizeof(unsigned int));
 
 	return keyboard;
@@ -103,7 +103,7 @@ void GAE_Keyboard_delete(GAE_Keyboard_t* keyboard) {
 }
 
 GAE_Joystick_t* GAE_Joystick_create(const unsigned int axes, const unsigned int buttons) {
-	GAE_Joystick_t* joystick = (GAE_Joystick_t*)malloc(sizeof(GAE_Joystick_t));
+	GAE_Joystick_t* joystick = malloc(sizeof(GAE_Joystick_t));
 
 	joystick->axes = GAE_Array_create(sizeof(float));
 	GAE_Array_reserve(joystick->axes, axes);
@@ -115,15 +115,15 @@ GAE_Joystick_t* GAE_Joystick_create(const unsigned int axes, const unsigned int 
 }
 
 void GAE_Joystick_delete(GAE_Joystick_t* joystick) {
-	GAE_Array_delete(joystick->axes);
-	GAE_Array_delete(joystick->buttons);
+	GAE_Array_destroy(joystick->axes);
+	GAE_Array_destroy(joystick->buttons);
 
 	free(joystick);
 	joystick = 0;
 }
 
 GAE_Pad_t* GAE_Pad_create(const unsigned int buttons) {
-	GAE_Pad_t* pad = (GAE_Pad_t*)malloc(sizeof(GAE_Pad_t));
+	GAE_Pad_t* pad = malloc(sizeof(GAE_Pad_t));
 
 	pad->buttons = GAE_Array_create(sizeof(float));
 	GAE_Array_reserve(pad->buttons, buttons);
@@ -132,26 +132,26 @@ GAE_Pad_t* GAE_Pad_create(const unsigned int buttons) {
 }
 
 void GAE_Pad_delete(GAE_Pad_t* pad) {
-	GAE_Array_delete(pad->buttons);
+	GAE_Array_destroy(pad->buttons);
 
 	free(pad);
 	pad = 0;
 }
 
 GAE_Pointer_t* GAE_Pointer_create(const unsigned int axes, const unsigned int buttons) {
-	GAE_Pointer_t* pointer = (GAE_Pointer_t*)malloc(sizeof(GAE_Pointer_t));
+	GAE_Pointer_t* pointer = malloc(sizeof(GAE_Pointer_t));
 	unsigned int index = 0U;
 
 	pointer->axes = GAE_Array_create(sizeof(float));
 	for (index = 0U; index < axes; ++index) {
-		float* value = (float*)malloc(sizeof(float));
+		float* value = malloc(sizeof(float));
 		*value = 0.0F;
 		GAE_Array_push(pointer->axes, value);
 	}
 
 	pointer->buttons = GAE_Array_create(sizeof(float));
 	for (index = 0U; index < buttons; ++index) {
-		float* value = (float*)malloc(sizeof(float));
+		float* value = malloc(sizeof(float));
 		*value = 0.0F;
 		GAE_Array_push(pointer->buttons, value);
 	}
@@ -160,8 +160,8 @@ GAE_Pointer_t* GAE_Pointer_create(const unsigned int axes, const unsigned int bu
 }
 
 void GAE_Pointer_delete(GAE_Pointer_t* pointer) {
-	GAE_Array_delete(pointer->axes);
-	GAE_Array_delete(pointer->buttons);
+	GAE_Array_destroy(pointer->axes);
+	GAE_Array_destroy(pointer->buttons);
 
 	free(pointer);
 	pointer = 0;

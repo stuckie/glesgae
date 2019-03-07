@@ -6,8 +6,8 @@
 #include <stdlib.h>
 
 GAE_File_t* GAE_File_create(const char* const filePath, const GAE_FILE_OPEN_MODE openMode, const GAE_FILE_MODE fileMode, GAE_FILE_STATUS* status) {
-	GAE_File_t* file = (GAE_File_t*)malloc(sizeof(GAE_File_t));
-	GAE_PlatformFile_t* platform = (GAE_PlatformFile_t*)malloc(sizeof(GAE_PlatformFile_t));
+	GAE_File_t* file = malloc(sizeof(GAE_File_t));
+	GAE_PlatformFile_t* platform = malloc(sizeof(GAE_PlatformFile_t));
 	char options[2];
 
 	file->readPosition = 0U;

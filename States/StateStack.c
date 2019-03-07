@@ -7,7 +7,7 @@
 
 GAE_StateStack_t* GAE_StateStack_create(void)
 {
-	GAE_StateStack_t* stack = (GAE_StateStack_t*)malloc(sizeof(GAE_StateStack_t));
+	GAE_StateStack_t* stack = malloc(sizeof(GAE_StateStack_t));
 
 	stack->stack = GAE_Array_create(sizeof(GAE_State_t));
 
@@ -16,7 +16,7 @@ GAE_StateStack_t* GAE_StateStack_create(void)
 
 void GAE_StateStack_delete(GAE_StateStack_t* stack)
 {
-	GAE_Array_delete(stack->stack);
+	GAE_Array_destroy(stack->stack);
 	stack->stack = 0;
 
 	free(stack);

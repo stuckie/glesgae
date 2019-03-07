@@ -3,7 +3,11 @@ cmake_policy(SET CMP0015 NEW)
 
 project(libglesgae)
 
-set(CMAKE_C_FLAGS "-Wall -Werror -Wpedantic -Wno-variadic-macros -Wcast-align -Wredundant-decls -Wextra -pedantic-errors")
+# compiles without warnings
+#set(CMAKE_C_FLAGS "-Wall -Werror -Wpedantic -Wno-variadic-macros -Wcast-align -Wredundant-decls -Wextra -std=gnu99 -pedantic -pedantic-errors")
+# compiles with warnings ( in external libs )
+set(CMAKE_C_FLAGS "-Wall -Wpedantic -Wno-variadic-macros -Wcast-align -Wredundant-decls -Wextra -std=gnu89 -pedantic")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3")
 
 # Compile Options
 option(USE_SDL2 "Use SDL2 Bindings" OFF)
@@ -47,8 +51,11 @@ set(GLESGAE_BASE
 # SDL2 specifics
 if (USE_SDL2)
 	set(GLESGAE_RENDERER
+		Audio/SDL2/AudioSystem.c
+		Audio/SDL2/Sound.c
 		Events/SDL2/SDL2Events.c
 		Events/SDL2/SDL2EventSystem.c
+		External/mojoAL/mojoal.c
 		Graphics/Texture.c
 		Graphics/Context/SDL2/SDL2RenderContext.c
 		Graphics/Renderer/SDL2/SDL2Renderer.c
@@ -67,8 +74,11 @@ endif (USE_SDL2)
 # Emscripten specifics
 if (USE_EMSCRIPTEN)
 	set(GLESGAE_RENDERER
+		Audio/SDL2/AudioSystem.c
+		Audio/SDL2/Sound.c
 		Events/SDL2/SDL2Events.c
 		Events/SDL2/SDL2EventSystem.c
+		External/mojoAL/mojoal.c
 		Graphics/Texture.c
 		Graphics/Context/SDL2/SDL2RenderContext.c
 		Graphics/Renderer/SDL2/SDL2Renderer.c

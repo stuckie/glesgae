@@ -1,7 +1,7 @@
 #include "AndroidRenderWindow.h"
 
 GAE_RenderWindow_t* GAE_RenderWindow_create(const char* name, const unsigned int width, const unsigned int height, const unsigned int bpp, const GAE_BOOL fullscreen) {
-	GAE_Android_RenderWindow_t* androidWindow = (GAE_Android_RenderWindow_t*)malloc(sizeof(GAE_Android_RenderWindow_t));
+	GAE_Android_RenderWindow_t* androidWindow = malloc(sizeof(GAE_Android_RenderWindow_t));
 	GAE_RenderWindow_t* window = (GAE_RenderWindow_t*)androidWindow;
 
 	window->name = name;

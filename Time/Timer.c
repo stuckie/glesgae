@@ -5,7 +5,7 @@
 
 GAE_Timer_t* GAE_Timer_create(GAE_Clock_t* const clock)
 {
-	GAE_Timer_t* timer = (GAE_Timer_t*)malloc(sizeof(GAE_Timer_t));
+	GAE_Timer_t* timer = malloc(sizeof(GAE_Timer_t));
 	timer->currentTime = 0.0F;
 	timer->deltaTime = 0.0F;
 	timer->isPaused = GAE_FALSE;

@@ -51,7 +51,7 @@ void GAE_TiledParser_delete(GAE_Tiled_t* tiledParser) {
 jsmntok_t* jsonTokenise(const char* js) {
 	jsmn_parser parser;
 	unsigned int numTokens = JSON_TOKENS;
-	jsmntok_t* tokens = (jsmntok_t*)malloc(sizeof(jsmntok_t) * numTokens);
+	jsmntok_t* tokens = malloc(sizeof(jsmntok_t) * numTokens);
 	int ret = 0;
 
 	jsmn_init(&parser);
@@ -60,7 +60,7 @@ jsmntok_t* jsonTokenise(const char* js) {
 	while (ret == JSMN_ERROR_NOMEM) { /* Not enough tokens allocated, allocate some more */
 		numTokens = numTokens * 2 + 1;
 		free(tokens);
-		tokens = (jsmntok_t*)malloc(sizeof(jsmntok_t) * numTokens);
+		tokens = malloc(sizeof(jsmntok_t) * numTokens);
 
 		jsmn_init(&parser);
 		ret = jsmn_parse(&parser, js, tokens, numTokens);
@@ -87,7 +87,7 @@ char* json_token_tostr(char* js, jsmntok_t* t) {
 }
 
 GAE_Tiled_t* handleMap(jsmntok_t* tokens, char* string) {
-	GAE_Tiled_t* tiledParser = (GAE_Tiled_t*)malloc(sizeof(GAE_Tiled_t));
+	GAE_Tiled_t* tiledParser = malloc(sizeof(GAE_Tiled_t));
 
 	unsigned int index = 0U;
 	unsigned int currentToken = 1U;
@@ -137,7 +137,7 @@ GAE_Tiled_t* handleMap(jsmntok_t* tokens, char* string) {
 }
 
 GAE_Tiled_Layer_t* handleLayer(jsmntok_t* tokens, char* string) {
-	GAE_Tiled_Layer_t* layer = (GAE_Tiled_Layer_t*)malloc(sizeof(GAE_Tiled_Layer_t));
+	GAE_Tiled_Layer_t* layer = malloc(sizeof(GAE_Tiled_Layer_t));
 
 	unsigned int index = 0U;
 	unsigned int currentToken = 1U;
@@ -165,7 +165,7 @@ GAE_Tiled_Layer_t* handleLayer(jsmntok_t* tokens, char* string) {
 }
 
 GAE_Tiled_Tileset_t* handleTileset(jsmntok_t* tokens, char* string) {
-	GAE_Tiled_Tileset_t* tileset = (GAE_Tiled_Tileset_t*)malloc(sizeof(GAE_Tiled_Tileset_t));
+	GAE_Tiled_Tileset_t* tileset = malloc(sizeof(GAE_Tiled_Tileset_t));
 	unsigned int index = 0U;
 	unsigned int currentToken = 1U;
 	unsigned int objects = 0U;
@@ -396,7 +396,7 @@ void parseLayerKey(jsmntok_t* token, char* string, const KEY key, GAE_Tiled_Laye
 			char* name = json_token_tostr(string, token);
 
 			strncpy(layerParser->name, name, 127);
-			layerParser->name[strnlen(name, 128)] = '\0';
+			layerParser->name[strlen(name)] = '\0';
 		}
 		break;
 		case KEY_OPACITY: {
@@ -407,7 +407,7 @@ void parseLayerKey(jsmntok_t* token, char* string, const KEY key, GAE_Tiled_Laye
 			char* type = json_token_tostr(string, token);
 
 			strncpy(layerParser->type, type, 127);
-			layerParser->type[strnlen(type, 128)] = '\0';
+			layerParser->type[strlen(type)] = '\0';
 		}
 		break;
 		case KEY_VISIBLE: {
@@ -465,10 +465,11 @@ void parseTilesetKey(jsmntok_t* token, char* string, const KEY key, GAE_Tiled_Ti
 			const char* path = json_token_tostr(string, token);
 			GAE_File_t* file = GAE_File_create(path, GAE_FILE_OPEN_READ, GAE_FILE_BINARY, 0);
 			GAE_Buffer_t* data = GAE_Buffer_create(file->fileSize);
+			GAE_Texture_t* texture =  GAE_Texture_create();
+			
 			GAE_File_read(file, data, GAE_FILE_READ_ALL, 0);
 			GAE_File_delete(file);
 			
-			GAE_Texture_t* texture =  GAE_Texture_create();
 			GAE_Texture_load(texture, data, GAE_TEXTURE_FROM_FILE, GAE_TEXTURE_FROM_FILE);
 			GAE_Buffer_delete(data);
 			
@@ -488,7 +489,7 @@ void parseTilesetKey(jsmntok_t* token, char* string, const KEY key, GAE_Tiled_Ti
 		case KEY_NAME: {
 			char* name = json_token_tostr(string, token);
 			strncpy(tilesetParser->name, name, 127);
-			tilesetParser->name[strnlen(name, 128)] = '\0';
+			tilesetParser->name[strlen(name)] = '\0';
 		}
 		break;
 		default:
@@ -501,7 +502,7 @@ void parseTerrainKey(jsmntok_t* token, char* string, const KEY key, GAE_Tiled_Te
 		case KEY_NAME: {
 			char* name = json_token_tostr(string, token);
 			strncpy(terrainParser->name, name, 127);
-			terrainParser->name[strnlen(name, 128)] = '\0';
+			terrainParser->name[strlen(name)] = '\0';
 			printf("Terrain: %s\n", terrainParser->name);
 		}
 		break;

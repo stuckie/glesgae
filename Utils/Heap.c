@@ -26,7 +26,7 @@ typedef struct GAE_HeapInfo_s {
 
 
 GAE_Heap_t* GAE_Heap_create(const size_t size) {
-	GAE_Heap_t* heap = (GAE_Heap_t*)malloc(sizeof(GAE_Heap_t));
+	GAE_Heap_t* heap = malloc(sizeof(GAE_Heap_t));
 	heap->data = 0;
 	heap->allocated = 0U;
 	heap->used = 0U;
@@ -37,11 +37,11 @@ GAE_Heap_t* GAE_Heap_create(const size_t size) {
 
 GAE_Heap_t* GAE_Heap_reserve(GAE_Heap_t* heap, const size_t size) {
 	if (0 == heap->allocated) { /* Empty heap, just malloc it */
-		heap->data = (GAE_BYTE*)malloc(size);
+		heap->data = malloc(size);
 		assert(heap->data);
 	}
 	else if (size > heap->allocated) { /* we're expanding the heap */
-		heap->data = (GAE_BYTE*)realloc(heap->data, size);
+		heap->data = realloc(heap->data, size);
 		assert(heap->data);
 	}
 	else if (size > heap->used) { /* length is less than capacity.. see if we can shrink it */
@@ -82,7 +82,7 @@ void* GAE_Heap_malloc(GAE_Heap_t* heap, const size_t size) {
 	}
 	
 	offset = heap->used;
-	info = (GAE_HeapInfo_t*)malloc(sizeof(GAE_HeapInfo_t));
+	info = malloc(sizeof(GAE_HeapInfo_t));
 	info->offset = offset;
 	info->size = size;
 	info->state = GAE_HEAP_ALLOCATED;

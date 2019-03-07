@@ -6,7 +6,7 @@
 #include "SDL2/SDL.h"
 
 GAE_RenderContext_t* GAE_RenderContext_create(void) {
-	GAE_RenderContext_t* context = (GAE_RenderContext_t*)malloc(sizeof(GAE_RenderContext_t));
+	GAE_RenderContext_t* context = malloc(sizeof(GAE_RenderContext_t));
 
 	context->renderer = 0;
 	context->window = 0;

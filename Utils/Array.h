@@ -31,10 +31,13 @@ void* GAE_Array_pop(GAE_Array_t* array);
 /* Returns an indexed value of the array. This element should NOT be freed after use. */
 void* GAE_Array_get(GAE_Array_t* array, const unsigned int index);
 
+/* Deletes the element at the given index */
+GAE_Array_t* GAE_Array_delete(GAE_Array_t* array, const unsigned int index);
+
 /* Returns the length of this array in amount of elements with 0 being empty. */
 unsigned int GAE_Array_length(GAE_Array_t* array);
 
 /* Deletes the Array and all memory it allocated. Any stray pointers will therefore be undefined. */
-void GAE_Array_delete(GAE_Array_t* array);
+void GAE_Array_destroy(GAE_Array_t* array);
 
 #endif

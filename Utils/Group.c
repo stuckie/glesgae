@@ -7,7 +7,7 @@
 #include "../GAE_Types.h"
 
 GAE_Group_t* GAE_Group_create(void) {
-	GAE_Group_t* group = (GAE_Group_t*)malloc(sizeof(GAE_Group_t));
+	GAE_Group_t* group = malloc(sizeof(GAE_Group_t));
 	group->begin = 0;
 	group->length = 0U;
 
@@ -17,7 +17,7 @@ GAE_Group_t* GAE_Group_create(void) {
 GAE_Group_t* GAE_Group_add(GAE_Group_t* group, void* ptr) {
 	GAE_GroupItem_t* node = group->begin;
 	if (0 == node) { /* empty group*/
-		node = (GAE_GroupItem_t*)malloc(sizeof(GAE_GroupItem_t));
+		node = malloc(sizeof(GAE_GroupItem_t));
 		assert(node);
 		group->begin = node;
 	}
@@ -25,7 +25,7 @@ GAE_Group_t* GAE_Group_add(GAE_Group_t* group, void* ptr) {
 		while (0 != node->next) /* Find next free node */
 			node = node->next;
 
-		node->next = (GAE_GroupItem_t*)malloc(sizeof(GAE_GroupItem_t));
+		node->next = malloc(sizeof(GAE_GroupItem_t));
 		assert(node);
 		node = node->next;
 	}

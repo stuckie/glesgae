@@ -24,7 +24,7 @@ GAE_Array_t* GAE_Material_textures(GAE_Material_t* material) {
 }
 
 void GAE_Material_delete(GAE_Material_t* material) {
-	GAE_Array_delete(material->textures);
+	GAE_Array_destroy(material->textures);
 	free(material);
 	material = 0;
 }

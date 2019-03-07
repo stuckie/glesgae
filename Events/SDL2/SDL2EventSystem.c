@@ -18,7 +18,7 @@ void handleAppEvent(SDL_Event* event, GAE_EventSystem_t* system);
 void sendEvent(GAE_HashString_t type, SDL_Event* event, GAE_EventSystem_t* system);
 
 GAE_EventSystem_t* GAE_EventSystem_create(void) {
-	GAE_EventSystem_t* system = (GAE_EventSystem_t*)malloc(sizeof(GAE_EventSystem_t));
+	GAE_EventSystem_t* system = malloc(sizeof(GAE_EventSystem_t));
 
 	system->observers = GAE_Map_create(sizeof(GAE_HashString_t), sizeof(GAE_Array_t), GAE_HashString_compare);
 	system->triggers = GAE_Map_create(sizeof(GAE_HashString_t), sizeof(GAE_Array_t), GAE_HashString_compare);
@@ -152,12 +152,12 @@ void GAE_EventSystem_delete(GAE_EventSystem_t* system) {
 	unsigned int triggerSize = GAE_Map_length(system->triggers);
 
 	while (0 < observerSize) {
-		GAE_Array_delete((GAE_Array_t*)GAE_Map_pop(system->observers));
+		GAE_Array_destroy((GAE_Array_t*)GAE_Map_pop(system->observers));
 		observerSize = GAE_Map_length(system->observers);
 	}
 
 	while (0 < triggerSize) {
-		GAE_Array_delete((GAE_Array_t*)GAE_Map_pop(system->triggers));
+		GAE_Array_destroy((GAE_Array_t*)GAE_Map_pop(system->triggers));
 		triggerSize = GAE_Map_length(system->triggers);
 	}
 

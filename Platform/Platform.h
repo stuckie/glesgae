@@ -1,6 +1,7 @@
 #ifndef _PLATFORM_H_
 #define _PLATFORM_H_
 
+struct GAE_AudioSystem_s;
 struct GAE_GraphicsSystem_s;
 struct GAE_EventSystem_s;
 struct GAE_InputSystem_s;
@@ -11,6 +12,7 @@ struct GAE_Logger_s;
 
 /* These need to be filled in via the user */
 typedef struct GAE_Platform_s {
+	struct GAE_AudioSystem_s* audioSystem;
 	struct GAE_GraphicsSystem_s* graphicsSystem;
 	struct GAE_EventSystem_s* eventSystem;
 	struct GAE_InputSystem_s* inputSystem;
