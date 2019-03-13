@@ -108,6 +108,7 @@ GAE_File_t* GAE_File_read(GAE_File_t* file, GAE_Buffer_t* buffer, const unsigned
 		
 	read = fread((void*)(buffer->data + buffer->index), 1, readAmount, platform->file);
 	file->readPosition += (unsigned long)read;
+	buffer->index += (unsigned int)read;
 	
 	if ((unsigned long)(read) == readAmount) {
 		if (0 != status)
@@ -155,7 +156,7 @@ GAE_File_t* GAE_File_write(GAE_File_t* file, GAE_Buffer_t* const buffer, GAE_FIL
 		return file;
 	}
 	
-	written = fwrite(buffer, 1, buffer->length, platform->file);
+	written = fwrite(buffer->data, 1, buffer->length, platform->file);
 	fflush(platform->file);
 	if ((unsigned long)(written) == buffer->length) {
 		if (0 != status)
