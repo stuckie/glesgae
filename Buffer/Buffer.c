@@ -8,11 +8,12 @@ GAE_Buffer_t* GAE_Buffer_create(const unsigned int size)
 {
 	GAE_Buffer_t* buffer = malloc(sizeof(GAE_Buffer_t));
 	
-	if (0 < size)
-		buffer->data = malloc(size);
-		
+	buffer->data = 0;		
 	buffer->length = size;
 	buffer->index = 0;
+	
+	if (0 < size)
+		buffer->data = malloc(size);
 
 	return buffer;
 }
@@ -42,12 +43,18 @@ void GAE_Buffer_delete(GAE_Buffer_t* buffer)
 GAE_Buffer_t* GAE_Buffer_resize(GAE_Buffer_t* buffer, const unsigned int size)
 {
 	if (size > buffer->length) {
-		GAE_BYTE* data = realloc(buffer->data, size);
-		if (0 != data) {
-			free(buffer->data);
+		GAE_BYTE* data;
+		if (0 == buffer->data) { /* don't actually have any data yet... */
+			data = malloc(size);
 			buffer->data = data;
+		} else {
+			data = realloc(buffer->data, size);
+			if (0 != data) buffer->data = data;
+			/* TODO: Deal with error state */
 		}
+		buffer->length = size;
 	}
+	/* TODO: support shrinking buffers */
 	
 	return buffer;
 }
@@ -80,6 +87,7 @@ GAE_Buffer_t* GAE_Buffer_read(GAE_Buffer_t* buffer, GAE_BYTE* values, const unsi
 		values[index] = (GAE_BYTE)buffer->data[buffer->index];
 		buffer->index = (buffer->index + sizeof(GAE_BYTE)) % buffer->length;
 		++index;
+		++buffer->index;
 	}
 	
 	return buffer;
@@ -93,6 +101,7 @@ GAE_Buffer_t* GAE_Buffer_write(GAE_Buffer_t* buffer, GAE_BYTE* const values, con
 		buffer->data[buffer->index] = (GAE_BYTE)values[index];
 		buffer->index = (buffer->index + sizeof(GAE_BYTE)) % buffer->length;
 		++index;
+		++buffer->index;
 	}
 	
 	return buffer;
