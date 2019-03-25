@@ -87,7 +87,6 @@ GAE_Buffer_t* GAE_Buffer_read(GAE_Buffer_t* buffer, GAE_BYTE* values, const unsi
 		values[index] = (GAE_BYTE)buffer->data[buffer->index];
 		buffer->index = (buffer->index + sizeof(GAE_BYTE)) % buffer->length;
 		++index;
-		++buffer->index;
 	}
 	
 	return buffer;
@@ -101,7 +100,6 @@ GAE_Buffer_t* GAE_Buffer_write(GAE_Buffer_t* buffer, GAE_BYTE* const values, con
 		buffer->data[buffer->index] = (GAE_BYTE)values[index];
 		buffer->index = (buffer->index + sizeof(GAE_BYTE)) % buffer->length;
 		++index;
-		++buffer->index;
 	}
 	
 	return buffer;
