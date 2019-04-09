@@ -25,7 +25,7 @@ GAE_Sprite_t* GAE_Sprite_addFrame(GAE_Sprite_t* sprite, GAE_Frame_t* frame)
 
 GAE_Frame_t* GAE_Sprite_getFrame(GAE_Sprite_t* sprite)
 {
-    return *(GAE_Frame_t**)GAE_ArrayList_get(sprite->frames, (unsigned int)floor(sprite->currentFrame));
+    return *(GAE_Frame_t**)GAE_ArrayList_get(sprite->frames, (unsigned int)floor(sprite->currentFrame) % GAE_ArrayList_length(sprite->frames));
 }
 
 GAE_Sprite_t* GAE_Sprite_update(GAE_Sprite_t* sprite, float deltaTime)

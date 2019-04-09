@@ -19,6 +19,10 @@ extern const unsigned int GAE_INVALID;
 #define GAE_LERP(a, b, time)			( (a) + (time) * (float) ((b) - (a)) )
 #define GAE_CLAMP(val, low, hi)			((val) < (low) ? (low) : (val) > (hi) ? (hi) : (val))
 
+#define VEC_X 0
+#define VEC_Y 1
+#define VEC_Z 2
+
 typedef unsigned int GAE_HashString_t;
 typedef unsigned int GAE_EntityId_t;
 typedef GAE_HashString_t GAE_ComponentType_t;
