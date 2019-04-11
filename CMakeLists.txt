@@ -30,6 +30,7 @@ set(GLESGAE_BASE
 	External/jsmn/jsmn.c
 	Graphics/Sprite/Frame.c
 	Graphics/Sprite/Sprite.c
+	Graphics/Sprite/Animation.c
 	Input/Controller.c
 	Maths/Matrix.c
 	Maths/Point.c

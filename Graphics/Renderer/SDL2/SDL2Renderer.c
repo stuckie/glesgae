@@ -29,8 +29,11 @@ GAE_Renderer_t* GAE_Renderer_drawMesh(GAE_Renderer_t* renderer, struct GAE_Mesh_
 }
 
 GAE_Renderer_t* GAE_Renderer_drawSprite(GAE_Renderer_t* renderer, GAE_Sprite_t* const sprite) {
-	GAE_Frame_t* frame = GAE_Sprite_getFrame(sprite);
-	GAE_SDL2_Texture_t* sdlTexture = (GAE_SDL2_Texture_t*)frame->texture->platform;
+	GAE_Frame_t* frame;
+	GAE_SDL2_Texture_t* sdlTexture;
+	
+	GAE_Sprite_getFrame(sprite, &frame);
+	sdlTexture = (GAE_SDL2_Texture_t*)frame->texture->platform;
 	SDL_RenderCopy(renderer->renderer, sdlTexture->texture, (SDL_Rect*)frame->rect, (SDL_Rect*)sprite->dest);
 
 	return renderer;
